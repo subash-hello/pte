@@ -1,0 +1,1262 @@
+[
+  {
+    "taskType": "Read Aloud",
+    "title": "Urban Transportation Systems",
+    "difficulty": "Medium",
+    "timeLimit": 40,
+    "promptText": "Cities around the world are investing heavily in public transportation systems to reduce traffic congestion and air pollution. Modern metro networks, electric buses, and dedicated bicycle lanes are becoming increasingly common in major urban centers, encouraging commuters to adopt sustainable travel habits.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "A fluent reading of the text with natural pacing, clear articulation of words like 'congestion' and 'sustainable', and proper intonation.",
+    "keywords": [
+      "transportation",
+      "congestion",
+      "pollution",
+      "sustainable"
+    ],
+    "explanation": "Focus on smooth phrasing, correct word stress on multi-syllable terms, and avoiding pauses mid-clause."
+  },
+  {
+    "taskType": "Read Aloud",
+    "title": "Marine Ecosystem Biodiversity",
+    "difficulty": "Hard",
+    "timeLimit": 40,
+    "promptText": "Coral reefs support a vast array of marine organisms, functioning as underwater rainforests that shelter essential species. However, rising sea temperatures and ocean acidification pose severe threats to these delicate ecosystems, leading to widespread bleaching events that disrupt the global marine food chain.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "Clear, fluent delivery emphasizing key academic terms such as 'acidification' and 'biodiversity' with steady rhythm.",
+    "keywords": [
+      "coral reefs",
+      "acidification",
+      "ecosystems",
+      "bleaching"
+    ],
+    "explanation": "Ensure distinct pronunciation of technical vocabulary and maintain steady breath control."
+  },
+  {
+    "taskType": "Read Aloud",
+    "title": "Renewable Energy Adoption",
+    "difficulty": "Easy",
+    "timeLimit": 35,
+    "promptText": "Solar energy has become one of the cheapest sources of electricity in many parts of the world. Technological advancements in photovoltaic cells have significantly increased their efficiency, making solar power accessible to both commercial industries and residential households.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "Fluent reading highlighting key contrast points with steady speed.",
+    "keywords": [
+      "solar energy",
+      "photovoltaic",
+      "efficiency",
+      "electricity"
+    ],
+    "explanation": "Maintain consistent speed and avoid rushing over numerical or technical concepts."
+  },
+  {
+    "taskType": "Read Aloud",
+    "title": "Cognitive Psychology Research",
+    "difficulty": "Medium",
+    "timeLimit": 40,
+    "promptText": "Recent neuroimaging studies suggest that bilingual individuals exhibit enhanced executive control mechanisms compared to monolinguals. Managing two language systems simultaneously appears to strengthen neural pathways associated with working memory, task switching, and cognitive flexibility.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "Clear articulation of psychological terms like 'neuroimaging' and 'executive control'.",
+    "keywords": [
+      "bilingual",
+      "executive control",
+      "cognitive",
+      "neural pathways"
+    ],
+    "explanation": "Group words into logical sense groups and stress key content words."
+  },
+  {
+    "taskType": "Repeat Sentence",
+    "title": "Library Resources Access",
+    "difficulty": "Easy",
+    "timeLimit": 15,
+    "promptText": null,
+    "audioScript": "Students must present their university identification card to access the library research facilities.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Students must present their university identification card to access the library research facilities.",
+    "sampleAnswer": "Students must present their university identification card to access the library research facilities.",
+    "keywords": [
+      "identification card",
+      "access",
+      "library",
+      "research facilities"
+    ],
+    "explanation": "Focus on accurate recall of the subject and main verb phrase."
+  },
+  {
+    "taskType": "Repeat Sentence",
+    "title": "Academic Assignment Submission",
+    "difficulty": "Medium",
+    "timeLimit": 15,
+    "promptText": null,
+    "audioScript": "All final essay submissions must be uploaded through the student portal before midnight on Friday.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "All final essay submissions must be uploaded through the student portal before midnight on Friday.",
+    "sampleAnswer": "All final essay submissions must be uploaded through the student portal before midnight on Friday.",
+    "keywords": [
+      "submissions",
+      "uploaded",
+      "student portal",
+      "midnight"
+    ],
+    "explanation": "Maintain the exact word sequence and natural stress pattern of the speaker."
+  },
+  {
+    "taskType": "Repeat Sentence",
+    "title": "Scientific Research Methodology",
+    "difficulty": "Hard",
+    "timeLimit": 15,
+    "promptText": null,
+    "audioScript": "The preliminary findings of the environmental impact study will be published early next semester.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "The preliminary findings of the environmental impact study will be published early next semester.",
+    "sampleAnswer": "The preliminary findings of the environmental impact study will be published early next semester.",
+    "keywords": [
+      "preliminary findings",
+      "environmental impact",
+      "published"
+    ],
+    "explanation": "Pay attention to complex noun phrases like 'preliminary findings'."
+  },
+  {
+    "taskType": "Repeat Sentence",
+    "title": "Lecture Attendance Policy",
+    "difficulty": "Medium",
+    "timeLimit": 15,
+    "promptText": null,
+    "audioScript": "Regular attendance in practical laboratory sessions is compulsory for all engineering undergraduates.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Regular attendance in practical laboratory sessions is compulsory for all engineering undergraduates.",
+    "sampleAnswer": "Regular attendance in practical laboratory sessions is compulsory for all engineering undergraduates.",
+    "keywords": [
+      "attendance",
+      "laboratory",
+      "compulsory",
+      "undergraduates"
+    ],
+    "explanation": "Ensure complete recall of multi-syllable academic nouns."
+  },
+  {
+    "taskType": "Describe Image",
+    "title": "Global Renewable Energy Share (2015-2025)",
+    "difficulty": "Medium",
+    "timeLimit": 40,
+    "promptText": "Describe the bar chart depicting renewable energy growth across five continents.",
+    "audioScript": null,
+    "imageDescription": "A bar chart showing energy production growth from 2015 to 2025. Europe leads with 45%, followed by Asia at 35%, North America at 30%, South America at 25%, and Africa at 15%.",
+    "imagePrompt": "Bar chart titled 'Global Renewable Energy Share (2015-2025)'. X-axis: Regions (Europe, Asia, North America, South America, Africa). Y-axis: Percentage share (0% to 50%). Europe shows the highest column at 45%, while Africa shows 15%.",
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "The bar chart illustrates the percentage share of renewable energy across five regions between 2015 and 2025. Europe accounts for the largest proportion at 45 percent, whereas Africa registers the lowest at 15 percent. Overall, developed continents exhibit higher adoption rates.",
+    "keywords": [
+      "bar chart",
+      "renewable energy",
+      "percentage share",
+      "Europe",
+      "Africa"
+    ],
+    "explanation": "Structure response: Title/Overview -> Key highs and lows -> Main conclusion/trend."
+  },
+  {
+    "taskType": "Describe Image",
+    "title": "Water Cycle Process Diagram",
+    "difficulty": "Hard",
+    "timeLimit": 40,
+    "promptText": "Describe the diagram showing the stages of the hydrological cycle.",
+    "audioScript": null,
+    "imageDescription": "A process flow diagram showing evaporation from the ocean, condensation forming clouds, precipitation falling over mountains, and surface runoff returning to the sea.",
+    "imagePrompt": "Diagram titled 'The Hydrological Cycle'. Arrows indicate sequence: Ocean evaporation -> Atmospheric condensation -> Mountain precipitation -> Surface runoff and groundwater flow back to ocean.",
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "This process diagram depicts the natural water cycle. Water evaporates from the ocean surface into the atmosphere, condenses into clouds, falls as precipitation over mountain regions, and returns to the sea via rivers and surface runoff.",
+    "keywords": [
+      "water cycle",
+      "evaporation",
+      "condensation",
+      "precipitation",
+      "runoff"
+    ],
+    "explanation": "Use sequential transition words such as 'firstly', 'subsequently', and 'finally'."
+  },
+  {
+    "taskType": "Describe Image",
+    "title": "World Population Distribution Pie Chart",
+    "difficulty": "Easy",
+    "timeLimit": 40,
+    "promptText": "Describe the pie chart depicting global demographic distribution by continent.",
+    "audioScript": null,
+    "imageDescription": "A pie chart showing Asia holding 59% of world population, Africa 18%, Europe 9%, South America 8%, North America 5%, and Oceania 1%.",
+    "imagePrompt": "Pie chart titled 'World Population by Continent'. Asia forms the dominant sector at 59%, followed by Africa at 18%, Europe at 9%, South America at 8%, and North America at 5%.",
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "The pie chart displays world population distribution by continent. Asia makes up the vast majority at 59 percent, followed by Africa at 18 percent, while Oceania represents the smallest slice at just 1 percent.",
+    "keywords": [
+      "pie chart",
+      "population",
+      "Asia",
+      "demographics"
+    ],
+    "explanation": "State the largest section first, followed by key secondary segments and lowest value."
+  },
+  {
+    "taskType": "Re-tell Lecture",
+    "title": "Artificial Intelligence in Healthcare",
+    "difficulty": "Medium",
+    "timeLimit": 40,
+    "promptText": "Listen to the lecture excerpt regarding AI diagnostic tools.",
+    "audioScript": "Recent developments in machine learning algorithms are transforming diagnostic medicine. AI models trained on millions of medical images can now detect subtle abnormalities in radiological scans with an accuracy matching expert radiologists. However, medical researchers emphasize that AI is intended to assist clinicians rather than replace human judgment entirely. Issues surrounding data privacy and liability in automated decisions remain critical topics of discussion.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "The speaker discussed the role of artificial intelligence in healthcare, specifically diagnostic imaging. Machine learning models now match radiologist accuracy in detecting abnormalities. However, AI is designed to assist rather than replace medical professionals, and concerns remain regarding privacy and ethics.",
+    "keywords": [
+      "artificial intelligence",
+      "healthcare",
+      "diagnostic scans",
+      "privacy"
+    ],
+    "explanation": "Summarize the core theme, key evidence, and speaker's final takeaway."
+  },
+  {
+    "taskType": "Re-tell Lecture",
+    "title": "Urban Heat Island Effect",
+    "difficulty": "Hard",
+    "timeLimit": 40,
+    "promptText": "Listen to the environmental science lecture on urban microclimates.",
+    "audioScript": "Urban heat islands occur when city regions experience significantly warmer temperatures than surrounding rural areas. Dark asphalt roads, concrete buildings, and reduced vegetation absorb solar radiation during the day and re-emit it as heat at night. City planners are counteracting this by constructing green roofs, installing cool pavement reflective surfaces, and expanding urban forestry to lower surface temperatures and reduce energy consumption.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "The lecture focused on the urban heat island effect, where cities become warmer than rural regions due to concrete surfaces and lack of greenery. To mitigate this, urban planners are introducing green roofs, reflective pavements, and urban parks.",
+    "keywords": [
+      "urban heat island",
+      "microclimate",
+      "green roofs",
+      "reflective pavements"
+    ],
+    "explanation": "Highlight definition, cause, and urban planning solutions."
+  },
+  {
+    "taskType": "Re-tell Lecture",
+    "title": "The Evolution of Currency",
+    "difficulty": "Easy",
+    "timeLimit": 40,
+    "promptText": "Listen to the history lecture on economic exchange systems.",
+    "audioScript": "Before standardized coins existed, early human societies relied on commodity money, exchanging goods like salt, cattle, and grain. Metals such as silver and gold later replaced commodities due to their durability and portability. Today, digital transactions and digital currencies represent the newest phase in financial history.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "The speaker outlined the history of money, starting from commodity bartering with salt and cattle, moving to precious metal coinage, and evolving into modern digital transactions.",
+    "keywords": [
+      "currency",
+      "barter",
+      "precious metals",
+      "digital transactions"
+    ],
+    "explanation": "Maintain chronological order of events when summarizing historical topics."
+  },
+  {
+    "taskType": "Answer Short Question",
+    "title": "Biology - Animal Classification",
+    "difficulty": "Easy",
+    "timeLimit": 10,
+    "promptText": "What do we call animals that feed exclusively on plants?",
+    "audioScript": "What do we call animals that feed exclusively on plants?",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Herbivores",
+    "sampleAnswer": "Herbivores",
+    "keywords": [
+      "herbivores",
+      "plants",
+      "animals"
+    ],
+    "explanation": "Herbivores (or herbivore) is the exact scientific term."
+  },
+  {
+    "taskType": "Answer Short Question",
+    "title": "Literature - Author Bio",
+    "difficulty": "Easy",
+    "timeLimit": 10,
+    "promptText": "What is the term for a book written about a person's life by that same individual?",
+    "audioScript": "What is the term for a book written about a person's life by that same individual?",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Autobiography",
+    "sampleAnswer": "Autobiography",
+    "keywords": [
+      "autobiography",
+      "life story"
+    ],
+    "explanation": "Autobiography is written by oneself, whereas biography is written by another author."
+  },
+  {
+    "taskType": "Answer Short Question",
+    "title": "Geography - Landforms",
+    "difficulty": "Medium",
+    "timeLimit": 10,
+    "promptText": "What piece of land is completely surrounded by water on all sides?",
+    "audioScript": "What piece of land is completely surrounded by water on all sides?",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Island",
+    "sampleAnswer": "Island",
+    "keywords": [
+      "island",
+      "landform",
+      "water"
+    ],
+    "explanation": "An island is entirely surrounded by water."
+  },
+  {
+    "taskType": "Answer Short Question",
+    "title": "Physics - Measurement",
+    "difficulty": "Medium",
+    "timeLimit": 10,
+    "promptText": "Which instrument is used to measure atmospheric pressure?",
+    "audioScript": "Which instrument is used to measure atmospheric pressure?",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Barometer",
+    "sampleAnswer": "Barometer",
+    "keywords": [
+      "barometer",
+      "pressure"
+    ],
+    "explanation": "A barometer measures atmospheric pressure."
+  },
+  {
+    "taskType": "Summarize Written Text",
+    "title": "Plastic Waste Reduction Policy",
+    "difficulty": "Medium",
+    "timeLimit": 600,
+    "promptText": "In recent years, the debate over the environmental impact of single-use plastic packaging has gained momentum across global policy forums. While plastic containers constitute only a fraction of total solid waste, their resistance to natural degradation means they persist in marine environments for centuries. Environmental advocacy groups strongly advocate for mandatory producer responsibility laws, forcing manufacturers to design recyclable alternatives. Conversely, industry representatives argue that sudden regulatory bans could lead to higher food prices and shorter shelf-lives for essential perishables. Nevertheless, several nations have successfully implemented tiered tax incentives that encourage sustainable bio-based packaging without overburdening small businesses.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Although plastic packaging creates persistent environmental hazards, policymakers are balancing regulatory mandates with economic incentives to encourage sustainable bio-based alternatives without causing severe food price inflation.",
+    "sampleAnswer": "Although single-use plastic packaging causes long-lasting marine environmental damage, governments are using targeted tax incentives to promote sustainable packaging alternatives while minimizing economic disruption.",
+    "keywords": [
+      "single-use plastic",
+      "environmental impact",
+      "recyclable alternatives",
+      "tax incentives"
+    ],
+    "explanation": "Must be ONE single sentence between 5 and 75 words containing main points."
+  },
+  {
+    "taskType": "Summarize Written Text",
+    "title": "Remote Work and Urban Planning",
+    "difficulty": "Hard",
+    "timeLimit": 600,
+    "promptText": "The widespread adoption of remote work model has fundamentally altered commercial real estate markets and city infrastructure planning. With fewer employees commuting daily to centralized central business districts, transit agencies face significant revenue shortfalls while office vacancy rates hover at historical highs. Municipal leaders are consequently exploring adaptive reuse strategies, transforming underutilized corporate skyscrapers into residential apartments and community centers. Economists suggest that this decentralization could revitalize suburban commercial hubs, provided cities successfully adjust their tax models and public transit routes.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "As remote work reduces daily transit revenue and increases city office vacancies, municipal authorities are converting corporate skyscrapers into residential spaces to revitalize suburban communities.",
+    "sampleAnswer": "As remote work drives up urban office vacancies and decreases public transit revenues, municipal authorities are adopting adaptive reuse strategies to convert commercial buildings into residential housing.",
+    "keywords": [
+      "remote work",
+      "real estate",
+      "adaptive reuse",
+      "urban planning"
+    ],
+    "explanation": "Combine cause (remote work), symptom (vacancies/transit shortfalls), and solution (adaptive reuse)."
+  },
+  {
+    "taskType": "Summarize Written Text",
+    "title": "Artificial Intelligence in Education",
+    "difficulty": "Easy",
+    "timeLimit": 600,
+    "promptText": "Educational technology platforms are increasingly incorporating personalized artificial intelligence tutors to assist students in mastering complex concepts. These intelligent systems analyze individual learning patterns and adapt exercise difficulty in real time, enabling learners to progress at their own speed. While educators celebrate improved student engagement, critics warn that over-reliance on digital tools might reduce face-to-face collaborative skills. Ultimately, researchers agree that AI tools function best when integrated as supportive aids alongside traditional teacher instruction.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "While personalized AI tutoring systems enhance student engagement by adapting content to individual learning speeds, experts emphasize that digital tools must complement rather than replace traditional teacher-led instruction.",
+    "sampleAnswer": "Although personalized AI tutors improve student engagement by tailoring lessons, experts suggest they should serve as complementary aids alongside human teachers.",
+    "keywords": [
+      "AI tutors",
+      "personalized learning",
+      "engagement",
+      "traditional instruction"
+    ],
+    "explanation": "Maintain singular complex sentence structure with main thesis intact."
+  },
+  {
+    "taskType": "Essay",
+    "title": "University Education Purpose",
+    "difficulty": "Medium",
+    "timeLimit": 1200,
+    "promptText": "Some people believe that universities should focus primarily on preparing students for specific careers and employment skills. Others argue that the main purpose of higher education is to cultivate critical thinking and academic knowledge regardless of direct job utility. Discuss both views and give your opinion in 200-300 words.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "The debate regarding the primary role of higher education centers on vocational training versus intellectual development. While specialized career skills enhance immediate employability, a broad academic foundation fosters critical thinking necessary for long-term career adaptability. In my opinion, universities should integrate practical vocational skills with foundational critical thinking to prepare graduates for a rapidly changing job market.",
+    "keywords": [
+      "higher education",
+      "career preparation",
+      "critical thinking",
+      "employability"
+    ],
+    "explanation": "Structure essay into 4 paragraphs: Introduction, Body Paragraph 1 (Career focus), Body Paragraph 2 (Intellectual focus), Conclusion."
+  },
+  {
+    "taskType": "Essay",
+    "title": "Impact of Social Media on Communication",
+    "difficulty": "Easy",
+    "timeLimit": 1200,
+    "promptText": "Social media platforms have revolutionized how people communicate around the world. Do the advantages of social media outweigh its disadvantages? Support your position with relevant reasons and examples in 200-300 words.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "Social media platforms have fundamentally altered global communication dynamics. While platforms enable instant connectivity across vast distances and democratize information sharing, concerns regarding mental health, cyberbullying, and reduced face-to-face interaction are significant. Overall, I argue that the advantages of instant global networking outweigh the drawbacks, provided users practice responsible digital literacy.",
+    "keywords": [
+      "social media",
+      "global communication",
+      "advantages",
+      "disadvantages"
+    ],
+    "explanation": "Address both advantages and disadvantages, clearly declaring your final stance."
+  },
+  {
+    "taskType": "Essay",
+    "title": "Automation and Future Employment",
+    "difficulty": "Hard",
+    "timeLimit": 1200,
+    "promptText": "Rapid advancements in artificial intelligence and automation technology will result in widespread job displacement across multiple sectors. To what extent do you agree or disagree with this statement? Provide examples in 200-300 words.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": null,
+    "sampleAnswer": "The expansion of automation and AI has raised concerns regarding economic instability and job loss. While technology will inevitably automate routine industrial and administrative tasks, historical precedents demonstrate that technological revolutions create new industries and employment opportunities. Therefore, I partially agree: while temporary job displacement will occur, proactive workforce retraining will lead to long-term economic expansion.",
+    "keywords": [
+      "automation",
+      "artificial intelligence",
+      "job displacement",
+      "future work"
+    ],
+    "explanation": "Provide concrete economic examples and address potential counterarguments."
+  },
+  {
+    "taskType": "Reading & Writing Fill in the Blanks",
+    "title": "Climate Change and Glacier Melting",
+    "difficulty": "Medium",
+    "timeLimit": 120,
+    "promptText": "Glaciers serve as crucial indicators of global climate patterns. Over the past century, global temperatures have risen [blank1] due to greenhouse gas emissions. Consequently, mountain glaciers are melting at an unprecedented [blank2], contributing directly to sea-level rise. Scientists emphasize that immediate international cooperation is required to [blank3] the severity of future environmental impacts.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      {
+        "blank": "blank1",
+        "choices": [
+          "steadily",
+          "randomly",
+          "rarely",
+          "briefly"
+        ]
+      },
+      {
+        "blank": "blank2",
+        "choices": [
+          "rate",
+          "height",
+          "depth",
+          "distance"
+        ]
+      },
+      {
+        "blank": "blank3",
+        "choices": [
+          "mitigate",
+          "encourage",
+          "ignore",
+          "accelerate"
+        ]
+      }
+    ],
+    "correctAnswer": [
+      "steadily",
+      "rate",
+      "mitigate"
+    ],
+    "sampleAnswer": null,
+    "keywords": [
+      "glaciers",
+      "climate patterns",
+      "mitigate",
+      "sea-level"
+    ],
+    "explanation": "'Steadily' modifies temperature rise, 'rate' collocates with melting, and 'mitigate' means to reduce severity."
+  },
+  {
+    "taskType": "Reading & Writing Fill in the Blanks",
+    "title": "Ancient Trade Routes",
+    "difficulty": "Hard",
+    "timeLimit": 120,
+    "promptText": "The Silk Road was an extensive network of trade routes that [blank1] Asia with the Mediterranean world. Far from being merely a conduit for commercial goods, it facilitated the [blank2] of cultural traditions, scientific knowledge, and religious philosophies across continents. Historians regard these early interactions as fundamental to the [blank3] of global civilization.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      {
+        "blank": "blank1",
+        "choices": [
+          "connected",
+          "isolated",
+          "separated",
+          "prevented"
+        ]
+      },
+      {
+        "blank": "blank2",
+        "choices": [
+          "exchange",
+          "destruction",
+          "rejection",
+          "stagnation"
+        ]
+      },
+      {
+        "blank": "blank3",
+        "choices": [
+          "development",
+          "decline",
+          "cessation",
+          "limitation"
+        ]
+      }
+    ],
+    "correctAnswer": [
+      "connected",
+      "exchange",
+      "development"
+    ],
+    "sampleAnswer": null,
+    "keywords": [
+      "Silk Road",
+      "trade routes",
+      "connected",
+      "exchange"
+    ],
+    "explanation": "Select words based on historical context and natural academic collocation."
+  },
+  {
+    "taskType": "Reading & Writing Fill in the Blanks",
+    "title": "Behavioral Economics and Consumer Choice",
+    "difficulty": "Easy",
+    "timeLimit": 120,
+    "promptText": "Traditional economic theory assumes that consumers make completely [blank1] decisions based on all available information. However, behavioral economists have demonstrated that human choices are frequently [blank2] by emotional biases and simplified cognitive shortcuts.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      {
+        "blank": "blank1",
+        "choices": [
+          "rational",
+          "accidental",
+          "irrational",
+          "careless"
+        ]
+      },
+      {
+        "blank": "blank2",
+        "choices": [
+          "influenced",
+          "ignored",
+          "rejected",
+          "eliminated"
+        ]
+      }
+    ],
+    "correctAnswer": [
+      "rational",
+      "influenced"
+    ],
+    "sampleAnswer": null,
+    "keywords": [
+      "behavioral economics",
+      "rational",
+      "influenced",
+      "biases"
+    ],
+    "explanation": "Traditional theory assumes 'rational' behavior, while real behavior is 'influenced' by emotion."
+  },
+  {
+    "taskType": "Re-order Paragraphs",
+    "title": "The History of Printing Press",
+    "difficulty": "Medium",
+    "timeLimit": 150,
+    "promptText": "Reorder the following sentences into a coherent logical order.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) Before the fifteenth century, books were copied painstakingly by hand by scribes.",
+      "B) Johannes Gutenberg revolutionized this process by inventing movable metal type in Germany around 1440.",
+      "C) This technological breakthrough dramatically reduced the time and cost required to produce printed literature.",
+      "D) Consequently, literacy rates soared across Europe as books became accessible to the general public."
+    ],
+    "correctAnswer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "sampleAnswer": "A -> B -> C -> D",
+    "keywords": [
+      "printing press",
+      "Gutenberg",
+      "literacy rates",
+      "handwritten books"
+    ],
+    "explanation": "A introduces historical background, B introduces Gutenberg's invention, C details the breakthrough effect, D presents the consequence."
+  },
+  {
+    "taskType": "Re-order Paragraphs",
+    "title": "Space Exploration Milestones",
+    "difficulty": "Hard",
+    "timeLimit": 150,
+    "promptText": "Arrange the sentences in logical sequence.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) In 1957, the Soviet Union launched Sputnik 1, the world's first artificial satellite.",
+      "B) This achievement marked the official beginning of the international Space Race between global powers.",
+      "C) Twelve years later, NASA achieved a historical landmark when Apollo 11 landed humans on the Moon.",
+      "D) Today, space agencies have expanded their scope beyond lunar missions to robotic exploration of Mars."
+    ],
+    "correctAnswer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "sampleAnswer": "A -> B -> C -> D",
+    "keywords": [
+      "Sputnik",
+      "Space Race",
+      "Apollo 11",
+      "Mars exploration"
+    ],
+    "explanation": "Chronological timeline from 1957 (A/B), to 1969 lunar landing (C), to present Mars exploration (D)."
+  },
+  {
+    "taskType": "Re-order Paragraphs",
+    "title": "Plant Photosynthesis Process",
+    "difficulty": "Easy",
+    "timeLimit": 120,
+    "promptText": "Reorder the steps of photosynthesis.",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) Green plants absorb solar energy from sunlight through specialized pigments called chlorophyll.",
+      "B) They simultaneously draw water from the soil through roots and carbon dioxide from the surrounding air.",
+      "C) Using sunlight energy, plants convert these raw inputs into glucose sugar and oxygen gas.",
+      "D) The synthesized glucose supplies energy for plant growth, while oxygen is released into the atmosphere."
+    ],
+    "correctAnswer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "sampleAnswer": "A -> B -> C -> D",
+    "keywords": [
+      "photosynthesis",
+      "chlorophyll",
+      "glucose",
+      "oxygen"
+    ],
+    "explanation": "Sequential biological process: light absorption (A), input gather (B), chemical conversion (C), output release (D)."
+  },
+  {
+    "taskType": "Multiple Choice (Single Answer)",
+    "title": "Deep Sea Biodiversity Adaptation",
+    "difficulty": "Medium",
+    "timeLimit": 90,
+    "promptText": "Read the text and choose the single correct answer according to the information provided.\n\nOrganisms living in the abyssal zone of the ocean operate under extreme pressure, near-freezing temperatures, and total absence of sunlight. To survive, many species have evolved bioluminescence\u2014the ability to produce light through biochemical reactions. Bioluminescence serves multiple functions, including attracting potential prey, deterring predators, and identifying mates in absolute darkness.\n\nWhat is the primary purpose of bioluminescence mentioned in the text?",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) To help deep-sea organisms navigate through near-freezing ocean currents",
+      "B) To assist in survival functions such as hunting, defense, and finding mates",
+      "C) To absorb solar radiation stored deep within underwater volcanic vents",
+      "D) To withstand extreme atmospheric pressure levels in abyssal trenches"
+    ],
+    "correctAnswer": "B",
+    "sampleAnswer": "B",
+    "keywords": [
+      "bioluminescence",
+      "abyssal zone",
+      "survival functions"
+    ],
+    "explanation": "The passage explicitly states bioluminescence serves to attract prey, deter predators, and identify mates."
+  },
+  {
+    "taskType": "Multiple Choice (Single Answer)",
+    "title": "The Economic Role of Patents",
+    "difficulty": "Hard",
+    "timeLimit": 90,
+    "promptText": "Read the text and select the main conclusion.\n\nPatents grant inventors exclusive commercial rights over their innovations for a limited time. Proponents argue that this temporary monopoly incentivizes heavy investment in research and development. However, critics argue that overly broad patent laws can stifle competition and delay consumer access to essential affordable medicines.\n\nAccording to the passage, what is a potential drawback of patent systems?",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) They eliminate all corporate investments in scientific research.",
+      "B) They permanently restrict free market trade across all industries.",
+      "C) They can hinder market competition and delay access to affordable healthcare products.",
+      "D) They force inventors to disclose technical blueprints publicly."
+    ],
+    "correctAnswer": "C",
+    "sampleAnswer": "C",
+    "keywords": [
+      "patents",
+      "competition",
+      "affordable medicines"
+    ],
+    "explanation": "The text states critics argue broad patent laws stifle competition and delay access to essential medicines."
+  },
+  {
+    "taskType": "Multiple Choice (Single Answer)",
+    "title": "Language Acquisition in Toddlers",
+    "difficulty": "Easy",
+    "timeLimit": 90,
+    "promptText": "Read the passage and select the correct option.\n\nChildren acquire language naturally through environmental exposure rather than formal instruction. By age two, most toddlers possess a vocabulary of roughly fifty words and can combine simple noun-verb pairs.\n\nHow do young children primarily learn language?",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) Through formal classroom instruction and grammar drills",
+      "B) By naturally interacting with their surrounding environment",
+      "C) By memorizing written vocabulary lists provided by parents",
+      "D) Through structured digital learning games"
+    ],
+    "correctAnswer": "B",
+    "sampleAnswer": "B",
+    "keywords": [
+      "language acquisition",
+      "environmental exposure",
+      "toddlers"
+    ],
+    "explanation": "The text explicitly states children learn naturally through environmental exposure."
+  },
+  {
+    "taskType": "Multiple Choice (Multiple Answers)",
+    "title": "Sustainable Urban Agriculture",
+    "difficulty": "Hard",
+    "timeLimit": 120,
+    "promptText": "Read the text and select ALL correct answers.\n\nUrban farming initiatives, such as vertical hydroponic facilities and community rooftop gardens, offer significant environmental and social advantages. By producing food close to urban consumers, these systems dramatically lower transportation emissions and reduce fuel costs. Furthermore, hydroponic vertical farms consume up to 90% less water than traditional soil-based agriculture. However, high initial capital setup costs and heavy electricity reliance for LED grow lights remain operational challenges.\n\nWhich of the following are benefits of urban farming mentioned in the passage?",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) Reduced carbon emissions from food transportation",
+      "B) Significantly lower water consumption compared to traditional farming",
+      "C) Minimal initial investment costs for building setup",
+      "D) Complete elimination of electricity consumption"
+    ],
+    "correctAnswer": [
+      "A",
+      "B"
+    ],
+    "sampleAnswer": [
+      "A",
+      "B"
+    ],
+    "keywords": [
+      "urban farming",
+      "transportation emissions",
+      "water consumption"
+    ],
+    "explanation": "A (lowered transportation emissions) and B (90% less water) are supported by text; C and D contradict the passage."
+  },
+  {
+    "taskType": "Multiple Choice (Multiple Answers)",
+    "title": "Causes of Deforestation",
+    "difficulty": "Medium",
+    "timeLimit": 120,
+    "promptText": "Read the passage and select ALL correct factors.\n\nDeforestation in tropical regions is driven by multiple human activities. Large-scale commercial agriculture, particularly cattle ranching and palm oil plantation expansion, accounts for the majority of forest clearing. Additionally, illegal logging for timber and infrastructure expansion contribute significantly to habitat fragmentation.\n\nWhich factors contribute to tropical deforestation according to the text?",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) Cattle ranching expansion",
+      "B) Palm oil cultivation",
+      "C) Volcanic activity",
+      "D) Illegal timber logging"
+    ],
+    "correctAnswer": [
+      "A",
+      "B",
+      "D"
+    ],
+    "sampleAnswer": [
+      "A",
+      "B",
+      "D"
+    ],
+    "keywords": [
+      "deforestation",
+      "ranching",
+      "palm oil",
+      "logging"
+    ],
+    "explanation": "A, B, and D are explicitly named as key drivers of tropical deforestation."
+  },
+  {
+    "taskType": "Multiple Choice (Multiple Answers)",
+    "title": "Benefits of Regular Exercise",
+    "difficulty": "Easy",
+    "timeLimit": 90,
+    "promptText": "Select ALL options that are supported by the passage.\n\nRegular physical activity offers widespread health benefits. Cardiovascular exercise strengthens the heart muscle, lowers blood pressure, and improves overall oxygen circulation. Moreover, physical exertion stimulates endorphin release, which enhances mood and reduces symptoms of anxiety.\n\nWhat benefits of exercise are noted in the passage?",
+    "audioScript": null,
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) Improved heart strength",
+      "B) Reduction in blood pressure levels",
+      "C) Mood elevation via endorphin release",
+      "D) Instant cure for all viral infections"
+    ],
+    "correctAnswer": [
+      "A",
+      "B",
+      "C"
+    ],
+    "sampleAnswer": [
+      "A",
+      "B",
+      "C"
+    ],
+    "keywords": [
+      "exercise",
+      "heart strength",
+      "blood pressure",
+      "endorphins"
+    ],
+    "explanation": "A, B, and C are directly mentioned in the text."
+  },
+  {
+    "taskType": "Fill in the Blanks",
+    "title": "Astronomy - Exoplanet Discovery",
+    "difficulty": "Medium",
+    "timeLimit": 120,
+    "promptText": "Astronomers use space telescopes to detect planets orbiting distant stars. When an exoplanet passes directly in front of its host star, it causes a temporary dip in brightness. This technique, known as the transit method, allows scientists to determine the planet's size and orbital period.",
+    "audioScript": "Astronomers use space telescopes to detect planets orbiting distant stars. When an exoplanet passes directly in front of its host star, it causes a temporary dip in brightness. This technique, known as the transit method, allows scientists to determine the planet's size and orbital period.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "telescopes",
+      "brightness",
+      "orbiting",
+      "technique"
+    ],
+    "correctAnswer": [
+      "telescopes",
+      "brightness",
+      "orbiting"
+    ],
+    "sampleAnswer": [
+      "telescopes",
+      "brightness",
+      "orbiting"
+    ],
+    "keywords": [
+      "astronomers",
+      "exoplanet",
+      "transit method"
+    ],
+    "explanation": "Fill in missing terms based on precise listening/reading accuracy."
+  },
+  {
+    "taskType": "Fill in the Blanks",
+    "title": "Psychology - Memory Consolidation",
+    "difficulty": "Hard",
+    "timeLimit": 120,
+    "promptText": "Sleep plays a vital role in memory consolidation. During deep sleep stages, the brain transfers newly acquired information from short-term storage in the hippocampus to long-term networks in the cerebral cortex.",
+    "audioScript": "Sleep plays a vital role in memory consolidation. During deep sleep stages, the brain transfers newly acquired information from short-term storage in the hippocampus to long-term networks in the cerebral cortex.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "consolidation",
+      "acquired",
+      "cortex",
+      "temporary"
+    ],
+    "correctAnswer": [
+      "consolidation",
+      "acquired",
+      "cortex"
+    ],
+    "sampleAnswer": [
+      "consolidation",
+      "acquired",
+      "cortex"
+    ],
+    "keywords": [
+      "memory consolidation",
+      "hippocampus",
+      "cortex"
+    ],
+    "explanation": "Identifies exact missing academic terms from passage."
+  },
+  {
+    "taskType": "Fill in the Blanks",
+    "title": "Architecture - Sustainable Building",
+    "difficulty": "Easy",
+    "timeLimit": 90,
+    "promptText": "Modern architects prioritize sustainable design by utilizing energy-efficient materials. Natural lighting, solar panels, and rainwater harvesting systems reduce building operational costs.",
+    "audioScript": "Modern architects prioritize sustainable design by utilizing energy-efficient materials. Natural lighting, solar panels, and rainwater harvesting systems reduce building operational costs.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "sustainable",
+      "harvesting",
+      "operational"
+    ],
+    "correctAnswer": [
+      "sustainable",
+      "harvesting",
+      "operational"
+    ],
+    "sampleAnswer": [
+      "sustainable",
+      "harvesting",
+      "operational"
+    ],
+    "keywords": [
+      "architects",
+      "sustainable",
+      "harvesting"
+    ],
+    "explanation": "Identifies architectural and environmental keywords."
+  },
+  {
+    "taskType": "Summarize Spoken Text",
+    "title": "Impact of Ocean Acidification",
+    "difficulty": "Medium",
+    "timeLimit": 600,
+    "promptText": "Listen to the audio recording summarizing marine chemistry changes.",
+    "audioScript": "Ocean acidification occurs as sea water absorbs excess atmospheric carbon dioxide produced by human industrial activities. This chemical shift lowers the pH of the ocean, making it harder for shell-forming organisms such as oysters, crabs, and corals to build their protective structures. Marine biologists warn that if emissions continue unabated, coastal fisheries and global marine ecosystems will face irreversible disruption within decades.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Ocean acidification, caused by seawater absorbing carbon dioxide emissions, reduces ocean pH and impairs shell-building marine species, threatening global marine ecosystems and coastal fisheries.",
+    "sampleAnswer": "The lecture highlights that human carbon dioxide emissions lead to ocean acidification, which harms shell-forming marine life like corals and oysters, ultimately endangering global fisheries.",
+    "keywords": [
+      "ocean acidification",
+      "carbon dioxide",
+      "shell-forming organisms",
+      "pH level"
+    ],
+    "explanation": "Summarize key points in 50-70 words with accurate grammar and spelling."
+  },
+  {
+    "taskType": "Summarize Spoken Text",
+    "title": "The Science of Sleep and Health",
+    "difficulty": "Hard",
+    "timeLimit": 600,
+    "promptText": "Listen to the lecture on sleep neuroscience.",
+    "audioScript": "Chronic sleep deprivation is now recognized as a major risk factor for cardiovascular disease, metabolic disorders, and weakened immune function. During deep sleep stages, the brain's glymphatic system clears out metabolic waste products accumulated during waking hours, including proteins associated with Alzheimer's disease. Experts recommend adults maintain consistent seven-to-eight-hour sleep schedules to protect long-term neurological health.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Chronic sleep deprivation impairs immune function and increases disease risk, while deep sleep activates the brain's waste clearance system to protect against neurological disorders.",
+    "sampleAnswer": "The speaker explains that sleep deprivation increases health risks, whereas deep sleep helps the brain clear metabolic waste to prevent neurological diseases like Alzheimer's.",
+    "keywords": [
+      "sleep deprivation",
+      "glymphatic system",
+      "metabolic waste",
+      "neurological health"
+    ],
+    "explanation": "Ensure summary stays strictly within 50-70 words."
+  },
+  {
+    "taskType": "Summarize Spoken Text",
+    "title": "The Impact of Microplastics",
+    "difficulty": "Easy",
+    "timeLimit": 600,
+    "promptText": "Listen to the environmental podcast excerpt on plastic pollution.",
+    "audioScript": "Microplastics\u2014tiny plastic particles smaller than five millimeters\u2014have contaminated aquatic environments globally. Ingested by small marine organisms, these pollutants move up the food chain, ultimately accumulating in human seafood consumers. Scientists are studying the long-term toxicological effects of microplastics on human health.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Microplastics contaminate aquatic environments and accumulate up the marine food chain into seafood, raising serious human health concerns.",
+    "sampleAnswer": "Microplastics contaminate water bodies and enter the marine food web, posing potential health risks to humans who consume seafood.",
+    "keywords": [
+      "microplastics",
+      "food chain",
+      "aquatic environments",
+      "pollutants"
+    ],
+    "explanation": "Summarize definition, food chain path, and human health risk."
+  },
+  {
+    "taskType": "Highlight Correct Summary",
+    "title": "Quantum Computing Development",
+    "difficulty": "Hard",
+    "timeLimit": 90,
+    "promptText": "Listen to the recording and select the summary that best matches the audio.",
+    "audioScript": "Unlike classical computers that process information in binary bits of zeroes and ones, quantum computers utilize quantum bits or qubits. Qubits can exist in states of superposition, allowing quantum processors to evaluate massive numbers of potential outcomes simultaneously. While commercial applications in cryptography and molecular modeling are promising, maintaining qubit stability requires extreme cryogenic cooling.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) Quantum computers replace classical binary bits with qubits in superposition, allowing rapid complex computations, though stability requires extreme cooling.",
+      "B) Classical computers are superior to quantum systems because they do not require cryogenic cooling for stability.",
+      "C) Quantum processors are already used in all standard desktop computers to speed up daily web browsing.",
+      "D) Superposition prevents qubits from performing simultaneous computations in molecular research."
+    ],
+    "correctAnswer": "A",
+    "sampleAnswer": "A",
+    "keywords": [
+      "quantum computing",
+      "qubits",
+      "superposition",
+      "cryogenic cooling"
+    ],
+    "explanation": "Option A accurately captures qubits, superposition benefits, and cooling limitations."
+  },
+  {
+    "taskType": "Highlight Correct Summary",
+    "title": "Urban Biodiversity Conservation",
+    "difficulty": "Medium",
+    "timeLimit": 90,
+    "promptText": "Listen to the recording and select the accurate summary.",
+    "audioScript": "Urban park networks provide vital refuges for native wild species amidst urban development. Connecting separate parks through vegetated green corridors allows wildlife to migrate safely between habitats, preserving genetic diversity and reducing localized extinction risks.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) Green corridors connecting urban parks facilitate safe animal migration and protect species genetic diversity.",
+      "B) Urban development has completely destroyed all native wildlife species in modern cities.",
+      "C) Parks should be isolated from each other to prevent wild animals from spreading diseases.",
+      "D) Native species prefer living in concrete buildings rather than city park networks."
+    ],
+    "correctAnswer": "A",
+    "sampleAnswer": "A",
+    "keywords": [
+      "urban parks",
+      "green corridors",
+      "genetic diversity"
+    ],
+    "explanation": "Option A summarizes the role of green corridors in connecting habitats."
+  },
+  {
+    "taskType": "Highlight Correct Summary",
+    "title": "The History of Antibiotics",
+    "difficulty": "Easy",
+    "timeLimit": 90,
+    "promptText": "Listen to the audio recording and select the best summary.",
+    "audioScript": "The discovery of penicillin by Alexander Fleming in 1928 transformed modern medicine, turning previously fatal bacterial infections into curable conditions. However, the overprescribing of antibiotics in healthcare and agriculture has accelerated bacterial resistance, creating dangerous drug-resistant superbugs.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) Alexander Fleming's discovery of penicillin revolutionized medicine, but current overuse of antibiotics has fueled dangerous bacterial resistance.",
+      "B) Penicillin was discovered in 1928, but it proved ineffective at treating bacterial infections.",
+      "C) Antibiotic overprescribing has eliminated superbugs from agricultural livestock.",
+      "D) Modern medicine no longer uses antibiotics to treat bacterial conditions."
+    ],
+    "correctAnswer": "A",
+    "sampleAnswer": "A",
+    "keywords": [
+      "penicillin",
+      "Fleming",
+      "bacterial resistance",
+      "superbugs"
+    ],
+    "explanation": "Option A balances the historical breakthrough with modern resistance challenges."
+  },
+  {
+    "taskType": "Select Missing Word",
+    "title": "Economic Inflation Policy",
+    "difficulty": "Medium",
+    "timeLimit": 60,
+    "promptText": "Listen to the audio. At the end of the recording, select the option that logically completes the final sentence.",
+    "audioScript": "Central banks manage national monetary policy by adjusting benchmark interest rates. When inflation rises above target levels, central banks raise interest rates to cool down consumer spending and [beep].",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) stabilize price levels",
+      "B) increase ocean pollution",
+      "C) accelerate population growth",
+      "D) ban international travel"
+    ],
+    "correctAnswer": "A",
+    "sampleAnswer": "A",
+    "keywords": [
+      "central banks",
+      "interest rates",
+      "stabilize price levels"
+    ],
+    "explanation": "'Stabilize price levels' is the direct goal of raising interest rates to curb inflation."
+  },
+  {
+    "taskType": "Select Missing Word",
+    "title": "Plant Botany Adaptation",
+    "difficulty": "Easy",
+    "timeLimit": 60,
+    "promptText": "Listen to the audio recording and select the missing word or phrase.",
+    "audioScript": "Desert cacti have evolved thick waxy stems and needle-like spines to minimize moisture loss in arid environments. These physical adaptations allow cacti to survive prolonged periods of [beep].",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) drought",
+      "B) freezing rain",
+      "C) heavy snowfall",
+      "D) ocean flooding"
+    ],
+    "correctAnswer": "A",
+    "sampleAnswer": "A",
+    "keywords": [
+      "cacti",
+      "arid",
+      "drought"
+    ],
+    "explanation": "'Drought' matches arid desert environments."
+  },
+  {
+    "taskType": "Select Missing Word",
+    "title": "Sociology of Consumerism",
+    "difficulty": "Hard",
+    "timeLimit": 60,
+    "promptText": "Select the option that logically completes the recorded statement.",
+    "audioScript": "Fast fashion brands release weekly micro-collections to encourage impulse buying. However, the environmental consequence of this business model is massive textile waste in landfills, prompting growing consumer demand for [beep].",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [
+      "A) sustainable apparel choices",
+      "B) single-use plastic bags",
+      "C) increased synthetic landfill waste",
+      "D) faster clothing disposal"
+    ],
+    "correctAnswer": "A",
+    "sampleAnswer": "A",
+    "keywords": [
+      "fast fashion",
+      "textile waste",
+      "sustainable apparel"
+    ],
+    "explanation": "'Sustainable apparel choices' directly completes the contrast to textile waste."
+  },
+  {
+    "taskType": "Write From Dictation",
+    "title": "Academic Research Deadline",
+    "difficulty": "Easy",
+    "timeLimit": 15,
+    "promptText": null,
+    "audioScript": "The university library will remain open until midnight during exam week.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "The university library will remain open until midnight during exam week.",
+    "sampleAnswer": "The university library will remain open until midnight during exam week.",
+    "keywords": [
+      "university",
+      "library",
+      "remain open",
+      "midnight",
+      "exam week"
+    ],
+    "explanation": "Type every word exactly as spoken, paying close attention to spelling."
+  },
+  {
+    "taskType": "Write From Dictation",
+    "title": "Environmental Science Lecture",
+    "difficulty": "Medium",
+    "timeLimit": 15,
+    "promptText": null,
+    "audioScript": "Glacial erosion has significantly shaped the topography of northern mountainous regions.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Glacial erosion has significantly shaped the topography of northern mountainous regions.",
+    "sampleAnswer": "Glacial erosion has significantly shaped the topography of northern mountainous regions.",
+    "keywords": [
+      "glacial erosion",
+      "topography",
+      "mountainous regions"
+    ],
+    "explanation": "Check plural forms ('regions') and past participle verbs ('shaped')."
+  },
+  {
+    "taskType": "Write From Dictation",
+    "title": "Economics Seminar Announcement",
+    "difficulty": "Hard",
+    "timeLimit": 15,
+    "promptText": null,
+    "audioScript": "Quantitative research methods require rigorous statistical analysis of empirical survey data.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "Quantitative research methods require rigorous statistical analysis of empirical survey data.",
+    "sampleAnswer": "Quantitative research methods require rigorous statistical analysis of empirical survey data.",
+    "keywords": [
+      "quantitative",
+      "rigorous",
+      "statistical analysis",
+      "empirical"
+    ],
+    "explanation": "Ensure accurate spelling of academic vocabulary such as 'quantitative' and 'empirical'."
+  },
+  {
+    "taskType": "Write From Dictation",
+    "title": "Biology Lab Instruction",
+    "difficulty": "Medium",
+    "timeLimit": 15,
+    "promptText": null,
+    "audioScript": "All students must submit their lab reports electronically before next Tuesday.",
+    "imageDescription": null,
+    "imagePrompt": null,
+    "options": [],
+    "correctAnswer": "All students must submit their lab reports electronically before next Tuesday.",
+    "sampleAnswer": "All students must submit their lab reports electronically before next Tuesday.",
+    "keywords": [
+      "submit",
+      "lab reports",
+      "electronically",
+      "Tuesday"
+    ],
+    "explanation": "Capitalize proper nouns ('Tuesday') and verify adverb spelling ('electronically')."
+  }
+]
