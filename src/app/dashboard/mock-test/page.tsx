@@ -21,15 +21,26 @@ const MOCK_TESTS = [
   { id: 14, title: 'Mock Test 14: Futuristic Transport Networks (HARD)', difficulty: 'HARD', duration: '2h 15m', modules: '4 Modules' }
 ];
 
+import MockTestEquipmentCheck from '@/components/MockTestEquipmentCheck';
+
 export default function MockTest() {
   const [activeTest, setActiveTest] = useState<any>(null);
+  const [pendingCheckTest, setPendingCheckTest] = useState<any>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [testResult, setTestResult] = useState<any>(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
 
-  const startTest = (test: any) => {
+  const initiateTestCheck = (test: any) => {
+    setPendingCheckTest(test);
+  };
+
+  const proceedWithVerifiedTest = () => {
+    if (!pendingCheckTest) return;
+    const test = pendingCheckTest;
+    setPendingCheckTest(null);
+
     const mockQuestionsSet = getRandomMockTestSet();
     const questionsList: PTEQuestion[] = [
       ...mockQuestionsSet.speaking,
@@ -120,8 +131,8 @@ export default function MockTest() {
               </div>
 
               <button 
-                onClick={() => startTest(test)}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm text-xs tracking-wide"
+                onClick={() => initiateTestCheck(test)}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm text-xs tracking-wide cursor-pointer"
               >
                 Start Test <ArrowRight className="w-3.5 h-3.5" />
               </button>
@@ -225,13 +236,23 @@ export default function MockTest() {
             <span className="text-xs font-bold text-slate-500">Difficulty: <span className="text-slate-900 font-extrabold">{activeTest.questions[currentQuestionIndex]?.difficulty}</span></span>
             <button 
               onClick={handleNextQuestion}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-2"
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-2 cursor-pointer"
             >
               {currentQuestionIndex === activeTest.questions.length - 1 ? 'Finish & Submit Test' : 'Next Question'} <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
       )}
+
+      {/* Equipment & Headphone Check Modal */}
+      {pendingCheckTest && (
+        <MockTestEquipmentCheck
+          testTitle={pendingCheckTest.title}
+          onProceed={proceedWithVerifiedTest}
+          onCancel={() => setPendingCheckTest(null)}
+        />
+      )}
     </div>
   );
 }
+

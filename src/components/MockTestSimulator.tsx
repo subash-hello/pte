@@ -6,6 +6,8 @@ import Scorecard from "./Scorecard";
 import { MOCK_TESTS_COLLECTION } from "../data/mock-tests";
 import PendingTrialGuard, { isPendingStudent } from "./PendingTrialGuard";
 
+import MockTestEquipmentCheck from "./MockTestEquipmentCheck";
+
 interface MockTestSimulatorProps {
   testId?: string;
   onExit?: () => void;
@@ -14,6 +16,7 @@ interface MockTestSimulatorProps {
 export default function MockTestSimulator({ testId = "pte_mock_test_01", onExit }: MockTestSimulatorProps) {
   const activeMock = MOCK_TESTS_COLLECTION.find((t) => t.id === testId) || MOCK_TESTS_COLLECTION[0];
 
+  const [hasPassedEquipmentCheck, setHasPassedEquipmentCheck] = useState(false);
   const [currentSectionIdx, setCurrentSectionIdx] = useState(0);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [sectionTimeLeft, setSectionTimeLeft] = useState(
@@ -92,6 +95,16 @@ export default function MockTestSimulator({ testId = "pte_mock_test_01", onExit 
     const secs = totalSeconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
+
+  if (!hasPassedEquipmentCheck) {
+    return (
+      <MockTestEquipmentCheck
+        testTitle={activeMock.testTitle}
+        onProceed={() => setHasPassedEquipmentCheck(true)}
+        onCancel={onExit || (() => {})}
+      />
+    );
+  }
 
   if (isCompleted) {
     return (

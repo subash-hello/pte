@@ -137,3 +137,5 @@ export function sanitizeUser(user: any) {
     updatedAt: user.updatedAt || new Date().toISOString(),
   };
 }
+
+export const extractUserFromRequest = verifyAuth;

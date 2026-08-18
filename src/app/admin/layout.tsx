@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { useRouter } from 'next/navigation';
 import { getUser, clearSession, authFetch } from '@/lib/session';
+import RoleSwitcherBar from '@/components/RoleSwitcherBar';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -82,8 +83,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div suppressHydrationWarning className="min-h-screen bg-[#f4f5fa] text-slate-900 flex font-sans">
-      {/* Mobile Sidebar Overlay */}
+    <div suppressHydrationWarning className="min-h-screen bg-[#f4f5fa] text-slate-900 flex flex-col font-sans">
+      <RoleSwitcherBar />
+      <div className="flex-1 flex min-w-0 h-[calc(100vh-41px)] overflow-hidden">
+        {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
@@ -313,6 +316,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           background: #94a3b8;
         }
       `}} />
+      </div>
     </div>
   );
 }

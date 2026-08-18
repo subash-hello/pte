@@ -305,7 +305,10 @@ export const PTEPracticeQuestions = [
     section: 'Reading',
     itemCategory: 'FIB (Reading & Writing)',
     title: q.title || 'Fill in the Blanks (R&W)',
-    instruction: 'Below is a text with a number of blanks. Click each blank to select the correct word.',
+    instruction: 'Below is a text with a number of blanks. Click each blank to select the correct word from the dropdown menu.',
+    passage: q.passageTemplate,
+    passageTemplate: q.passageTemplate,
+    blanks: q.blanks,
     timeLimitMinutes: 2
   })),
   ...PRACTICE_MCMA_READING.map(q => ({
@@ -316,6 +319,10 @@ export const PTEPracticeQuestions = [
     title: q.title || 'Multiple Choice (Multiple Answers)',
     instruction: 'Read the text and answer the question by selecting all correct responses.',
     passage: q.passageOrTranscript,
+    passageOrTranscript: q.passageOrTranscript,
+    questionText: q.questionText,
+    options: q.options,
+    explanation: q.explanation,
     timeLimitMinutes: 2
   })),
   ...PRACTICE_REORDER_PARAGRAPHS.map(q => ({
@@ -324,9 +331,12 @@ export const PTEPracticeQuestions = [
     section: 'Reading',
     itemCategory: 'Re-order Paragraphs',
     title: q.title || 'Re-order Paragraphs',
-    instruction: 'The text boxes below have been placed in random order. Restore the original order.',
-    jumbledParagraphs: q.jumbledParagraphs.map(p => p.text),
+    instruction: 'The text boxes below have been placed in random order. Restore the original order by moving paragraphs up or down.',
+    jumbledParagraphs: q.jumbledParagraphs,
+    correctSequenceIds: q.correctSequenceIds,
+    correctPairs: q.correctPairs,
     correctOrder: q.jumbledParagraphs.map(p => p.text),
+    explanation: q.explanation,
     timeLimitMinutes: 2
   })),
   ...PRACTICE_FIB_DRAG_DROP.map(q => ({
@@ -335,7 +345,12 @@ export const PTEPracticeQuestions = [
     section: 'Reading',
     itemCategory: 'FIB (Reading)',
     title: q.title || 'Fill in the Blanks (Reading)',
-    instruction: 'Drag words from the box to fill in the missing blanks in the text.',
+    instruction: 'Drag words or click to select words from the box to fill in the missing blanks in the text.',
+    passage: q.passageTextWithPlaceholders,
+    passageTextWithPlaceholders: q.passageTextWithPlaceholders,
+    wordBank: q.wordBank,
+    correctMapping: q.correctMapping,
+    explanation: q.explanation,
     timeLimitMinutes: 2
   })),
   ...PRACTICE_MCSA_READING.map(q => ({
@@ -344,8 +359,12 @@ export const PTEPracticeQuestions = [
     section: 'Reading',
     itemCategory: 'MCSA (Reading)',
     title: q.title || 'Multiple Choice (Single Answer)',
-    instruction: 'Read the text and answer the multiple-choice question by selecting the correct response.',
+    instruction: 'Read the text and answer the multiple-choice question by selecting the single correct response.',
     passage: q.passageOrTranscript,
+    passageOrTranscript: q.passageOrTranscript,
+    questionText: q.questionText,
+    options: q.options,
+    explanation: q.explanation,
     timeLimitMinutes: 2
   })),
   ...PRACTICE_SUMMARIZE_SPOKEN_TEXT.map(q => ({
@@ -355,6 +374,7 @@ export const PTEPracticeQuestions = [
     itemCategory: 'Summarize Spoken Text',
     title: q.title || 'Summarize Spoken Text',
     instruction: 'You will hear a short lecture. Write a summary for a fellow student who was not present (50-70 words).',
+    audioScript: q.audioTranscript,
     timeLimitMinutes: 10
   })),
   ...PRACTICE_MCMA_LISTENING.map(q => ({
@@ -365,6 +385,9 @@ export const PTEPracticeQuestions = [
     title: q.title || 'Multiple Choice (Multiple Answers)',
     instruction: 'Listen to the audio and answer the question by selecting all correct responses.',
     audioScript: q.passageOrTranscript,
+    questionText: q.questionText,
+    options: q.options,
+    explanation: q.explanation,
     timeLimitMinutes: 2
   })),
   ...PRACTICE_FIB_LISTENING.map(q => ({
@@ -374,6 +397,9 @@ export const PTEPracticeQuestions = [
     itemCategory: 'FIB (Listening)',
     title: q.title || 'Fill in the Blanks (Listening)',
     instruction: 'You will hear a recording. Type the missing words into each blank.',
+    audioScript: q.audioTranscriptWithBlanks,
+    passage: q.audioTranscriptWithBlanks,
+    blanks: q.blanks,
     timeLimitMinutes: 2
   })),
   ...PRACTICE_HIGHLIGHT_CORRECT_SUMMARY.map(q => ({
@@ -384,6 +410,8 @@ export const PTEPracticeQuestions = [
     title: q.title || 'Highlight Correct Summary',
     instruction: 'Listen to the recording and select the summary that best matches the audio.',
     audioScript: q.audioTranscript,
+    options: q.options,
+    explanation: q.explanation,
     timeLimitMinutes: 2
   })),
   ...PRACTICE_MCSA_LISTENING.map(q => ({
@@ -394,6 +422,9 @@ export const PTEPracticeQuestions = [
     title: q.title || 'Multiple Choice (Single Answer)',
     instruction: 'Listen to the audio and select the best answer.',
     audioScript: q.passageOrTranscript,
+    questionText: q.questionText,
+    options: q.options,
+    explanation: q.explanation,
     timeLimitMinutes: 2
   })),
   ...PRACTICE_SELECT_MISSING_WORD.map(q => ({
@@ -404,6 +435,8 @@ export const PTEPracticeQuestions = [
     title: q.title || 'Select Missing Word',
     instruction: 'You will hear a recording. Select the option that completes the recording.',
     audioScript: q.audioTranscript,
+    options: q.options,
+    explanation: q.explanation,
     timeLimitMinutes: 2
   })),
   ...PRACTICE_HIGHLIGHT_INCORRECT_WORDS.map(q => ({

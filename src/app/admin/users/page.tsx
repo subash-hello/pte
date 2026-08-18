@@ -1,316 +1,680 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Search, Filter, PhoneCall, TrendingUp, Pencil, Trash2, X, Plus, Check, Phone } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { 
+  Search, Filter, PhoneCall, TrendingUp, Pencil, Trash2, X, Plus, 
+  Check, Phone, Mail, UserPlus, Shield, Building2, Award, Zap, CheckCircle
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
+import { authFetch, getUser } from '@/lib/session';
 
-const mockUsers = [
-  { id: '1', name: 'Nepali Boy Sandip Shrestha', email: 'nsandipshrestha08@gmail.com', phone: '9808110005', source: 'FACEBOOK ADS', role: 'Student', tier: 'Pro', status: 'Approved', band: 7, xp: 325, date: 'Aug 11, 2026', avatar: 'N', avatarColor: 'from-cyan-400 to-blue-600', lastActive: '12h ago', expiresIn: '78 (74d)' },
-  { id: '2', name: 'Ramesh Pariyar', email: 'pariyarramesh403@gmail.com', phone: '', source: '', role: 'Student', tier: 'Free', status: 'Pending', band: 7, xp: 0, date: 'Aug 11, 2026', avatar: 'R', avatarColor: 'from-purple-400 to-pink-600', lastActive: '2d ago', expiresIn: '' },
-  { id: '3', name: 'Lal Bahadur Lohar', email: 'chhetlebahadurlohar@gmail.com', phone: '+9779817454543', source: 'FACEBOOK ADS', role: 'Student', tier: 'Free', status: 'Pending', band: 7.5, xp: 90, date: 'Aug 11, 2026', avatar: 'L', avatarColor: 'from-yellow-400 to-orange-600', lastActive: '5h ago', expiresIn: '' },
-  { id: '4', name: 'Sarvagya Budhathoki', email: 'sarvagya5039@gmail.com', phone: '+9779849843505', source: 'FACEBOOK ADS', role: 'Student', tier: 'Pro', status: 'Approved', band: 7, xp: 115, date: 'Aug 10, 2026', avatar: 'S', avatarColor: 'from-emerald-400 to-teal-600', lastActive: 'Aug 10', expiresIn: '37d (33d)' },
-  { id: '5', name: 'Raksha Khadka', email: 'rakshakhadka58@gmail.com', phone: '', source: '', role: 'Student', tier: 'Pro', status: 'Approved', band: 7, xp: 0, date: 'Aug 10, 2026', avatar: 'R', avatarColor: 'from-red-400 to-rose-600', lastActive: 'Aug 10', expiresIn: '30d (26d)' },
-  { id: '6', name: 'Chhabi Acharya', email: 'achhrxn@gmail.com', phone: '', source: 'HIRE LALITPUR', role: 'Student', tier: 'Pro', status: 'Approved', band: 7, xp: 0, date: 'Aug 10, 2026', avatar: 'C', avatarColor: 'from-sky-400 to-cyan-600', lastActive: 'Aug 10', expiresIn: '30d (26d)' },
-  { id: '7', name: 'Anlesh Chaudhary', email: 'cpranlesh@gmail.com', phone: '9817366244', source: '', role: 'Student', tier: 'Free', status: 'Pending', band: 7, xp: 0, date: 'Aug 10, 2026', avatar: 'A', avatarColor: 'from-indigo-400 to-violet-600', lastActive: 'Aug 10', expiresIn: '' },
-  { id: '8', name: 'Sagar Timilsina', email: 'timilsinasagar03@gmail.com', phone: '9819113548', source: 'FACEBOOK ADS', role: 'Student', tier: 'Pro', status: 'Approved', band: 7, xp: 740, date: 'Aug 10, 2026', avatar: 'S', avatarColor: 'from-amber-400 to-yellow-600', lastActive: '13h ago', expiresIn: '64 (74d)' },
+const fallbackInitialUsers = [
+  {
+    _id: 'super_admin_01',
+    id: 'super_admin_01',
+    name: 'Super Admin',
+    email: 'admin@ptemaster.com',
+    phone: '+977 9800000000',
+    role: 'super_admin',
+    status: 'approved',
+    branch: 'Central Headquarters',
+    pteGoal: 79,
+    targetScore: '84+ (GSE 84)',
+    subscription: 'premium',
+    accessDurationDays: 365,
+    xp: 2500,
+    streak: 30,
+    progress: { completedCount: 100, xp: 2500, streak: 30, speaking: 90, writing: 88, reading: 89, listening: 90 },
+    createdAt: 'Jul 15, 2026'
+  },
+  {
+    _id: 'branch_admin_01',
+    id: 'branch_admin_01',
+    name: 'Ramesh Sharma',
+    email: 'ktm.admin@pteai.com',
+    phone: '+977 9851012345',
+    role: 'branch_admin',
+    status: 'approved',
+    branch: 'Kathmandu Central Campus',
+    pteGoal: 79,
+    targetScore: '79+ (GSE 79)',
+    subscription: 'premium',
+    accessDurationDays: 365,
+    xp: 1200,
+    streak: 15,
+    progress: { completedCount: 75, xp: 1200, streak: 15, speaking: 80, writing: 78, reading: 82, listening: 80 },
+    createdAt: 'Jul 20, 2026'
+  },
+  {
+    _id: 'branch_admin_02',
+    id: 'branch_admin_02',
+    name: 'Sita Sharma',
+    email: 'pokhara.admin@pteai.com',
+    phone: '+977 9856023456',
+    role: 'branch_admin',
+    status: 'approved',
+    branch: 'Pokhara Regional Campus',
+    pteGoal: 79,
+    targetScore: '79+ (GSE 79)',
+    subscription: 'premium',
+    accessDurationDays: 365,
+    xp: 1850,
+    streak: 22,
+    progress: { completedCount: 85, xp: 1850, streak: 22, speaking: 85, writing: 82, reading: 84, listening: 86 },
+    createdAt: 'Jul 25, 2026'
+  },
+  {
+    _id: 'student_01',
+    id: 'student_01',
+    name: 'Subash Bhandari',
+    email: 'subash.bhandari@pteai.com',
+    phone: '+977 9841234567',
+    role: 'student',
+    status: 'approved',
+    branch: 'Kathmandu Central Campus',
+    pteGoal: 79,
+    targetScore: '79+ (GSE 79)',
+    subscription: 'pro',
+    accessDurationDays: 90,
+    xp: 1420,
+    streak: 14,
+    progress: { completedCount: 68, xp: 1420, streak: 14, speaking: 85, writing: 79, reading: 80, listening: 84 },
+    createdAt: 'Aug 02, 2026'
+  },
+  {
+    _id: 'student_02',
+    id: 'student_02',
+    name: 'Pooja Adhikari',
+    email: 'pooja.adhikari@gmail.com',
+    phone: '+977 9813456789',
+    role: 'student',
+    status: 'pending',
+    branch: 'Kathmandu Central Campus',
+    pteGoal: 65,
+    targetScore: '65+ (GSE 65)',
+    subscription: 'free',
+    accessDurationDays: 30,
+    xp: 420,
+    streak: 3,
+    progress: { completedCount: 18, xp: 420, streak: 3, speaking: 62, writing: 64, reading: 60, listening: 63 },
+    createdAt: 'Aug 14, 2026'
+  },
+  {
+    _id: 'student_03',
+    id: 'student_03',
+    name: 'Bikash Shrestha',
+    email: 'bikash.shrestha@gmail.com',
+    phone: '+977 9801239876',
+    role: 'student',
+    status: 'approved',
+    branch: 'Pokhara Regional Campus',
+    pteGoal: 79,
+    targetScore: '79+ (GSE 79)',
+    subscription: 'premium',
+    accessDurationDays: 365,
+    xp: 2150,
+    streak: 21,
+    progress: { completedCount: 92, xp: 2150, streak: 21, speaking: 82, writing: 80, reading: 78, listening: 81 },
+    createdAt: 'Jul 28, 2026'
+  },
+  {
+    _id: 'student_04',
+    id: 'student_04',
+    name: 'Anjali Karki',
+    email: 'anjali.karki@outlook.com',
+    phone: '+977 9846098765',
+    role: 'student',
+    status: 'pending',
+    branch: 'Pokhara Regional Campus',
+    pteGoal: 84,
+    targetScore: '84+ (GSE 84)',
+    subscription: 'free',
+    accessDurationDays: 60,
+    xp: 680,
+    streak: 5,
+    progress: { completedCount: 34, xp: 680, streak: 5, speaking: 75, writing: 72, reading: 76, listening: 74 },
+    createdAt: 'Aug 15, 2026'
+  }
 ];
 
-type User = typeof mockUsers[0];
-
 export default function UsersPage() {
+  const [users, setUsers] = useState<any[]>(fallbackInitialUsers);
   const [search, setSearch] = useState('');
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [roleFilter, setRoleFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
+  
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [viewingProgressUser, setViewingProgressUser] = useState<any | null>(null);
 
-  const handleEditClick = (user: User) => {
-    setSelectedUser(user);
-    setIsEditModalOpen(true);
+  const [addForm, setAddForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    role: 'student',
+    branch: 'Kathmandu Central Campus',
+    targetScore: '79+ (GSE 79)',
+    duration: 30
+  });
+
+  const loadUsers = async () => {
+    try {
+      const res = await authFetch('/api/admin/users');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.users && data.users.length > 0) {
+          setUsers(data.users);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load users', e);
+    }
   };
 
-  const closeEditModal = () => {
-    setIsEditModalOpen(false);
-    setTimeout(() => setSelectedUser(null), 200);
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const handleAuthorizeUser = async (id: string) => {
+    try {
+      const res = await authFetch('/api/admin/approve', {
+        method: 'POST',
+        body: JSON.stringify({ userId: id, action: 'approve' })
+      });
+      if (res.ok) {
+        setUsers(prev => prev.map(u => (u._id === id || u.id === id) ? { ...u, status: 'approved' } : u));
+        loadUsers();
+      }
+    } catch (e) {
+      console.error('Error approving user', e);
+    }
   };
+
+  const handleDeleteUser = async (id: string) => {
+    if (confirm('Are you sure you want to delete this user?')) {
+      try {
+        const res = await authFetch(`/api/admin/users/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          setUsers(prev => prev.filter(u => u._id !== id && u.id !== id));
+          loadUsers();
+        }
+      } catch (e) {
+        console.error('Error deleting user', e);
+      }
+    }
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedUser) return;
+    try {
+      const userId = selectedUser._id || selectedUser.id;
+      const res = await authFetch(`/api/admin/users/${userId}`, {
+        method: 'PUT',
+        body: JSON.stringify(selectedUser)
+      });
+      if (res.ok) {
+        setUsers(prev => prev.map(u => (u._id === userId || u.id === userId) ? selectedUser : u));
+        setIsEditModalOpen(false);
+        loadUsers();
+      }
+    } catch (e) {
+      console.error('Error updating user', e);
+    }
+  };
+
+  const handleCreateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await authFetch('/api/admin/users', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: addForm.name,
+          email: addForm.email,
+          phone: addForm.phone || '+977 9800000000',
+          role: addForm.role,
+          branch: addForm.branch,
+          targetScore: addForm.targetScore,
+          accessDurationDays: Number(addForm.duration),
+          status: 'approved'
+        })
+      });
+      if (res.ok) {
+        setIsAddModalOpen(false);
+        setAddForm({ name: '', email: '', phone: '', role: 'student', branch: 'Kathmandu Central Campus', targetScore: '79+ (GSE 79)', duration: 30 });
+        loadUsers();
+      }
+    } catch (e) {
+      console.error('Error creating user', e);
+    }
+  };
+
+  const filteredUsers = users.filter(user => {
+    const q = search.toLowerCase();
+    const matchesSearch = (user.name || '').toLowerCase().includes(q) || 
+                          (user.email || '').toLowerCase().includes(q) ||
+                          (user.phone || '').includes(q) ||
+                          (user.branch || '').toLowerCase().includes(q);
+    const matchesRole = roleFilter === 'All' || user.role === roleFilter;
+    const matchesStatus = statusFilter === 'All' || user.status === statusFilter;
+    return matchesSearch && matchesRole && matchesStatus;
+  });
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-6 lg:p-8 font-sans">
-      <div className="max-w-[1400px] mx-auto space-y-8">
-        {/* Header */}
+    <div className="space-y-6 pb-20 text-slate-900 font-sans">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/60 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 font-display">User Directory</h1>
-          <p className="text-slate-500 mt-1">Manage all registered users, roles, and permissions</p>
-        </div>
-
-        {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search users..."
-              className="w-full pl-9 pr-4 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all placeholder:text-slate-400 text-slate-900"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-              <Filter className="w-4 h-4" />
-              Role
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-              <Filter className="w-4 h-4" />
-              Status
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-              <Filter className="w-4 h-4" />
-              Tier
-            </button>
-          </div>
-        </div>
-
-        {/* User List */}
-        <div className="space-y-4">
-          {mockUsers.map((user) => (
-            <div key={user.id} className="bg-white border border-[#e8ecf4] rounded-2xl p-5 flex items-center justify-between gap-6 hover:shadow-sm transition-shadow">
-              
-              <div className="flex items-center gap-4 flex-1">
-                <div className={clsx("w-12 h-12 rounded-full bg-gradient-to-br flex items-center justify-center text-white font-bold text-lg shrink-0", user.avatarColor)}>
-                  {user.avatar}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-slate-900">{user.name}</h3>
-                    {user.source && (
-                      <span className={clsx("text-[10px] font-bold px-2 py-0.5 rounded-md", 
-                        user.source === 'FACEBOOK ADS' ? 'bg-emerald-100 text-emerald-700' : 'bg-cyan-100 text-cyan-700'
-                      )}>
-                        {user.source}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-slate-500">{user.email}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">Active {user.lastActive}</p>
-                </div>
-              </div>
-
-              <div className="w-40 flex-shrink-0 flex items-center">
-                {user.phone ? (
-                  <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors text-sm font-medium">
-                    <PhoneCall className="w-3.5 h-3.5" />
-                    {user.phone}
-                  </button>
-                ) : (
-                  <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors text-sm font-medium border-dashed">
-                    <Plus className="w-3.5 h-3.5" />
-                    Add Phone
-                  </button>
-                )}
-              </div>
-
-              <div className="w-24 flex-shrink-0">
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-teal-50 text-teal-700">
-                  {user.role}
-                </span>
-              </div>
-
-              <div className="w-20 flex-shrink-0">
-                <span className={clsx("inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium", 
-                  user.tier === 'Pro' ? 'bg-indigo-50 text-indigo-700' : 'bg-slate-100 text-slate-600'
-                )}>
-                  {user.tier}
-                </span>
-              </div>
-
-              <div className="w-32 flex-shrink-0 flex flex-col items-start gap-1">
-                <span className={clsx("inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border", 
-                  user.status === 'Approved' ? 'border-emerald-200 text-emerald-700 bg-emerald-50/50' : 'border-amber-200 text-amber-700 bg-amber-50/50'
-                )}>
-                  {user.status}
-                </span>
-                {user.expiresIn && <span className="text-xs text-slate-500 px-1">{user.expiresIn}</span>}
-              </div>
-
-              <div className="w-16 flex-shrink-0 text-center">
-                <div className="text-sm font-bold text-slate-700">{user.band}</div>
-                <div className="text-[10px] text-slate-400 uppercase tracking-wider">Band</div>
-              </div>
-
-              <div className="w-20 flex-shrink-0 text-center">
-                <div className="text-sm font-bold text-indigo-600">{user.xp}</div>
-                <div className="text-[10px] text-slate-400 uppercase tracking-wider">XP</div>
-              </div>
-
-              <div className="w-28 flex-shrink-0">
-                <div className="text-sm text-slate-600">{user.date}</div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="View Progress">
-                  <TrendingUp className="w-4 h-4" />
-                </button>
-                <button onClick={() => handleEditClick(user)} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit User">
-                  <Pencil className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Delete User">
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-satoshi flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600">
+              <Shield className="w-5 h-5" />
             </div>
-          ))}
+            User Directory & Access Controls
+          </h1>
+          <p className="text-slate-500 text-xs font-semibold mt-1">
+            Manage 4 students, 2 branch admins, authorization queues, and platform subscriptions.
+          </p>
+        </div>
+
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors"
+        >
+          <UserPlus className="w-4 h-4" /> Add User Account
+        </button>
+      </div>
+
+      {/* Stats Summary Bar */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-white rounded-2xl p-4 border border-[#e8ecf4] shadow-2xs">
+          <p className="text-xs font-bold text-slate-500">Total Accounts</p>
+          <h3 className="text-2xl font-black text-slate-900 font-satoshi mt-0.5">{users.length}</h3>
+        </div>
+        <div className="bg-white rounded-2xl p-4 border border-[#e8ecf4] shadow-2xs">
+          <p className="text-xs font-bold text-slate-500">Students</p>
+          <h3 className="text-2xl font-black text-indigo-600 font-satoshi mt-0.5">{users.filter(u => u.role === 'student').length}</h3>
+        </div>
+        <div className="bg-white rounded-2xl p-4 border border-[#e8ecf4] shadow-2xs">
+          <p className="text-xs font-bold text-slate-500">Branch Admins</p>
+          <h3 className="text-2xl font-black text-purple-600 font-satoshi mt-0.5">{users.filter(u => u.role === 'branch_admin').length}</h3>
+        </div>
+        <div className="bg-white rounded-2xl p-4 border border-[#e8ecf4] shadow-2xs">
+          <p className="text-xs font-bold text-slate-500">Pending Approvals</p>
+          <h3 className="text-2xl font-black text-amber-600 font-satoshi mt-0.5">{users.filter(u => u.status === 'pending').length}</h3>
         </div>
       </div>
 
+      {/* Toolbar & Filters */}
+      <div className="bg-white border border-[#e8ecf4] rounded-2xl p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="relative flex-1 max-w-md">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search by student name, email, branch or phone..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:border-indigo-500"
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
+          <select
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none"
+          >
+            <option value="All">All Roles ({users.length})</option>
+            <option value="student">Students ({users.filter(u => u.role === 'student').length})</option>
+            <option value="branch_admin">Branch Admins ({users.filter(u => u.role === 'branch_admin').length})</option>
+            <option value="super_admin">Super Admins ({users.filter(u => u.role === 'super_admin').length})</option>
+          </select>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none"
+          >
+            <option value="All">All Statuses</option>
+            <option value="approved">Approved</option>
+            <option value="pending">Pending</option>
+            <option value="declined">Declined</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Users Table */}
+      <div className="bg-white border border-[#e8ecf4] rounded-[24px] overflow-hidden shadow-2xs">
+        <div className="divide-y divide-slate-100 overflow-x-auto">
+          {filteredUsers.map((user) => {
+            const userId = user._id || user.id;
+            return (
+              <div key={userId} className="p-4 sm:p-5 flex items-center justify-between gap-4 min-w-[760px] hover:bg-slate-50/50 transition-colors">
+                <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                  <div className={clsx(
+                    "w-11 h-11 rounded-full text-white font-black text-xs flex items-center justify-center shrink-0 shadow-2xs",
+                    user.role === 'super_admin' ? "bg-slate-900" :
+                    user.role === 'branch_admin' ? "bg-purple-600" :
+                    "bg-indigo-600"
+                  )}>
+                    {(user.name || '').split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-xs font-extrabold text-slate-900 truncate">{user.name}</h4>
+                      <span className={clsx(
+                        "px-2 py-0.5 text-[9px] font-extrabold rounded-md uppercase border",
+                        user.role === 'super_admin' ? "bg-slate-900 text-white border-slate-900" :
+                        user.role === 'branch_admin' ? "bg-purple-50 text-purple-700 border-purple-200" :
+                        "bg-indigo-50 text-indigo-700 border-indigo-200"
+                      )}>
+                        {user.role.replace('_', ' ')}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-semibold mt-0.5 flex items-center gap-2">
+                      <span>{user.email}</span>
+                      <span>•</span>
+                      <span className="font-mono text-emerald-600 font-bold">{user.phone}</span>
+                      <span>•</span>
+                      <span className="text-slate-400">{user.branch}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 text-xs font-bold shrink-0">
+                  <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg border border-indigo-100 text-[10px]">
+                    {user.targetScore || `Goal: ${user.pteGoal || 79}`}
+                  </span>
+
+                  <span className={clsx(
+                    "px-2.5 py-1 rounded-lg text-[10px] font-extrabold border uppercase",
+                    user.status === 'approved' ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
+                    user.status === 'pending' ? "bg-amber-50 text-amber-700 border-amber-200" :
+                    "bg-rose-50 text-rose-700 border-rose-200"
+                  )}>
+                    {user.status}
+                  </span>
+
+                  <span className="text-[11px] text-slate-400 font-mono">
+                    ⏱ {user.accessDurationDays || 30}d
+                  </span>
+
+                  <div className="flex items-center gap-1.5 ml-2">
+                    {user.status === 'pending' && (
+                      <button 
+                        onClick={() => handleAuthorizeUser(userId)}
+                        className="px-3 py-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-extrabold shadow-2xs flex items-center gap-1"
+                      >
+                        <Check className="w-3 h-3" /> Accept
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => setViewingProgressUser(user)}
+                      className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors"
+                      title="View Student Scorecard"
+                    >
+                      <TrendingUp className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={() => { setSelectedUser(user); setIsEditModalOpen(true); }}
+                      className="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors"
+                      title="Edit User Profile"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={() => handleDeleteUser(userId)}
+                      className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                      title="Delete User"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* EDIT MODAL */}
       <AnimatePresence>
         {isEditModalOpen && selectedUser && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-              onClick={closeEditModal}
-            />
-            
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-2xl bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-[24px] p-6 max-w-md w-full border border-slate-200 shadow-xl space-y-4"
             >
-              {/* Modal Header */}
-              <div className="px-6 py-5 border-b border-[#e8ecf4] flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
-                    <Pencil className="w-5 h-5" />
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 className="text-sm font-extrabold text-slate-900">Edit User Account</h3>
+                <button onClick={() => setIsEditModalOpen(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+              </div>
+
+              <form onSubmit={handleSaveEdit} className="space-y-3 text-xs font-bold">
+                <div>
+                  <label className="block text-slate-700 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    value={selectedUser.name || ''}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    value={selectedUser.email || ''}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 mb-1">Phone Number</label>
+                  <input
+                    type="text"
+                    value={selectedUser.phone || ''}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, phone: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 mb-1">Branch</label>
+                  <input
+                    type="text"
+                    value={selectedUser.branch || ''}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, branch: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-slate-700 mb-1">Role</label>
+                    <select
+                      value={selectedUser.role || 'student'}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, role: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                    >
+                      <option value="student">Student</option>
+                      <option value="branch_admin">Branch Admin</option>
+                      <option value="super_admin">Super Admin</option>
+                    </select>
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-slate-900 font-display">Edit User Profile</h2>
-                    <p className="text-sm text-slate-500 mt-0.5">Modify directory properties & permissions</p>
+                    <label className="block text-slate-700 mb-1">Status</label>
+                    <select
+                      value={selectedUser.status || 'approved'}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, status: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                    >
+                      <option value="approved">Approved</option>
+                      <option value="pending">Pending</option>
+                      <option value="declined">Declined</option>
+                    </select>
                   </div>
                 </div>
-                <button 
-                  onClick={closeEditModal}
-                  className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+
+                <div className="pt-2 flex justify-end gap-2">
+                  <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl">Cancel</button>
+                  <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-xl">Save Changes</button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* CREATE USER MODAL */}
+      <AnimatePresence>
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-[24px] p-6 max-w-md w-full border border-slate-200 shadow-xl space-y-4"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 className="text-sm font-extrabold text-slate-900">Register New User Account</h3>
+                <button onClick={() => setIsAddModalOpen(false)} className="text-slate-400 hover:text-slate-600">✕</button>
               </div>
 
-              {/* Modal Body */}
-              <div className="p-6 overflow-y-auto font-sans">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Full Name</label>
-                      <input type="text" defaultValue={selectedUser.name} className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Email Address</label>
-                      <input type="email" defaultValue={selectedUser.email} className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Phone Number</label>
-                      <input type="text" defaultValue={selectedUser.phone} className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Reset Password (Optional)</label>
-                      <input type="password" placeholder="Leave blank to keep current" className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900 placeholder:text-slate-400" />
-                      <p className="text-[11px] text-slate-500 mt-1.5">Enter a new password if you want to reset the user's password.</p>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Branch Name</label>
-                      <input type="text" defaultValue="" className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Band Score</label>
-                      <input type="number" defaultValue={selectedUser.band} step="0.5" className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900" />
-                    </div>
-                  </div>
+              <form onSubmit={handleCreateSubmit} className="space-y-3 text-xs font-bold">
+                <div>
+                  <label className="block text-slate-700 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter student or admin name..."
+                    value={addForm.name}
+                    onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                    required
+                  />
+                </div>
 
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">System Role</label>
-                      <select defaultValue={selectedUser.role} className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900 appearance-none">
-                        <option>Student</option>
-                        <option>Teacher</option>
-                        <option>Admin</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Subscription Tier</label>
-                      <select defaultValue={selectedUser.tier} className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900 appearance-none">
-                        <option>Free</option>
-                        <option>Pro</option>
-                        <option>Ultimate</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">PTE Goal Score</label>
-                      <select defaultValue="Score 65" className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900 appearance-none">
-                        <option>Score 50</option>
-                        <option>Score 60</option>
-                        <option>Score 65</option>
-                        <option>Score 70</option>
-                        <option>Score 75</option>
-                        <option>Score 79+</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Approval Status</label>
-                      <select defaultValue={selectedUser.status} className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900 appearance-none">
-                        <option>Approved</option>
-                        <option>Pending</option>
-                        <option>Rejected</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Target Exam Track</label>
-                      <select defaultValue="PTE Academic" className="w-full px-3.5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900 appearance-none">
-                        <option>PTE Academic</option>
-                      </select>
-                    </div>
+                <div>
+                  <label className="block text-slate-700 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    placeholder="student@pteai.com"
+                    value={addForm.email}
+                    onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 mb-1">Phone Number</label>
+                  <input
+                    type="text"
+                    placeholder="+977 98..."
+                    value={addForm.phone}
+                    onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-slate-700 mb-1">Role</label>
+                    <select
+                      value={addForm.role}
+                      onChange={(e) => setAddForm({ ...addForm, role: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                    >
+                      <option value="student">Student</option>
+                      <option value="branch_admin">Branch Admin</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 mb-1">Branch</label>
+                    <select
+                      value={addForm.branch}
+                      onChange={(e) => setAddForm({ ...addForm, branch: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold"
+                    >
+                      <option value="Kathmandu Central Campus">Kathmandu Central Campus</option>
+                      <option value="Pokhara Regional Campus">Pokhara Regional Campus</option>
+                    </select>
                   </div>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-[#e8ecf4]">
-                  <label className="block text-xs font-bold text-slate-700 mb-3 uppercase tracking-wider">Access Validity Duration</label>
-                  <div className="flex flex-wrap gap-2">
-                    {['15 Days', '30 Days', '60 Days', '90 Days', '1 Year (365d)', 'Lifetime (3650d)'].map(duration => (
-                      <button key={duration} className="px-4 py-2 border border-[#e8ecf4] rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-colors">
-                        {duration}
-                      </button>
-                    ))}
-                  </div>
+                <div className="pt-2 flex justify-end gap-2">
+                  <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl">Cancel</button>
+                  <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-xl">Register User</button>
                 </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
-                <div className="mt-6">
-                  <label className="flex items-start gap-3 cursor-pointer group">
-                    <div className="relative flex items-center justify-center w-5 h-5 mt-0.5">
-                      <input type="checkbox" className="peer appearance-none w-5 h-5 border-2 border-[#e8ecf4] rounded bg-white checked:bg-indigo-600 checked:border-indigo-600 transition-all" />
-                      <Check className="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold text-slate-900 block">Reset Start Date from Today</span>
-                      <span className="text-xs text-slate-500 mt-0.5 block">Checking this will restart the user's validity period starting from today.</span>
-                    </div>
-                  </label>
+      {/* VIEW PROGRESS MODAL */}
+      <AnimatePresence>
+        {viewingProgressUser && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-[24px] p-6 max-w-lg w-full border border-slate-200 shadow-xl space-y-4"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900">{viewingProgressUser.name}'s Learning Scorecard</h3>
+                  <p className="text-[11px] text-slate-500 font-semibold">{viewingProgressUser.email} • {viewingProgressUser.branch}</p>
                 </div>
-
+                <button onClick={() => setViewingProgressUser(null)} className="text-slate-400 hover:text-slate-600">✕</button>
               </div>
 
-              {/* Modal Footer */}
-              <div className="px-6 py-4 bg-slate-50 border-t border-[#e8ecf4] flex items-center justify-end gap-3 mt-auto">
-                <button 
-                  onClick={closeEditModal}
-                  className="px-5 py-2 bg-white border border-[#e8ecf4] rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button className="px-5 py-2 bg-indigo-600 rounded-xl text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-200">
-                  Save Changes
+              <div className="grid grid-cols-2 gap-3 text-xs font-bold">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/60">
+                  <span className="text-[10px] font-extrabold text-slate-400 uppercase">Target Score</span>
+                  <p className="text-base font-black text-indigo-600 mt-0.5">{viewingProgressUser.targetScore || '79+ (GSE 79)'}</p>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/60">
+                  <span className="text-[10px] font-extrabold text-slate-400 uppercase">Practice Experience</span>
+                  <p className="text-base font-black text-emerald-600 mt-0.5">⚡ {viewingProgressUser.xp || 500} XP</p>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <h4 className="text-xs font-extrabold text-slate-900">Module Score Predictions (GSE 10-90)</h4>
+                <div className="grid grid-cols-2 gap-2 text-xs font-bold">
+                  <div className="p-3 rounded-xl bg-indigo-50/50 border border-indigo-100 flex justify-between items-center">
+                    <span>🗣️ Speaking</span>
+                    <span className="font-mono font-black text-indigo-700">{viewingProgressUser.progress?.speaking || 78} / 90</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-cyan-50/50 border border-cyan-100 flex justify-between items-center">
+                    <span>✍️ Writing</span>
+                    <span className="font-mono font-black text-cyan-700">{viewingProgressUser.progress?.writing || 74} / 90</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 flex justify-between items-center">
+                    <span>📖 Reading</span>
+                    <span className="font-mono font-black text-emerald-700">{viewingProgressUser.progress?.reading || 79} / 90</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-amber-50/50 border border-amber-100 flex justify-between items-center">
+                    <span>🎧 Listening</span>
+                    <span className="font-mono font-black text-amber-700">{viewingProgressUser.progress?.listening || 76} / 90</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button onClick={() => setViewingProgressUser(null)} className="px-4 py-2 bg-indigo-600 text-white font-extrabold text-xs rounded-xl">
+                  Close Scorecard
                 </button>
               </div>
             </motion.div>
@@ -320,3 +684,4 @@ export default function UsersPage() {
     </div>
   );
 }
+

@@ -17,7 +17,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'Invalid payload' }, { status: 400 });
     }
 
-    await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      const { fallbackDb } = await import('@/lib/fallbackDb');
+      const updated = fallbackDb.updateUser(userId, {
+        status: action === 'approve' ? 'approved' : 'declined',
+        approvedAt: action === 'approve' ? new Date().toISOString() : null
+      });
+
+      if (!updated) {
+        return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+      }
+
+      return NextResponse.json({ success: true, user: sanitizeUser(updated) });
+    }
 
     const targetUser = await User.findById(userId);
     if (!targetUser) {

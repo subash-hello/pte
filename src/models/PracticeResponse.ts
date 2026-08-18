@@ -1,6 +1,9 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IPracticeResponse extends Document {
+  userId?: string;
+  userEmail?: string;
+  branch?: string;
   questionId: string;
   questionType: string;
   section: string;
@@ -19,10 +22,14 @@ export interface IPracticeResponse extends Document {
   explanation?: string;
   aiEvaluated: boolean;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const PracticeResponseSchema: Schema = new Schema(
+const PracticeResponseSchema = new Schema<IPracticeResponse>(
   {
+    userId: { type: String, default: "" },
+    userEmail: { type: String, default: "" },
+    branch: { type: String, default: "" },
     questionId: { type: String, required: true },
     questionType: { type: String, required: true },
     section: { type: String, required: true },
@@ -30,19 +37,21 @@ const PracticeResponseSchema: Schema = new Schema(
     audioTranscript: { type: String, default: "" },
     overallScore: { type: Number, required: true, min: 10, max: 90 },
     enablingSkills: {
-      fluency: Number,
-      pronunciation: Number,
-      grammar: Number,
-      vocabulary: Number,
-      spelling: Number,
-      form: Number,
+      fluency: { type: Number, default: 0 },
+      pronunciation: { type: Number, default: 0 },
+      grammar: { type: Number, default: 0 },
+      vocabulary: { type: Number, default: 0 },
+      spelling: { type: Number, default: 0 },
+      form: { type: Number, default: 0 },
     },
     feedbackDetails: [{ type: String }],
-    explanation: String,
+    explanation: { type: String, default: "" },
     aiEvaluated: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.PracticeResponse ||
-  mongoose.model<IPracticeResponse>("PracticeResponse", PracticeResponseSchema);
+const PracticeResponse: Model<IPracticeResponse> =
+  mongoose.models.PracticeResponse || mongoose.model<IPracticeResponse>("PracticeResponse", PracticeResponseSchema);
+
+export default PracticeResponse;

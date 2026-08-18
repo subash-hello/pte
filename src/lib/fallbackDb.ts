@@ -23,6 +23,17 @@ export interface FallbackUser {
   level: number;
   loginAttempts: number;
   lastLoginAt: Date | string | null;
+  targetScore?: string;
+  progress?: {
+    completedCount?: number;
+    xp?: number;
+    streak?: number;
+    speaking?: number;
+    writing?: number;
+    reading?: number;
+    listening?: number;
+    [key: string]: any;
+  };
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -43,7 +54,7 @@ const defaultUsers: FallbackUser[] = [
     password: bcrypt.hashSync('admin123', 10),
     role: 'super_admin',
     status: 'approved',
-    branch: 'Kathmandu Main Campus',
+    branch: 'Central Headquarters',
     pteGoal: 79,
     subscription: 'premium',
     accessDurationDays: 365,
@@ -54,7 +65,7 @@ const defaultUsers: FallbackUser[] = [
     level: 10,
     loginAttempts: 0,
     lastLoginAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
@@ -66,7 +77,7 @@ const defaultUsers: FallbackUser[] = [
     password: bcrypt.hashSync('admin123', 10),
     role: 'branch_admin',
     status: 'approved',
-    branch: 'Kathmandu Main Campus',
+    branch: 'Kathmandu Central Campus',
     pteGoal: 79,
     subscription: 'premium',
     accessDurationDays: 365,
@@ -77,35 +88,127 @@ const defaultUsers: FallbackUser[] = [
     level: 5,
     loginAttempts: 0,
     lastLoginAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 25 * 86400000).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: 'branch_admin_02',
+    id: 'branch_admin_02',
+    name: 'Sita Sharma',
+    email: 'pokhara.admin@pteai.com',
+    phone: '+977 9856023456',
+    password: bcrypt.hashSync('admin123', 10),
+    role: 'branch_admin',
+    status: 'approved',
+    branch: 'Pokhara Regional Campus',
+    pteGoal: 79,
+    subscription: 'premium',
+    accessDurationDays: 365,
+    approvedAt: new Date().toISOString(),
+    tokenVersion: 1,
+    xp: 1850,
+    streak: 22,
+    level: 7,
+    loginAttempts: 0,
+    lastLoginAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 20 * 86400000).toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
     _id: 'student_01',
     id: 'student_01',
     name: 'Subash Bhandari',
-    email: 'student@pteai.com',
-    phone: '+977 9841000000',
-    password: bcrypt.hashSync('password123', 10),
+    email: 'subash.bhandari@pteai.com',
+    phone: '+977 9841234567',
+    password: bcrypt.hashSync('student123', 10),
     role: 'student',
     status: 'approved',
-    branch: 'Kathmandu Main Campus',
+    branch: 'Kathmandu Central Campus',
     pteGoal: 79,
     subscription: 'pro',
     accessDurationDays: 90,
     approvedAt: new Date().toISOString(),
     tokenVersion: 1,
-    xp: 850,
-    streak: 7,
+    xp: 1420,
+    streak: 14,
+    level: 6,
+    loginAttempts: 0,
+    lastLoginAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 14 * 86400000).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: 'student_02',
+    id: 'student_02',
+    name: 'Pooja Adhikari',
+    email: 'pooja.adhikari@gmail.com',
+    phone: '+977 9813456789',
+    password: bcrypt.hashSync('student123', 10),
+    role: 'student',
+    status: 'pending',
+    branch: 'Kathmandu Central Campus',
+    pteGoal: 65,
+    subscription: 'free',
+    accessDurationDays: 30,
+    approvedAt: null,
+    tokenVersion: 1,
+    xp: 420,
+    streak: 3,
+    level: 2,
+    loginAttempts: 0,
+    lastLoginAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: 'student_03',
+    id: 'student_03',
+    name: 'Bikash Shrestha',
+    email: 'bikash.shrestha@gmail.com',
+    phone: '+977 9801239876',
+    password: bcrypt.hashSync('student123', 10),
+    role: 'student',
+    status: 'approved',
+    branch: 'Pokhara Regional Campus',
+    pteGoal: 79,
+    subscription: 'premium',
+    accessDurationDays: 365,
+    approvedAt: new Date().toISOString(),
+    tokenVersion: 1,
+    xp: 2150,
+    streak: 21,
+    level: 8,
+    loginAttempts: 0,
+    lastLoginAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 21 * 86400000).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: 'student_04',
+    id: 'student_04',
+    name: 'Anjali Karki',
+    email: 'anjali.karki@outlook.com',
+    phone: '+977 9846098765',
+    password: bcrypt.hashSync('student123', 10),
+    role: 'student',
+    status: 'pending',
+    branch: 'Pokhara Regional Campus',
+    pteGoal: 84,
+    subscription: 'free',
+    accessDurationDays: 60,
+    approvedAt: null,
+    tokenVersion: 1,
+    xp: 680,
+    streak: 5,
     level: 3,
     loginAttempts: 0,
     lastLoginAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 1 * 86400000).toISOString(),
     updatedAt: new Date().toISOString(),
   }
 ];
 
-if (!global.fallbackUsersStore) {
+if (!global.fallbackUsersStore || global.fallbackUsersStore.length < 5) {
   global.fallbackUsersStore = defaultUsers;
 }
 

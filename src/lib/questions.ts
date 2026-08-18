@@ -28,11 +28,11 @@ const convertedPracticeQuestions: PTEQuestion[] = PTEPracticeQuestions.map((q: a
     title: q.title || q.itemCategory || 'Practice Item',
     difficulty: q.difficulty || 'Medium',
     timeLimit: (q.timeLimitMinutes ? q.timeLimitMinutes * 60 : 60),
-    promptText: q.passage || q.promptText || q.instruction || q.audioScript || q.sentenceText || null,
+    promptText: q.passage || q.passageTemplate || q.passageTextWithPlaceholders || q.passageOrTranscript || q.promptText || q.instruction || q.audioScript || q.sentenceText || null,
     audioScript: q.audioScript || q.lectureScript || q.audioTranscript || null,
     imagePrompt: q.imageUrl || null,
     options: q.options || q.blanks || q.wordBank || q.jumbledParagraphs || null,
-    correctAnswer: q.correctAnswer || q.correctMapping || q.correctOrder || q.answerKey || null,
+    correctAnswer: q.correctAnswer || q.correctMapping || q.correctOrder || q.correctSequenceIds || q.answerKey || null,
     sampleAnswer: q.sampleModelAnswer || q.sampleBand9Essay || q.modelSummary || q.sampleAnswer || null,
     keywords: q.phoneticFocusWords || q.keywords || q.keyPointsToCover || q.keyArguments || q.keyPoints || null,
     explanation: q.explanation || null,
@@ -51,18 +51,42 @@ export function getQuestionsByTaskType(taskType: string): PTEQuestion[] {
   const matches = allQuestions.filter(q => {
     const qType = q.taskType.toLowerCase().trim();
     if (qType === normalized) return true;
+    
+    // Speaking
     if (normalized.includes('read aloud') && qType.includes('read aloud')) return true;
     if (normalized.includes('repeat sentence') && qType.includes('repeat sentence')) return true;
     if (normalized.includes('describe image') && qType.includes('describe image')) return true;
     if (normalized.includes('retell') && qType.includes('retell')) return true;
     if (normalized.includes('answer short') && qType.includes('answer short')) return true;
+    
+    // Writing
     if (normalized.includes('summarize written') && qType.includes('summarize written')) return true;
     if (normalized.includes('essay') && qType.includes('essay')) return true;
-    if (normalized.includes('reorder') && (qType.includes('re-order') || qType.includes('reorder'))) return true;
+    
+    // Reading specific distinction
+    if ((normalized.includes('r&w') || normalized.includes('reading & writing') || normalized.includes('dropdown')) && 
+        (qType.includes('r&w') || qType.includes('reading & writing') || qType.includes('fib_reading_writing'))) return true;
+    if ((normalized.includes('fib (reading)') || normalized.includes('fill in the blanks (reading)') || normalized.includes('drag')) && 
+        (qType.includes('fib (reading)') || qType.includes('fill in the blanks (reading)') || qType.includes('fib_reading')) &&
+        !qType.includes('r&w') && !qType.includes('writing')) return true;
+    if (normalized.includes('reorder') || normalized.includes('re-order')) {
+      if (qType.includes('re-order') || qType.includes('reorder')) return true;
+    }
+    if ((normalized.includes('multiple choice') && normalized.includes('multiple')) || normalized.includes('mcma')) {
+      if (qType.includes('multiple') && (qType.includes('mcma') || qType.includes('multiple choice'))) return true;
+    }
+    if ((normalized.includes('multiple choice') && normalized.includes('single')) || normalized.includes('mcsa')) {
+      if (qType.includes('single') && (qType.includes('mcsa') || qType.includes('multiple choice'))) return true;
+    }
+    
+    // Listening
     if (normalized.includes('dictation') && qType.includes('dictation')) return true;
     if (normalized.includes('spoken text') && qType.includes('spoken text')) return true;
-    if (normalized.includes('fill in') && qType.includes('fib')) return true;
-    if (normalized.includes('multiple choice') && (qType.includes('mcma') || qType.includes('mcsa') || qType.includes('multiple choice'))) return true;
+    if (normalized.includes('correct summary') && qType.includes('correct summary')) return true;
+    if (normalized.includes('missing word') && qType.includes('missing word')) return true;
+    if (normalized.includes('incorrect words') && qType.includes('incorrect words')) return true;
+    if (normalized.includes('fib (listening)') && (qType.includes('fib (listening)') || qType.includes('fib_listening'))) return true;
+    
     return false;
   });
 

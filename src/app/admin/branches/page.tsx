@@ -18,14 +18,41 @@ import {
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const mockBranches = [
-  { id: '1', name: 'Kathmandu Central', admin: 'Rajesh Hamal', adminEmail: 'rajesh@pteai.com', totalUsers: 45, activeUsers: 12, premiumUsers: 28, createdAt: 'Jul 15, 2026', status: 'Active', avatar: 'R', avatarColor: 'from-indigo-400 to-violet-600' },
-  { id: '2', name: 'Lalitpur Branch', admin: 'Sita Sharma', adminEmail: 'sita@pteai.com', totalUsers: 32, activeUsers: 8, premiumUsers: 19, createdAt: 'Jul 20, 2026', status: 'Active', avatar: 'S', avatarColor: 'from-emerald-400 to-teal-600' },
-  { id: '3', name: 'Pokhara Center', admin: 'Bikram Thapa', adminEmail: 'bikram@pteai.com', totalUsers: 28, activeUsers: 6, premiumUsers: 15, createdAt: 'Aug 01, 2026', status: 'Active', avatar: 'B', avatarColor: 'from-amber-400 to-orange-600' },
-  { id: '4', name: 'Chitwan Hub', admin: 'Anita Gurung', adminEmail: 'anita@pteai.com', totalUsers: 16, activeUsers: 3, premiumUsers: 8, createdAt: 'Aug 05, 2026', status: 'Pending', avatar: 'A', avatarColor: 'from-pink-400 to-rose-600' },
+const initialBranches = [
+  { 
+    id: '1', 
+    name: 'Kathmandu Central Campus', 
+    location: 'Putalisadak, Kathmandu',
+    admin: 'Ramesh Sharma', 
+    adminEmail: 'ktm.admin@pteai.com', 
+    adminPhone: '+977 9851012345',
+    totalUsers: 2, 
+    activeUsers: 2, 
+    premiumUsers: 2, 
+    createdAt: 'Jul 15, 2026', 
+    status: 'Active', 
+    avatar: 'R', 
+    avatarColor: 'from-indigo-500 to-indigo-700' 
+  },
+  { 
+    id: '2', 
+    name: 'Pokhara Regional Campus', 
+    location: 'Chipledhunga, Pokhara',
+    admin: 'Sita Sharma', 
+    adminEmail: 'pokhara.admin@pteai.com', 
+    adminPhone: '+977 9856023456',
+    totalUsers: 2, 
+    activeUsers: 1, 
+    premiumUsers: 2, 
+    createdAt: 'Jul 20, 2026', 
+    status: 'Active', 
+    avatar: 'S', 
+    avatarColor: 'from-purple-500 to-indigo-600' 
+  },
 ];
 
 export default function BranchesPage() {
+  const [branches, setBranches] = useState(initialBranches);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     branchName: '',
@@ -39,6 +66,35 @@ export default function BranchesPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCreateBranch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.branchName || !formData.adminName) return;
+    const newB = {
+      id: `${Date.now()}`,
+      name: formData.branchName,
+      location: formData.location || 'Nepal',
+      admin: formData.adminName,
+      adminEmail: formData.adminEmail || 'admin@pteai.com',
+      adminPhone: formData.adminPhone || '+977 9800000000',
+      totalUsers: 0,
+      activeUsers: 0,
+      premiumUsers: 0,
+      createdAt: 'Just now',
+      status: 'Active',
+      avatar: formData.adminName.charAt(0).toUpperCase(),
+      avatarColor: 'from-emerald-500 to-teal-700'
+    };
+    setBranches([...branches, newB]);
+    setIsModalOpen(false);
+    setFormData({ branchName: '', adminName: '', adminEmail: '', adminPhone: '', password: '', location: '' });
+  };
+
+  const handleDeleteBranch = (id: string) => {
+    if (confirm('Delete this branch campus?')) {
+      setBranches(branches.filter(b => b.id !== id));
+    }
   };
 
   return (
@@ -64,10 +120,10 @@ export default function BranchesPage() {
       {/* Summary Stat Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         {[
-          { label: 'Total Branches', value: '4', icon: Building2, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-          { label: 'Total Branch Users', value: '121', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-          { label: 'Active Branch Admins', value: '3', icon: UserCheck, color: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'Avg Users per Branch', value: '30', icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50' },
+          { label: 'Total Branches', value: `${branches.length}`, icon: Building2, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+          { label: 'Total Students', value: '4', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { label: 'Active Branch Admins', value: `${branches.length}`, icon: UserCheck, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { label: 'Avg Students / Branch', value: '2', icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50' },
         ].map((stat, i) => (
           <div key={i} className="rounded-2xl border border-[#e8ecf4] bg-white p-5 shadow-sm">
             <div className="flex items-center gap-4">
@@ -85,14 +141,14 @@ export default function BranchesPage() {
 
       {/* Branch Cards Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {mockBranches.map(branch => (
+        {branches.map(branch => (
           <div key={branch.id} className="rounded-2xl border border-[#e8ecf4] bg-white p-6 shadow-sm transition-all hover:shadow-md">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900 mb-1">{branch.name}</h3>
                 <div className="flex items-center gap-2 text-sm text-slate-500">
                   <MapPin className="h-3.5 w-3.5" />
-                  Created {branch.createdAt}
+                  {branch.location} • Created {branch.createdAt}
                 </div>
               </div>
               <span className={clsx(
@@ -109,13 +165,13 @@ export default function BranchesPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-900">{branch.admin}</p>
-                <p className="text-xs text-slate-500">{branch.adminEmail}</p>
+                <p className="text-xs text-slate-500">{branch.adminEmail} • {branch.adminPhone}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div>
-                <p className="text-xs font-medium text-slate-500 mb-1 flex items-center gap-1"><Users className="h-3.5 w-3.5"/> Total</p>
+                <p className="text-xs font-medium text-slate-500 mb-1 flex items-center gap-1"><Users className="h-3.5 w-3.5"/> Students</p>
                 <p className="text-lg font-semibold text-slate-900">{branch.totalUsers}</p>
               </div>
               <div>
@@ -123,20 +179,17 @@ export default function BranchesPage() {
                 <p className="text-lg font-semibold text-slate-900">{branch.activeUsers}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-slate-500 mb-1 flex items-center gap-1"><TrendingUp className="h-3.5 w-3.5"/> Premium</p>
+                <p className="text-xs font-medium text-slate-500 mb-1 flex items-center gap-1"><TrendingUp className="h-3.5 w-3.5"/> Pro / Prem</p>
                 <p className="text-lg font-semibold text-slate-900">{branch.premiumUsers}</p>
               </div>
             </div>
 
             <div className="flex gap-2 pt-4 border-t border-slate-100">
-              <button className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 border border-slate-200">
+              <a href="/admin/users" className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 border border-slate-200">
                 <Eye className="h-4 w-4" />
-                View Users
-              </button>
-              <button className="inline-flex items-center justify-center p-2 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-colors border border-transparent hover:border-indigo-100">
-                <Pencil className="h-4 w-4" />
-              </button>
-              <button className="inline-flex items-center justify-center p-2 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-100">
+                View Students
+              </a>
+              <button onClick={() => handleDeleteBranch(branch.id)} className="inline-flex items-center justify-center p-2 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-100">
                 <Trash2 className="h-4 w-4" />
               </button>
             </div>
@@ -171,98 +224,106 @@ export default function BranchesPage() {
                 </button>
               </div>
 
-              <div className="p-6 overflow-y-auto max-h-[calc(100vh-200px)]">
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Branch Name</label>
-                    <input
-                      type="text"
-                      name="branchName"
-                      value={formData.branchName}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Kathmandu Central"
-                      className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Location</label>
-                    <input
-                      type="text"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Kathmandu, Nepal"
-                      className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
-                    />
-                  </div>
-                  
-                  <div className="pt-4 pb-2 border-b border-slate-100">
-                    <h3 className="text-sm font-semibold text-slate-900">Branch Admin Details</h3>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Admin Full Name</label>
-                    <input
-                      type="text"
-                      name="adminName"
-                      value={formData.adminName}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Rajesh Hamal"
-                      className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
+              <form onSubmit={handleCreateBranch}>
+                <div className="p-6 overflow-y-auto max-h-[calc(100vh-200px)]">
+                  <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Admin Email</label>
-                      <input
-                        type="email"
-                        name="adminEmail"
-                        value={formData.adminEmail}
-                        onChange={handleInputChange}
-                        placeholder="rajesh@pteai.com"
-                        className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Admin Phone</label>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Branch Name</label>
                       <input
                         type="text"
-                        name="adminPhone"
-                        value={formData.adminPhone}
+                        name="branchName"
+                        value={formData.branchName}
                         onChange={handleInputChange}
-                        placeholder="+977 98..."
+                        placeholder="e.g. Kathmandu Central Campus"
+                        className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Location</label>
+                      <input
+                        type="text"
+                        name="location"
+                        value={formData.location}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Putalisadak, Kathmandu"
+                        className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="pt-4 pb-2 border-b border-slate-100">
+                      <h3 className="text-sm font-semibold text-slate-900">Branch Admin Details</h3>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Admin Full Name</label>
+                      <input
+                        type="text"
+                        name="adminName"
+                        value={formData.adminName}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Ramesh Sharma"
+                        className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
+                        required
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Admin Email</label>
+                        <input
+                          type="email"
+                          name="adminEmail"
+                          value={formData.adminEmail}
+                          onChange={handleInputChange}
+                          placeholder="admin@pteai.com"
+                          className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Admin Phone</label>
+                        <input
+                          type="text"
+                          name="adminPhone"
+                          value={formData.adminPhone}
+                          onChange={handleInputChange}
+                          placeholder="+977 98..."
+                          className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Set Admin Password</label>
+                      <input
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        placeholder="••••••••"
                         className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
                       />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Set Admin Password</label>
-                    <input
-                      type="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      placeholder="••••••••"
-                      className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all"
-                    />
-                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-end gap-3 border-t border-[#e8ecf4] bg-slate-50 px-6 py-4">
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="rounded-xl px-5 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-200"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700 shadow-sm"
-                >
-                  Create Branch
-                </button>
-              </div>
+                <div className="flex items-center justify-end gap-3 border-t border-[#e8ecf4] bg-slate-50 px-6 py-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="rounded-xl px-5 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700 shadow-sm"
+                  >
+                    Create Branch
+                  </button>
+                </div>
+              </form>
             </motion.div>
           </div>
         )}

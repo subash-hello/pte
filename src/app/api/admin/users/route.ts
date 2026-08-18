@@ -14,30 +14,67 @@ export async function GET(request: NextRequest) {
   const status = searchParams.get('status');
   const search = searchParams.get('search');
 
-  await connectToDatabase();
+  try {
+    const db = await connectToDatabase();
+    if (!db) {
+      const { fallbackDb } = await import('@/lib/fallbackDb');
+      let fbUsers = fallbackDb.getUsers();
 
-  const query: any = {};
+      if (adminUser.role === 'branch_admin') {
+        fbUsers = fbUsers.filter(u => (u.branch || '').toLowerCase().includes((adminUser.branch || '').toLowerCase()));
+      }
 
-  if (adminUser.role === 'branch_admin') {
-    query.branch = adminUser.branch;
+      if (role && role !== 'All') {
+        fbUsers = fbUsers.filter(u => u.role === role);
+      }
+      if (status && status !== 'All') {
+        fbUsers = fbUsers.filter(u => u.status === status);
+      }
+      if (search) {
+        const q = search.toLowerCase();
+        fbUsers = fbUsers.filter(u => 
+          (u.name || '').toLowerCase().includes(q) || 
+          (u.email || '').toLowerCase().includes(q) ||
+          (u.phone || '').includes(q)
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        users: fbUsers.map(u => sanitizeUser(u))
+      });
+    }
+
+    const query: any = {};
+
+    if (adminUser.role === 'branch_admin') {
+      query.branch = adminUser.branch;
+    }
+
+    if (role && role !== 'All') query.role = role;
+    if (status && status !== 'All') query.status = status;
+    
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const users = await User.find(query).sort({ createdAt: -1 });
+
+    return NextResponse.json({
+      success: true,
+      users: users.map(u => sanitizeUser(u))
+    });
+  } catch (err: any) {
+    const { fallbackDb } = await import('@/lib/fallbackDb');
+    return NextResponse.json({
+      success: true,
+      users: fallbackDb.getUsers().map(u => sanitizeUser(u))
+    });
   }
-
-  if (role) query.role = role;
-  if (status) query.status = status;
-  
-  if (search) {
-    query.$or = [
-      { name: { $regex: search, $options: 'i' } },
-      { email: { $regex: search, $options: 'i' } }
-    ];
-  }
-
-  const users = await User.find(query).sort({ createdAt: -1 });
-
-  return NextResponse.json({
-    success: true,
-    users: users.map(u => sanitizeUser(u))
-  });
 }
 
 export async function POST(request: NextRequest) {
@@ -48,14 +85,34 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    let { name, email, phone, password, role, branch, status } = body;
+    let { name, email, phone, password, role, branch, status, targetScore, accessDurationDays } = body;
 
     if (adminUser.role === 'branch_admin') {
       branch = adminUser.branch;
       role = 'student';
     }
 
-    await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      const { fallbackDb } = await import('@/lib/fallbackDb');
+      const existingUser = fallbackDb.findByEmail(email);
+      if (existingUser) {
+        return NextResponse.json({ success: false, message: 'Email already exists' }, { status: 409 });
+      }
+
+      const newUser = await fallbackDb.createUser({
+        name,
+        email,
+        phone,
+        password: password || 'student123',
+        role: role || 'student',
+        branch: branch || 'Kathmandu Central Campus',
+        status: status || 'approved',
+        accessDurationDays: accessDurationDays || 30
+      });
+
+      return NextResponse.json({ success: true, user: sanitizeUser(newUser) }, { status: 201 });
+    }
 
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
@@ -66,11 +123,12 @@ export async function POST(request: NextRequest) {
       name,
       email: email.toLowerCase(),
       phone,
-      password,
+      password: password || 'student123',
       role: role || 'student',
       branch: branch || '',
-      status: 'approved',
-      approvedAt: new Date()
+      status: status || 'approved',
+      accessDurationDays: accessDurationDays || 30,
+      approvedAt: status === 'pending' ? null : new Date()
     });
 
     await newUser.save();

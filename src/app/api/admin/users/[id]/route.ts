@@ -13,7 +13,15 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const body = await request.json();
 
-    await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      const { fallbackDb } = await import('@/lib/fallbackDb');
+      const updated = fallbackDb.updateUser(id, body);
+      if (!updated) {
+        return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+      }
+      return NextResponse.json({ success: true, user: sanitizeUser(updated) });
+    }
 
     const targetUser = await User.findById(id);
     if (!targetUser) {
@@ -24,7 +32,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ success: false, message: 'Forbidden' }, { status: 403 });
     }
 
-    const updatableFields = ['name', 'email', 'phone', 'role', 'branch', 'status', 'password', 'pteGoal', 'subscription', 'accessDurationDays'];
+    const updatableFields = ['name', 'email', 'phone', 'role', 'branch', 'status', 'password', 'pteGoal', 'subscription', 'accessDurationDays', 'targetScore'];
     for (const field of updatableFields) {
       if (body[field] !== undefined) {
         (targetUser as any)[field] = body[field];
@@ -47,7 +55,12 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
   try {
     const { id } = await params;
-    await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      const { fallbackDb } = await import('@/lib/fallbackDb');
+      fallbackDb.deleteUser(id);
+      return NextResponse.json({ success: true, message: 'User deleted' });
+    }
 
     const targetUser = await User.findById(id);
     if (!targetUser) {

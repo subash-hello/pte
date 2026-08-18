@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -46,14 +47,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${inter.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <head>
+        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
+                try {
+                  var saved = localStorage.getItem('settings_theme');
+                  var theme = saved === 'dark' ? 'dark' : 'light';
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch(e) {}
                 if (typeof window !== 'undefined') {
                   var filterPattern = /hydration-mismatch|bis_skin_checked|did not match|tree hydrated|server rendered HTML|Hydration failed/i;
                   var origError = console.error;
@@ -91,9 +103,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans">
-        <div suppressHydrationWarning className="contents">
-          {children}
-        </div>
+        <ThemeProvider>
+          <div suppressHydrationWarning className="contents">
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
