@@ -15,7 +15,7 @@ import {
 import clsx from 'clsx';
 import { authFetch, getUser } from '@/lib/session';
 
-// Initial rich seed user list (4 students, 2 branch admins, 1 super admin)
+// Initial rich seed user list (16+ students across all 4 campuses)
 const initialUserList: any[] = [
   {
     _id: 'super_admin_01',
@@ -26,12 +26,12 @@ const initialUserList: any[] = [
     role: 'super_admin',
     status: 'approved',
     branch: 'Central Headquarters',
-    targetScore: '84+ (GSE 84)',
+    targetScore: '90 (Superior C2)',
     subscription: 'premium',
     accessDurationDays: 365,
-    xp: 2500,
-    streak: 30,
-    progress: { completedCount: 100, xp: 2500, streak: 30, speaking: 90, writing: 88, reading: 89, listening: 90 }
+    xp: 3850,
+    streak: 45,
+    progress: { completedCount: 150, xp: 3850, streak: 45, speaking: 90, writing: 90, reading: 90, listening: 90 }
   },
   {
     _id: 'branch_admin_01',
@@ -42,12 +42,12 @@ const initialUserList: any[] = [
     role: 'branch_admin',
     status: 'approved',
     branch: 'Kathmandu Central Campus',
-    targetScore: '79+ (GSE 79)',
+    targetScore: '79+ (Proficient Plus C1)',
     subscription: 'premium',
     accessDurationDays: 365,
-    xp: 1200,
-    streak: 15,
-    progress: { completedCount: 75, xp: 1200, streak: 15, speaking: 80, writing: 78, reading: 82, listening: 80 }
+    xp: 2200,
+    streak: 28,
+    progress: { completedCount: 88, xp: 2200, streak: 28, speaking: 82, writing: 80, reading: 85, listening: 84 }
   },
   {
     _id: 'branch_admin_02',
@@ -58,12 +58,12 @@ const initialUserList: any[] = [
     role: 'branch_admin',
     status: 'approved',
     branch: 'Pokhara Regional Campus',
-    targetScore: '79+ (GSE 79)',
+    targetScore: '79+ (Proficient Plus C1)',
     subscription: 'premium',
     accessDurationDays: 365,
-    xp: 1850,
-    streak: 22,
-    progress: { completedCount: 85, xp: 1850, streak: 22, speaking: 85, writing: 82, reading: 84, listening: 86 }
+    xp: 2450,
+    streak: 32,
+    progress: { completedCount: 95, xp: 2450, streak: 32, speaking: 86, writing: 84, reading: 85, listening: 88 }
   },
   {
     _id: 'student_01',
@@ -77,9 +77,9 @@ const initialUserList: any[] = [
     targetScore: '79+ (GSE 79)',
     subscription: 'pro',
     accessDurationDays: 90,
-    xp: 1420,
-    streak: 14,
-    progress: { completedCount: 68, xp: 1420, streak: 14, speaking: 85, writing: 79, reading: 80, listening: 84 }
+    xp: 1850,
+    streak: 18,
+    progress: { completedCount: 76, xp: 1850, streak: 18, speaking: 85, writing: 80, reading: 82, listening: 86 }
   },
   {
     _id: 'student_02',
@@ -93,9 +93,89 @@ const initialUserList: any[] = [
     targetScore: '65+ (GSE 65)',
     subscription: 'free',
     accessDurationDays: 30,
-    xp: 420,
-    streak: 3,
-    progress: { completedCount: 18, xp: 420, streak: 3, speaking: 62, writing: 64, reading: 60, listening: 63 }
+    xp: 450,
+    streak: 4,
+    progress: { completedCount: 22, xp: 450, streak: 4, speaking: 64, writing: 66, reading: 62, listening: 65 }
+  },
+  {
+    _id: 'student_05',
+    id: 'student_05',
+    name: 'Aayush Koirala',
+    email: 'aayush.koirala@gmail.com',
+    phone: '+977 9841889900',
+    role: 'student',
+    status: 'approved',
+    branch: 'Kathmandu Central Campus',
+    targetScore: '79+ (GSE 79)',
+    subscription: 'premium',
+    accessDurationDays: 180,
+    xp: 1620,
+    streak: 15,
+    progress: { completedCount: 64, xp: 1620, streak: 15, speaking: 82, writing: 78, reading: 80, listening: 83 }
+  },
+  {
+    _id: 'student_06',
+    id: 'student_06',
+    name: 'Pratima Thapa',
+    email: 'pratima.thapa@outlook.com',
+    phone: '+977 9812998877',
+    role: 'student',
+    status: 'approved',
+    branch: 'Kathmandu Central Campus',
+    targetScore: '90 (GSE 90)',
+    subscription: 'premium',
+    accessDurationDays: 365,
+    xp: 2950,
+    streak: 29,
+    progress: { completedCount: 110, xp: 2950, streak: 29, speaking: 89, writing: 87, reading: 88, listening: 90 }
+  },
+  {
+    _id: 'student_07',
+    id: 'student_07',
+    name: 'Suman Maharjan',
+    email: 'suman.maharjan@yahoo.com',
+    phone: '+977 9851044332',
+    role: 'student',
+    status: 'pending',
+    branch: 'Kathmandu Central Campus',
+    targetScore: '65+ (GSE 65)',
+    subscription: 'free',
+    accessDurationDays: 30,
+    xp: 320,
+    streak: 2,
+    progress: { completedCount: 14, xp: 320, streak: 2, speaking: 60, writing: 62, reading: 58, listening: 61 }
+  },
+  {
+    _id: 'student_08',
+    id: 'student_08',
+    name: 'Deepak Regmi',
+    email: 'deepak.regmi@gmail.com',
+    phone: '+977 9860114477',
+    role: 'student',
+    status: 'approved',
+    branch: 'Kathmandu Central Campus',
+    targetScore: '79+ (GSE 79)',
+    subscription: 'pro',
+    accessDurationDays: 90,
+    xp: 1150,
+    streak: 11,
+    progress: { completedCount: 48, xp: 1150, streak: 11, speaking: 78, writing: 76, reading: 77, listening: 80 }
+  },
+  {
+    _id: 'student_09',
+    id: 'student_09',
+    name: 'Kripa Shrestha',
+    email: 'kripa.shrestha@gmail.com',
+    phone: '+977 9803112233',
+    role: 'student',
+    status: 'approved',
+    branch: 'Kathmandu Central Campus',
+    targetScore: '79+ (GSE 79)',
+    subscription: 'pro',
+    accessDurationDays: 90,
+    xp: 1380,
+    streak: 13,
+    progress: { completedCount: 56, xp: 1380, streak: 13, speaking: 80, writing: 77, reading: 79, listening: 82 }
   },
   {
     _id: 'student_03',
@@ -109,9 +189,9 @@ const initialUserList: any[] = [
     targetScore: '79+ (GSE 79)',
     subscription: 'premium',
     accessDurationDays: 365,
-    xp: 2150,
-    streak: 21,
-    progress: { completedCount: 92, xp: 2150, streak: 21, speaking: 82, writing: 80, reading: 78, listening: 81 }
+    xp: 2350,
+    streak: 24,
+    progress: { completedCount: 96, xp: 2350, streak: 24, speaking: 84, writing: 81, reading: 83, listening: 86 }
   },
   {
     _id: 'student_04',
@@ -125,41 +205,113 @@ const initialUserList: any[] = [
     targetScore: '84+ (GSE 84)',
     subscription: 'free',
     accessDurationDays: 60,
-    xp: 680,
-    streak: 5,
-    progress: { completedCount: 34, xp: 680, streak: 5, speaking: 75, writing: 72, reading: 76, listening: 74 }
+    xp: 780,
+    streak: 6,
+    progress: { completedCount: 38, xp: 780, streak: 6, speaking: 76, writing: 74, reading: 78, listening: 75 }
+  },
+  {
+    _id: 'student_11',
+    id: 'student_11',
+    name: 'Manish Gurung',
+    email: 'manish.gurung@gmail.com',
+    phone: '+977 9856011223',
+    role: 'student',
+    status: 'approved',
+    branch: 'Pokhara Regional Campus',
+    targetScore: '79+ (GSE 79)',
+    subscription: 'pro',
+    accessDurationDays: 90,
+    xp: 1490,
+    streak: 14,
+    progress: { completedCount: 62, xp: 1490, streak: 14, speaking: 81, writing: 79, reading: 80, listening: 83 }
+  },
+  {
+    _id: 'student_14',
+    id: 'student_14',
+    name: 'Anuraj Phuyal',
+    email: 'anuraj.phuyal@gmail.com',
+    phone: '+977 9845012345',
+    role: 'student',
+    status: 'approved',
+    branch: 'Chitwan Academic Centre',
+    targetScore: '79+ (GSE 79)',
+    subscription: 'pro',
+    accessDurationDays: 90,
+    xp: 1250,
+    streak: 12,
+    progress: { completedCount: 52, xp: 1250, streak: 12, speaking: 79, writing: 77, reading: 78, listening: 81 }
+  },
+  {
+    _id: 'student_15',
+    id: 'student_15',
+    name: 'Nabin Silwal',
+    email: 'nabin.silwal@outlook.com',
+    phone: '+977 9855022334',
+    role: 'student',
+    status: 'approved',
+    branch: 'Lalitpur Tech Branch',
+    targetScore: '79+ (GSE 79)',
+    subscription: 'premium',
+    accessDurationDays: 180,
+    xp: 1980,
+    streak: 20,
+    progress: { completedCount: 82, xp: 1980, streak: 20, speaking: 83, writing: 81, reading: 82, listening: 85 }
+  },
+  {
+    _id: 'student_16',
+    id: 'student_16',
+    name: 'Sanjiv Maharjan',
+    email: 'sanjiv.m@gmail.com',
+    phone: '+977 9801998877',
+    role: 'student',
+    status: 'approved',
+    branch: 'Lalitpur Tech Branch',
+    targetScore: '90 (GSE 90)',
+    subscription: 'premium',
+    accessDurationDays: 365,
+    xp: 3100,
+    streak: 31,
+    progress: { completedCount: 125, xp: 3100, streak: 31, speaking: 90, writing: 88, reading: 89, listening: 90 }
   }
 ];
 
-// Live Active Sessions
+// Live Active Sessions (8 active learners)
 const initialActiveSessions = [
-  { userId: 's_1', name: 'Subash Bhandari', email: 'subash@pteai.com', module: 'Speaking — Read Aloud #14', duration: '12m online', ip: '103.1.200.4', location: 'Kathmandu' },
-  { userId: 's_2', name: 'Rohan Sharma', email: 'rohan@pteai.com', module: 'Writing — Write Essay #08', duration: '24m online', ip: '202.166.204.1', location: 'Pokhara' },
-  { userId: 's_3', name: 'Anuraj Phuyal', email: 'anuraj.phuyal@gmail.com', module: 'Reading — Fill in Blanks #02', duration: '5m online', ip: '27.34.20.11', location: 'Chitwan' },
+  { userId: 's_1', name: 'Subash Bhandari', email: 'subash.bhandari@pteai.com', module: 'Speaking — Read Aloud #14', duration: '12m online', ip: '103.1.200.4', location: 'Kathmandu Central' },
+  { userId: 's_2', name: 'Bikash Shrestha', email: 'bikash.shrestha@gmail.com', module: 'Writing — Write Essay #08', duration: '24m online', ip: '202.166.204.1', location: 'Pokhara Regional' },
+  { userId: 's_3', name: 'Anuraj Phuyal', email: 'anuraj.phuyal@gmail.com', module: 'Reading — Fill in Blanks #02', duration: '5m online', ip: '27.34.20.11', location: 'Chitwan Academic' },
+  { userId: 's_4', name: 'Pratima Thapa', email: 'pratima.thapa@outlook.com', module: 'Full Mock Exam 03 (Timed)', duration: '48m online', ip: '103.10.28.45', location: 'Kathmandu Central' },
+  { userId: 's_5', name: 'Nabin Silwal', email: 'nabin.silwal@outlook.com', module: 'Listening — Write From Dictation #22', duration: '18m online', ip: '103.20.30.40', location: 'Lalitpur Tech' },
+  { userId: 's_6', name: 'Sanjiv Maharjan', email: 'sanjiv.m@gmail.com', module: 'Speaking — Describe Image #09', duration: '31m online', ip: '103.55.66.77', location: 'Lalitpur Tech' },
+  { userId: 's_7', name: 'Aayush Koirala', email: 'aayush.koirala@gmail.com', module: 'Speaking — Re-tell Lecture #05', duration: '8m online', ip: '103.1.200.12', location: 'Kathmandu Central' },
+  { userId: 's_8', name: 'Sweta Bastola', email: 'sweta.bastola@yahoo.com', module: 'Full Mock Exam 01 (Timed)', duration: '55m online', ip: '202.166.204.88', location: 'Pokhara Regional' },
 ];
 
 // PDFs Resource Pool
 const initialPdfList = [
-  { id: 'pdf_1', title: 'PTE Academic 90-Band Master Essay Templates', category: 'Writing', size: '1.2 MB', uploadedAt: 'Yesterday', downloads: 142 },
-  { id: 'pdf_2', title: 'Describe Image & Retell Lecture Speed Cheatsheet', category: 'Speaking', size: '850 KB', uploadedAt: '3 days ago', downloads: 210 },
-  { id: 'pdf_3', title: 'Top 500 High-Frequency Academic Collocations', category: 'Vocabulary', size: '2.1 MB', uploadedAt: '1 week ago', downloads: 380 },
+  { id: 'pdf_1', title: 'PTE Academic 90-Band Master Essay Templates', category: 'Writing', size: '1.2 MB', uploadedAt: 'Yesterday', downloads: 342 },
+  { id: 'pdf_2', title: 'Describe Image & Retell Lecture Speed Cheatsheet', category: 'Speaking', size: '850 KB', uploadedAt: '3 days ago', downloads: 510 },
+  { id: 'pdf_3', title: 'Top 500 High-Frequency Academic Collocations Matrix', category: 'Vocabulary', size: '2.1 MB', uploadedAt: '1 week ago', downloads: 680 },
+  { id: 'pdf_4', title: 'Summarize Spoken Text (SST) High-Score Rubric', category: 'Listening', size: '920 KB', uploadedAt: '2 weeks ago', downloads: 290 },
+  { id: 'pdf_5', title: 'Fill in the Blanks (R&W) Grammar & Collocation Vault', category: 'Reading', size: '3.4 MB', uploadedAt: '2 weeks ago', downloads: 415 },
+  { id: 'pdf_6', title: 'Write From Dictation (WFD) 2026 High-Yield Frequency List', category: 'Listening', size: '1.8 MB', uploadedAt: '3 weeks ago', downloads: 820 },
 ];
 
 const growthData = [
-  { name: 'Thu', users: 0, sessions: 24 },
-  { name: 'Fri', users: 6, sessions: 16 },
-  { name: 'Sat', users: 9, sessions: 19 },
-  { name: 'Sun', users: 10, sessions: 20 },
-  { name: 'Mon', users: 11, sessions: 27 },
-  { name: 'Tue', users: 1, sessions: 25 },
-  { name: 'Wed', users: 0, sessions: 2 },
+  { name: 'Thu', users: 18, sessions: 42 },
+  { name: 'Fri', users: 24, sessions: 58 },
+  { name: 'Sat', users: 32, sessions: 76 },
+  { name: 'Sun', users: 38, sessions: 84 },
+  { name: 'Mon', users: 45, sessions: 92 },
+  { name: 'Tue', users: 52, sessions: 110 },
+  { name: 'Wed', users: 60, sessions: 128 },
 ];
 
 const practiceShareData = [
-  { name: 'Speaking', value: 12, color: '#818cf8' },
-  { name: 'Writing', value: 19, color: '#6366f1' },
-  { name: 'Reading', value: 44, color: '#06b6d4' },
-  { name: 'Listening', value: 25, color: '#10b981' },
+  { name: 'Speaking', value: 42, color: '#6366f1' },
+  { name: 'Listening', value: 28, color: '#10b981' },
+  { name: 'Writing', value: 18, color: '#818cf8' },
+  { name: 'Reading', value: 12, color: '#06b6d4' },
 ];
 
 export default function AdminDashboardPage() {
