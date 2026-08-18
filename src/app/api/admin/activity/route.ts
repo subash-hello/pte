@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
   // If branch admin, filter to their branch
   if (adminUser.role === 'branch_admin' && adminUser.branch) {
-    sessions = sessions.filter(s => s.branch === adminUser.branch);
+    sessions = sessions.filter((s: any) => s.branch === adminUser.branch);
   }
 
   return NextResponse.json({ success: true, sessions });

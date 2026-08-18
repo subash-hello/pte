@@ -19,7 +19,7 @@ if (!global.globalActiveSessions) {
   global.globalActiveSessions = new Map<string, ActiveSession>();
 }
 
-export const sessionTracker = {
+export const activityService = {
   recordHeartbeat(user: {
     userId?: string;
     id?: string;
@@ -77,6 +77,4 @@ export const sessionTracker = {
   }
 };
 
-export const activityService = sessionTracker;
-export const activityStore = sessionTracker;
-export default sessionTracker;
+export default activityService;
