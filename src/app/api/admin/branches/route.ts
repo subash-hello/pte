@@ -13,7 +13,7 @@ const fallbackBranchesStore = [
     adminEmail: 'ktm.admin@pteai.com',
     adminPhone: '+977 9851012345',
     status: 'active' as const,
-    studentCapacity: 200,
+    studentCapacity: 150,
     createdAt: new Date('2026-07-15').toISOString(),
   },
   {
@@ -24,8 +24,30 @@ const fallbackBranchesStore = [
     adminEmail: 'pokhara.admin@pteai.com',
     adminPhone: '+977 9856023456',
     status: 'active' as const,
-    studentCapacity: 150,
+    studentCapacity: 100,
     createdAt: new Date('2026-07-20').toISOString(),
+  },
+  {
+    _id: 'b_3',
+    name: 'Lalitpur Tech Branch',
+    location: 'Kumaripati, Lalitpur',
+    adminName: 'Nabin Silwal',
+    adminEmail: 'lalitpur.admin@pteai.com',
+    adminPhone: '+977 9855022334',
+    status: 'active' as const,
+    studentCapacity: 80,
+    createdAt: new Date('2026-08-01').toISOString(),
+  },
+  {
+    _id: 'b_4',
+    name: 'Chitwan Academic Centre',
+    location: 'Lions Chowk, Bharatpur',
+    adminName: 'Anuraj Phuyal',
+    adminEmail: 'chitwan.admin@pteai.com',
+    adminPhone: '+977 9845012345',
+    status: 'active' as const,
+    studentCapacity: 60,
+    createdAt: new Date('2026-08-10').toISOString(),
   }
 ];
 
