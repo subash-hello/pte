@@ -1,11 +1,61 @@
 import { connectDB } from './mongodb';
 import User from '../models/User';
+import Branch from '../models/Branch';
 
 export async function seedDefaultAdmin() {
   try {
     const db = await connectDB();
     if (!db) return;
     
+    // 1. Seed Real Campuses
+    const seedBranches = [
+      {
+        name: 'Kathmandu Central Campus',
+        location: 'Putalisadak, Kathmandu',
+        adminName: 'Ramesh Sharma',
+        adminEmail: 'ktm.admin@pteai.com',
+        adminPhone: '+977 9851012345',
+        status: 'active',
+        studentCapacity: 150,
+      },
+      {
+        name: 'Pokhara Regional Campus',
+        location: 'Chipledhunga, Pokhara',
+        adminName: 'Sita Sharma',
+        adminEmail: 'pokhara.admin@pteai.com',
+        adminPhone: '+977 9856023456',
+        status: 'active',
+        studentCapacity: 100,
+      },
+      {
+        name: 'Lalitpur Tech Branch',
+        location: 'Kumaripati, Lalitpur',
+        adminName: 'Nabin Silwal',
+        adminEmail: 'lalitpur.admin@pteai.com',
+        adminPhone: '+977 9855022334',
+        status: 'active',
+        studentCapacity: 80,
+      },
+      {
+        name: 'Chitwan Academic Centre',
+        location: 'Lions Chowk, Bharatpur',
+        adminName: 'Anuraj Phuyal',
+        adminEmail: 'chitwan.admin@pteai.com',
+        adminPhone: '+977 9845012345',
+        status: 'active',
+        studentCapacity: 60,
+      },
+    ];
+
+    for (const b of seedBranches) {
+      const exists = await Branch.findOne({ name: b.name });
+      if (!exists) {
+        const branchDoc = new Branch(b);
+        await branchDoc.save();
+      }
+    }
+
+    // 2. Seed Real Users & Candidates
     const seedUsers = [
       {
         name: 'Super Admin',
@@ -16,11 +66,11 @@ export async function seedDefaultAdmin() {
         status: 'approved',
         approvedAt: new Date(),
         branch: 'Central Headquarters',
-        pteGoal: 79,
+        pteGoal: 90,
         subscription: 'premium',
         accessDurationDays: 365,
-        xp: 2500,
-        streak: 30,
+        xp: 3850,
+        streak: 45,
         level: 10
       },
       {
@@ -35,9 +85,9 @@ export async function seedDefaultAdmin() {
         pteGoal: 79,
         subscription: 'premium',
         accessDurationDays: 365,
-        xp: 1200,
-        streak: 15,
-        level: 5
+        xp: 2200,
+        streak: 28,
+        level: 7
       },
       {
         name: 'Sita Sharma',
@@ -51,9 +101,9 @@ export async function seedDefaultAdmin() {
         pteGoal: 79,
         subscription: 'premium',
         accessDurationDays: 365,
-        xp: 1850,
-        streak: 22,
-        level: 7
+        xp: 2450,
+        streak: 32,
+        level: 8
       },
       {
         name: 'Subash Bhandari',
@@ -67,8 +117,8 @@ export async function seedDefaultAdmin() {
         pteGoal: 79,
         subscription: 'pro',
         accessDurationDays: 90,
-        xp: 1420,
-        streak: 14,
+        xp: 1850,
+        streak: 18,
         level: 6
       },
       {
@@ -83,9 +133,89 @@ export async function seedDefaultAdmin() {
         pteGoal: 65,
         subscription: 'free',
         accessDurationDays: 30,
-        xp: 420,
-        streak: 3,
+        xp: 450,
+        streak: 4,
         level: 2
+      },
+      {
+        name: 'Aayush Koirala',
+        email: 'aayush.koirala@gmail.com',
+        phone: '+977 9841889900',
+        password: 'student123',
+        role: 'student',
+        status: 'approved',
+        approvedAt: new Date(),
+        branch: 'Kathmandu Central Campus',
+        pteGoal: 79,
+        subscription: 'premium',
+        accessDurationDays: 180,
+        xp: 1620,
+        streak: 15,
+        level: 5
+      },
+      {
+        name: 'Pratima Thapa',
+        email: 'pratima.thapa@outlook.com',
+        phone: '+977 9812998877',
+        password: 'student123',
+        role: 'student',
+        status: 'approved',
+        approvedAt: new Date(),
+        branch: 'Kathmandu Central Campus',
+        pteGoal: 90,
+        subscription: 'premium',
+        accessDurationDays: 365,
+        xp: 2950,
+        streak: 29,
+        level: 9
+      },
+      {
+        name: 'Suman Maharjan',
+        email: 'suman.maharjan@yahoo.com',
+        phone: '+977 9851044332',
+        password: 'student123',
+        role: 'student',
+        status: 'pending',
+        approvedAt: null,
+        branch: 'Kathmandu Central Campus',
+        pteGoal: 65,
+        subscription: 'free',
+        accessDurationDays: 30,
+        xp: 320,
+        streak: 2,
+        level: 2
+      },
+      {
+        name: 'Deepak Regmi',
+        email: 'deepak.regmi@gmail.com',
+        phone: '+977 9860114477',
+        password: 'student123',
+        role: 'student',
+        status: 'approved',
+        approvedAt: new Date(),
+        branch: 'Kathmandu Central Campus',
+        pteGoal: 79,
+        subscription: 'pro',
+        accessDurationDays: 90,
+        xp: 1150,
+        streak: 11,
+        level: 4
+      },
+      {
+        name: 'Kripa Shrestha',
+        email: 'kripa.shrestha@gmail.com',
+        phone: '+977 9803112233',
+        password: 'student123',
+        role: 'student',
+        status: 'approved',
+        approvedAt: new Date(),
+        branch: 'Kathmandu Central Campus',
+        pteGoal: 79,
+        subscription: 'pro',
+        accessDurationDays: 90,
+        xp: 1380,
+        streak: 13,
+        level: 5
       },
       {
         name: 'Bikash Shrestha',
@@ -99,8 +229,8 @@ export async function seedDefaultAdmin() {
         pteGoal: 79,
         subscription: 'premium',
         accessDurationDays: 365,
-        xp: 2150,
-        streak: 21,
+        xp: 2350,
+        streak: 24,
         level: 8
       },
       {
@@ -115,9 +245,73 @@ export async function seedDefaultAdmin() {
         pteGoal: 84,
         subscription: 'free',
         accessDurationDays: 60,
-        xp: 680,
-        streak: 5,
+        xp: 780,
+        streak: 6,
         level: 3
+      },
+      {
+        name: 'Manish Gurung',
+        email: 'manish.gurung@gmail.com',
+        phone: '+977 9856011223',
+        password: 'student123',
+        role: 'student',
+        status: 'approved',
+        approvedAt: new Date(),
+        branch: 'Pokhara Regional Campus',
+        pteGoal: 79,
+        subscription: 'pro',
+        accessDurationDays: 90,
+        xp: 1490,
+        streak: 14,
+        level: 5
+      },
+      {
+        name: 'Anuraj Phuyal',
+        email: 'anuraj.phuyal@gmail.com',
+        phone: '+977 9845012345',
+        password: 'student123',
+        role: 'student',
+        status: 'approved',
+        approvedAt: new Date(),
+        branch: 'Chitwan Academic Centre',
+        pteGoal: 79,
+        subscription: 'pro',
+        accessDurationDays: 90,
+        xp: 1250,
+        streak: 12,
+        level: 4
+      },
+      {
+        name: 'Nabin Silwal',
+        email: 'nabin.silwal@outlook.com',
+        phone: '+977 9855022334',
+        password: 'student123',
+        role: 'student',
+        status: 'approved',
+        approvedAt: new Date(),
+        branch: 'Lalitpur Tech Branch',
+        pteGoal: 79,
+        subscription: 'premium',
+        accessDurationDays: 180,
+        xp: 1980,
+        streak: 20,
+        level: 7
+      },
+      {
+        name: 'Sanjiv Maharjan',
+        email: 'sanjiv.m@gmail.com',
+        phone: '+977 9801998877',
+        password: 'student123',
+        role: 'student',
+        status: 'approved',
+        approvedAt: new Date(),
+        branch: 'Lalitpur Tech Branch',
+        pteGoal: 90,
+        subscription: 'premium',
+        accessDurationDays: 365,
+        xp: 3100,
+        streak: 31,
+        level: 10
       }
     ];
 
