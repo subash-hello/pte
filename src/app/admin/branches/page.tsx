@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { 
   GitBranch, 
   Plus, 
@@ -246,12 +247,12 @@ export default function BranchesPage() {
             <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
               <span className="text-[11px] text-slate-400 font-medium">Joined {branch.createdAt}</span>
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => alert(`Opening student directory filtered for ${branch.name}...`)}
-                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                <Link
+                  href={`/admin/users?branch=${encodeURIComponent(branch.name)}`}
+                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors cursor-pointer inline-block"
                 >
                   View Students →
-                </button>
+                </Link>
                 <button
                   onClick={() => handleDeleteBranch(branch.id)}
                   className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"

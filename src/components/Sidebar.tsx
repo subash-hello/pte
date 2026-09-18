@@ -30,6 +30,7 @@ export default function Sidebar({
     { id: "reading", label: "Reading", icon: "book", section: "reading" },
     { id: "listening", label: "Listening", icon: "headphones", section: "listening" },
     { id: "mock", label: "Mock Tests", icon: "file-text" },
+    { id: "diagnostic", label: "Diagnostic Test", icon: "zap" },
     { id: "ai_tutor", label: "AI Tutor", icon: "bot" },
     { id: "vocabulary", label: "Vocabulary", icon: "bookmark" },
     { id: "progress", label: "Progress", icon: "bar-chart" },
@@ -39,6 +40,14 @@ export default function Sidebar({
   ];
 
   const handleTabClick = (item: any) => {
+    if (item.id === "diagnostic") {
+      window.location.href = "/dashboard/diagnostic";
+      return;
+    }
+    if (item.id === "mock") {
+      window.location.href = "/dashboard/mock-test";
+      return;
+    }
     setActiveTab(item.id);
     if (item.section && onSelectSection) {
       onSelectSection(item.section);
@@ -84,6 +93,12 @@ export default function Sidebar({
         return (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        );
+      case "zap":
+        return (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         );
       case "bot":

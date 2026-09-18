@@ -373,14 +373,12 @@ function DashboardContent() {
           <p className="text-xs text-text-muted leading-relaxed">
             Take this baseline diagnostic test to uncover your strengths and weaknesses across Speaking, Writing, Reading, and Listening.
           </p>
-          <button
-            onClick={() => {
-              router.push("/dashboard?tab=speaking");
-            }}
-            className="px-6 py-3 rounded-xl bg-accent text-white font-bold text-xs shadow-lg shadow-indigo-500/20 cursor-pointer"
+          <Link
+            href="/dashboard/diagnostic"
+            className="inline-block px-6 py-3 rounded-xl bg-accent text-white font-bold text-xs shadow-lg shadow-indigo-500/20 hover:bg-accent-bright transition-all cursor-pointer"
           >
             Start Diagnostic Test Now →
-          </button>
+          </Link>
         </div>
       )}
     </div>

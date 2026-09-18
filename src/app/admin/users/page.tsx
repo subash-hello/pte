@@ -175,6 +175,13 @@ export default function UsersPage() {
 
   useEffect(() => {
     loadUsers();
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const branchParam = urlParams.get('branch');
+      if (branchParam) {
+        setSearch(branchParam);
+      }
+    }
   }, []);
 
   const handleAuthorizeUser = async (id: string) => {

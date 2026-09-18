@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { UserSession } from "@/types/auth";
 import { Sparkles, CheckCircle2, Flame, Award, ArrowRight, Zap, Target, BookOpen, Mic, Edit3, Headphones, Clock, HelpCircle } from "lucide-react";
 
@@ -153,13 +154,13 @@ export default function DashboardView({ onStartPractice, onStartMock, userSessio
           </div>
         </div>
 
-        <button
-          onClick={onStartMock}
+        <Link
+          href="/dashboard/diagnostic"
           className="px-5 py-2.5 rounded-xl bg-white text-indigo-700 hover:bg-indigo-50 font-extrabold text-xs shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
         >
           <span>Start Diagnostic Test</span>
           <ArrowRight className="w-4 h-4" />
-        </button>
+        </Link>
       </div>
 
       {/* 2. Header Greeting & Quick Actions */}
@@ -179,12 +180,12 @@ export default function DashboardView({ onStartPractice, onStartMock, userSessio
         </div>
 
         <div className="flex items-center gap-2.5">
-          <button 
-            onClick={() => alert(`User Guide & 90-Band Templates Vault loaded for ${fullUserName}.`)}
+          <Link 
+            href="/dashboard?tab=templates"
             className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
             <span>📚 Templates Vault</span>
-          </button>
+          </Link>
           <a
             href="https://wa.me/9779763876490"
             target="_blank"
