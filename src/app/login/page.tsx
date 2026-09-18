@@ -13,8 +13,8 @@ import { setSession } from '@/lib/session';
 export default function LoginPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [email, setEmail] = useState('admin@ielts.ai');
-  const [password, setPassword] = useState('adminpass123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -292,53 +292,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          {/* Quick Demo Credentials Bar (for user evaluation) */}
-          <div className="mt-6 pt-6 border-t border-slate-100">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5 text-center">
-              Quick One-Click Test Accounts
-            </span>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail('admin@ielts.ai');
-                  setPassword('adminpass123');
-                  handleLogin(undefined, 'admin@ielts.ai', 'adminpass123');
-                }}
-                className="p-2 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-left transition-all cursor-pointer group"
-              >
-                <span className="text-[10px] font-black text-indigo-700 block truncate group-hover:text-indigo-800">Super Admin</span>
-                <span className="text-[9px] text-slate-500 font-mono block truncate">admin@ielts.ai</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail('ktm.admin@pteai.com');
-                  setPassword('adminpass123');
-                  handleLogin(undefined, 'ktm.admin@pteai.com', 'adminpass123');
-                }}
-                className="p-2 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-left transition-all cursor-pointer group"
-              >
-                <span className="text-[10px] font-black text-slate-800 block truncate group-hover:text-indigo-800">Branch Admin</span>
-                <span className="text-[9px] text-slate-500 font-mono block truncate">ktm.admin</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail('student@pteai.com');
-                  setPassword('adminpass123');
-                  handleLogin(undefined, 'student@pteai.com', 'adminpass123');
-                }}
-                className="p-2 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-left transition-all cursor-pointer group"
-              >
-                <span className="text-[10px] font-black text-emerald-700 block truncate group-hover:text-emerald-800">Student</span>
-                <span className="text-[9px] text-slate-500 font-mono block truncate">student@pteai</span>
-              </button>
-            </div>
-          </div>
 
           {/* Links to Signup & Staff Gate */}
           <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">

@@ -9,8 +9,8 @@ import { setSession } from '@/lib/session';
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('admin@ielts.ai');
-  const [password, setPassword] = useState('adminpass123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -114,7 +114,7 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="admin@ielts.ai or admin@ptemaster.com"
+                placeholder="Enter administrative email address"
                 className="w-full pl-11 pr-4 py-3 bg-[#0c1220] border border-slate-700/80 rounded-xl text-white text-xs font-semibold placeholder:text-slate-600 focus:outline-none focus:border-rose-500 focus:bg-[#0c1220] transition-all"
               />
             </div>
@@ -162,40 +162,6 @@ export default function AdminLoginPage() {
             )}
           </button>
         </form>
-
-        {/* Quick Launch Buttons */}
-        <div className="mt-6 pt-5 border-t border-slate-800">
-          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest block mb-2 text-center">
-            One-Click Administrative Logins
-          </span>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('admin@ielts.ai');
-                setPassword('adminpass123');
-                handleSubmit(undefined as any, 'admin@ielts.ai', 'adminpass123');
-              }}
-              className="p-2.5 rounded-xl bg-[#0c1220] border border-slate-800 hover:border-rose-500/50 text-left transition-all cursor-pointer"
-            >
-              <span className="text-[10px] font-bold text-rose-400 block truncate">Super Admin</span>
-              <span className="text-[9px] text-slate-500 font-mono block truncate">admin@ielts.ai</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('ktm.admin@pteai.com');
-                setPassword('adminpass123');
-                handleSubmit(undefined as any, 'ktm.admin@pteai.com', 'adminpass123');
-              }}
-              className="p-2.5 rounded-xl bg-[#0c1220] border border-slate-800 hover:border-amber-500/50 text-left transition-all cursor-pointer"
-            >
-              <span className="text-[10px] font-bold text-amber-400 block truncate">Branch Director</span>
-              <span className="text-[9px] text-slate-500 font-mono block truncate">ktm.admin</span>
-            </button>
-          </div>
-        </div>
 
         {/* Back to Candidate Portal */}
         <div className="mt-6 pt-4 border-t border-slate-800 text-center">

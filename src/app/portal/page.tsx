@@ -1,54 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { 
   User, Building2, Shield, ArrowRight, Sparkles, CheckCircle2, 
-  BookOpen, Award, Zap, Brain, Lock, ExternalLink, Loader2 
+  BookOpen, Award, Zap, Brain, Lock, ExternalLink 
 } from 'lucide-react';
-import { UserRole } from '@/types/auth';
-import { setSession } from '@/lib/session';
 
 export default function PortalPage() {
-  const [loadingRole, setLoadingRole] = useState<string | null>(null);
-
-  const handleInstantLaunch = async (role: UserRole) => {
-    setLoadingRole(role);
-    let email = 'student@pteai.com';
-    let password = 'adminpass123';
-
-    if (role === 'branch_admin') {
-      email = 'ktm.admin@pteai.com';
-      password = 'adminpass123';
-    } else if (role === 'super_admin') {
-      email = 'admin@ielts.ai';
-      password = 'adminpass123';
-    }
-
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setSession(data.token, data.user);
-        if (role === 'super_admin' || role === 'branch_admin') {
-          window.location.href = '/admin';
-        } else {
-          window.location.href = '/dashboard';
-        }
-      } else {
-        window.location.href = '/login';
-      }
-    } catch {
-      window.location.href = '/login';
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#faf9f6] text-[#1e293b] flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
@@ -115,23 +76,13 @@ export default function PortalPage() {
               </div>
 
               <div className="space-y-3 pt-4 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => handleInstantLaunch('student')}
-                  disabled={Boolean(loadingRole)}
-                  className="w-full py-3.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                <Link
+                  href="/login"
+                  className="w-full py-3.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  {loadingRole === 'student' ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" /> Launching Student Dashboard...
-                    </>
-                  ) : (
-                    <>
-                      <span>Enter Student Portal</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
+                  <span>Enter Student Portal</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
 
                 <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 pt-1">
                   <Link href="/login" className="hover:text-indigo-600 hover:underline">
@@ -184,27 +135,13 @@ export default function PortalPage() {
               </div>
 
               <div className="space-y-3 pt-4 border-t border-slate-800 relative z-10">
-                <button
-                  type="button"
-                  onClick={() => handleInstantLaunch('branch_admin')}
-                  disabled={Boolean(loadingRole)}
-                  className="w-full py-3.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                <Link
+                  href="/admin-login"
+                  className="w-full py-3.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  {loadingRole === 'branch_admin' ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" /> Launching Branch Portal...
-                    </>
-                  ) : (
-                    <>
-                      <span>Enter Branch Director Portal</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-
-                <div className="text-center text-[11px] font-bold text-slate-400 pt-1">
-                  <span>Preset: <code>ktm.admin@pteai.com</code></span>
-                </div>
+                  <span>Enter Branch Director Portal</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </div>
 
@@ -246,27 +183,13 @@ export default function PortalPage() {
               </div>
 
               <div className="space-y-3 pt-4 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => handleInstantLaunch('super_admin')}
-                  disabled={Boolean(loadingRole)}
-                  className="w-full py-3.5 px-4 rounded-xl bg-[#0f172a] hover:bg-slate-800 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                <Link
+                  href="/admin-login"
+                  className="w-full py-3.5 px-4 rounded-xl bg-[#0f172a] hover:bg-slate-800 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  {loadingRole === 'super_admin' ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" /> Launching Super Admin...
-                    </>
-                  ) : (
-                    <>
-                      <span>Enter Super Admin HQ</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-
-                <div className="text-center text-[11px] font-bold text-slate-500 pt-1">
-                  <span>Preset: <code>admin@ielts.ai</code></span>
-                </div>
+                  <span>Enter Super Admin HQ</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </div>
           </div>
