@@ -8,9 +8,8 @@ import {
   User, Building2, Shield, ArrowRight, Sparkles, CheckCircle2, 
   BookOpen, Award, Zap, Brain, Lock, ExternalLink, Loader2 
 } from 'lucide-react';
-import { setSession } from '@/lib/session';
 import { UserRole } from '@/types/auth';
-import RoleSwitcherBar from '@/components/RoleSwitcherBar';
+import { setSession } from '@/lib/session';
 
 export default function PortalPage() {
   const [loadingRole, setLoadingRole] = useState<string | null>(null);
@@ -53,7 +52,6 @@ export default function PortalPage() {
 
   return (
     <div className="min-h-screen bg-[#faf9f6] text-[#1e293b] flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
-      <RoleSwitcherBar />
       <Navbar />
 
       <main className="flex-1 pt-32 pb-24">

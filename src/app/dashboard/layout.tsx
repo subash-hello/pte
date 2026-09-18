@@ -31,7 +31,6 @@ import {
   Moon,
 } from 'lucide-react';
 import FloatingSiriCoach from '@/components/FloatingSiriCoach';
-import RoleSwitcherBar from '@/components/RoleSwitcherBar';
 import { useTheme } from '@/context/ThemeContext';
 import { getUser, authFetch } from '@/lib/session';
 
@@ -261,9 +260,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen flex flex-col font-sans gradient-mesh-bg">
-      {/* Dev Role Switcher Bar */}
-      <RoleSwitcherBar />
-
       {/* Floating Global Toast */}
       <AnimatePresence>
         {toastMsg && (

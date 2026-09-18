@@ -744,10 +744,10 @@ export default function AdminDashboardPage() {
                 </div>
                 <div>
                   <h3 className="text-3xl font-black text-slate-900 font-satoshi tracking-tight flex items-center gap-2">
-                    Atlas <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                    Supabase <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
                   </h3>
                   <p className="text-[11px] font-bold text-slate-400 mt-2">
-                    Live cluster connected
+                    Live PostgreSQL & Auth connected
                   </p>
                 </div>
               </div>

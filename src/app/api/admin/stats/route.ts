@@ -37,7 +37,8 @@ export async function GET(request: NextRequest) {
           approvedUsers,
           declinedUsers,
           roles,
-          recentRegistrations: totalUsers
+          recentRegistrations: totalUsers,
+          databaseEngine: 'Supabase'
         }
       });
     }
@@ -76,7 +77,8 @@ export async function GET(request: NextRequest) {
         approvedUsers,
         declinedUsers,
         roles,
-        recentRegistrations
+        recentRegistrations,
+        databaseEngine: 'Supabase'
       }
     });
   } catch (error: any) {
@@ -90,7 +92,8 @@ export async function GET(request: NextRequest) {
         approvedUsers: fbUsers.filter(u => u.status === 'approved').length,
         declinedUsers: fbUsers.filter(u => u.status === 'declined').length,
         roles: { student: 4, branch_admin: 2, super_admin: 1 },
-        recentRegistrations: fbUsers.length
+        recentRegistrations: fbUsers.length,
+        databaseEngine: 'Supabase'
       }
     });
   }
