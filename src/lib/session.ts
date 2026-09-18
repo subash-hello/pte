@@ -56,6 +56,16 @@ export function getUser(): SessionUser | null {
 }
 
 /**
+ * Get stored session (token + user)
+ */
+export function getSession(): { token: string; user: SessionUser } | null {
+  const token = getToken();
+  const user = getUser();
+  if (!token || !user) return null;
+  return { token, user };
+}
+
+/**
  * Clear session (logout)
  */
 export function clearSession(): void {

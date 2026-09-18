@@ -92,6 +92,61 @@ export async function POST(request: NextRequest) {
       role = 'student';
     }
 
+    const assignedStatus = status || 'approved';
+    const assignedPassword = password || 'student123';
+
+    // 1. Create in Supabase Auth
+    try {
+      const supaUser = await (await import('@/server/services/supabaseAuthAdapter')).supabaseAuthAdapter.signUp({
+        name,
+        email,
+        password: assignedPassword,
+        phone,
+        role: role || 'student',
+        branch: branch || 'Kathmandu Central Campus',
+        status: assignedStatus,
+        targetScore: targetScore || '79+ (GSE 79)'
+      });
+
+      if (supaUser.success && supaUser.user) {
+        // Also persist in MongoDB in background
+        connectToDatabase().then(async (db) => {
+          if (db) {
+            const exists = await User.findOne({ email: email.toLowerCase() });
+            if (!exists) {
+              await User.create({
+                name,
+                email: email.toLowerCase(),
+                phone,
+                password: assignedPassword,
+                role: role || 'student',
+                branch: branch || 'Kathmandu Central Campus',
+                status: assignedStatus,
+                accessDurationDays: accessDurationDays || 365,
+                approvedAt: assignedStatus === 'approved' ? new Date() : null
+              });
+            }
+          }
+        }).catch(() => {});
+
+        const { fallbackDb } = await import('@/lib/fallbackDb');
+        fallbackDb.createUser({
+          name,
+          email,
+          phone,
+          password: assignedPassword,
+          role: role || 'student',
+          branch: branch || 'Kathmandu Central Campus',
+          status: assignedStatus,
+          accessDurationDays: accessDurationDays || 365
+        });
+
+        return NextResponse.json({ success: true, user: sanitizeUser(supaUser.user) }, { status: 201 });
+      }
+    } catch (e) {
+      console.warn('Supabase admin create student notice:', e);
+    }
+
     const db = await connectToDatabase();
     if (!db) {
       const { fallbackDb } = await import('@/lib/fallbackDb');
@@ -104,10 +159,10 @@ export async function POST(request: NextRequest) {
         name,
         email,
         phone,
-        password: password || 'student123',
+        password: assignedPassword,
         role: role || 'student',
         branch: branch || 'Kathmandu Central Campus',
-        status: status || 'approved',
+        status: assignedStatus,
         accessDurationDays: accessDurationDays || 30
       });
 
@@ -123,12 +178,12 @@ export async function POST(request: NextRequest) {
       name,
       email: email.toLowerCase(),
       phone,
-      password: password || 'student123',
+      password: assignedPassword,
       role: role || 'student',
       branch: branch || '',
-      status: status || 'approved',
+      status: assignedStatus,
       accessDurationDays: accessDurationDays || 30,
-      approvedAt: status === 'pending' ? null : new Date()
+      approvedAt: assignedStatus === 'pending' ? null : new Date()
     });
 
     await newUser.save();

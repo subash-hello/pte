@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
 import { connectToDatabase } from './mongodb';
 import User, { IUser } from '../models/User';
+import { supabaseAuthAdapter } from '@/server/services/supabaseAuthAdapter';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'pte-master-ai-production-jwt-secret-2026-x9k4m7qz';
 const JWT_EXPIRES_IN = '7d';
@@ -15,11 +16,12 @@ export interface JWTPayload {
 /**
  * Generate a signed JWT token for a user
  */
-export function generateToken(user: IUser): string {
+export function generateToken(user: any): string {
+  const userId = user.id || (user._id ? user._id.toString() : '');
   const payload: JWTPayload = {
-    id: user._id.toString(),
-    role: user.role,
-    tokenVersion: user.tokenVersion,
+    id: userId,
+    role: user.role || 'student',
+    tokenVersion: user.tokenVersion !== undefined ? user.tokenVersion : 1,
   };
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 }
@@ -51,11 +53,9 @@ export function extractToken(request: NextRequest): string | null {
  * Full authentication verification:
  * 1. Extract token from request
  * 2. Verify JWT signature
- * 3. Fetch user from database
+ * 3. Fetch user from Supabase Auth primary, then MongoDB fallback
  * 4. Enforce tokenVersion (single-device sessions)
  * 5. Check account status
- *
- * Returns the authenticated user or null
  */
 export async function verifyAuth(request: NextRequest): Promise<any | null> {
   const token = extractToken(request);
@@ -65,25 +65,37 @@ export async function verifyAuth(request: NextRequest): Promise<any | null> {
   if (!decoded) return null;
 
   try {
+    // 1. Primary Check: Supabase Auth
+    const supaUser = await supabaseAuthAdapter.getUserById(decoded.id);
+    if (supaUser) {
+      if (decoded.tokenVersion !== undefined && supaUser.tokenVersion !== undefined && supaUser.tokenVersion !== decoded.tokenVersion) {
+        return null; // Expired by newer login on another device
+      }
+      return supaUser;
+    }
+
+    // 2. Secondary Check: MongoDB
     const db = await connectToDatabase();
-    if (!db) {
-      const fbUser = (await import('./fallbackDb')).fallbackDb.findById(decoded.id);
-      if (!fbUser) return null;
+    if (db) {
+      const user = await User.findById(decoded.id).select('-password');
+      if (user) {
+        if (decoded.tokenVersion !== undefined && user.tokenVersion !== decoded.tokenVersion) {
+          return null;
+        }
+        return user;
+      }
+    }
+
+    // 3. Fallback Database
+    const fbUser = (await import('./fallbackDb')).fallbackDb.findById(decoded.id);
+    if (fbUser) {
       if (decoded.tokenVersion !== undefined && fbUser.tokenVersion !== decoded.tokenVersion) {
         return null;
       }
       return fbUser;
     }
 
-    const user = await User.findById(decoded.id).select('-password');
-    if (!user) return null;
-
-    // Enforce single-device session (tokenVersion mismatch = kicked)
-    if (decoded.tokenVersion !== undefined && user.tokenVersion !== decoded.tokenVersion) {
-      return null;
-    }
-
-    return user;
+    return null;
   } catch (error) {
     console.error('Auth verification error:', error);
     const fbUser = (await import('./fallbackDb')).fallbackDb.findById(decoded.id);
@@ -94,7 +106,7 @@ export async function verifyAuth(request: NextRequest): Promise<any | null> {
 /**
  * Verify auth and require admin or branch_admin role
  */
-export async function verifyAdminAuth(request: NextRequest): Promise<IUser | null> {
+export async function verifyAdminAuth(request: NextRequest): Promise<any | null> {
   const user = await verifyAuth(request);
   if (!user) return null;
   if (user.role !== 'super_admin' && user.role !== 'branch_admin') return null;
@@ -104,7 +116,7 @@ export async function verifyAdminAuth(request: NextRequest): Promise<IUser | nul
 /**
  * Verify auth and require super_admin role only
  */
-export async function verifySuperAdminAuth(request: NextRequest): Promise<IUser | null> {
+export async function verifySuperAdminAuth(request: NextRequest): Promise<any | null> {
   const user = await verifyAuth(request);
   if (!user) return null;
   if (user.role !== 'super_admin') return null;
@@ -115,7 +127,7 @@ export async function verifySuperAdminAuth(request: NextRequest): Promise<IUser 
  * Sanitize user object for client response (remove sensitive fields)
  */
 export function sanitizeUser(user: any) {
-  const userId = user._id ? user._id.toString() : (user.id || '');
+  const userId = user.id || (user._id ? user._id.toString() : '');
   return {
     _id: userId,
     id: userId,
@@ -124,10 +136,11 @@ export function sanitizeUser(user: any) {
     phone: user.phone || '',
     role: user.role || 'student',
     status: user.status || 'pending',
-    branch: user.branch || 'Kathmandu Main Campus',
+    branch: user.branch || 'Kathmandu Central Campus',
     pteGoal: user.pteGoal || 79,
-    subscription: user.subscription || 'free',
-    accessDurationDays: user.accessDurationDays || 30,
+    targetScore: user.targetScore || `${user.pteGoal || 79}+ (GSE ${user.pteGoal || 79})`,
+    subscription: user.subscription || 'premium',
+    accessDurationDays: user.accessDurationDays || 365,
     approvedAt: user.approvedAt || null,
     xp: user.xp || 0,
     streak: user.streak || 0,
@@ -139,3 +152,4 @@ export function sanitizeUser(user: any) {
 }
 
 export const extractUserFromRequest = verifyAuth;
+export default verifyAuth;

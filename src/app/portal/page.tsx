@@ -17,15 +17,15 @@ export default function PortalPage() {
 
   const handleInstantLaunch = async (role: UserRole) => {
     setLoadingRole(role);
-    let email = 'subash.bhandari@pteai.com';
-    let password = 'password123';
+    let email = 'student@pteai.com';
+    let password = 'adminpass123';
 
     if (role === 'branch_admin') {
       email = 'ktm.admin@pteai.com';
-      password = 'admin123';
+      password = 'adminpass123';
     } else if (role === 'super_admin') {
-      email = 'admin@ptemaster.com';
-      password = 'admin123';
+      email = 'admin@ielts.ai';
+      password = 'adminpass123';
     }
 
     try {
@@ -267,7 +267,7 @@ export default function PortalPage() {
                 </button>
 
                 <div className="text-center text-[11px] font-bold text-slate-500 pt-1">
-                  <span>Preset: <code>admin@ptemaster.com</code></span>
+                  <span>Preset: <code>admin@ielts.ai</code></span>
                 </div>
               </div>
             </div>

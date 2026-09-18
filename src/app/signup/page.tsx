@@ -72,11 +72,18 @@ export default function SignupPage() {
 
       // Store authenticated session
       setSession(data.token, data.user);
-      setSuccessMessage('Account registered successfully! Redirecting to student practice dashboard...');
 
-      setTimeout(() => {
-        window.location.href = '/dashboard';
-      }, 500);
+      if (data.user.status === 'pending') {
+        setSuccessMessage('Registration submitted! Redirecting to campus authorization desk...');
+        setTimeout(() => {
+          router.push('/approval-wait');
+        }, 600);
+      } else {
+        setSuccessMessage('Account registered successfully! Redirecting to student practice dashboard...');
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 500);
+      }
     } catch (err: any) {
       setError(err.message || 'An error occurred during account creation.');
       setIsLoading(false);

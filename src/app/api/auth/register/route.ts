@@ -1,81 +1,142 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { supabaseAuthAdapter } from '@/server/services/supabaseAuthAdapter';
+import { generateToken, sanitizeUser } from '@/lib/auth';
 import { connectToDatabase } from '@/lib/mongodb';
 import User from '@/models/User';
-import { generateToken, sanitizeUser } from '@/lib/auth';
 import { fallbackDb } from '@/lib/fallbackDb';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, password, branch, pteGoal } = body;
+    const { name, email, phone, password, branch, pteGoal, targetScore, status } = body;
 
     if (!name || !email || !password) {
-      return NextResponse.json({ success: false, message: 'Missing required fields (Name, Email, Password)' }, { status: 400 });
+      return NextResponse.json({
+        success: false,
+        message: 'Missing required fields (Full Name, Email, Password)'
+      }, { status: 400 });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    const db = await connectToDatabase();
+    const studentStatus = status || 'approved'; // Can be 'approved' or 'pending'
 
-    // Fallback mode if MongoDB Atlas IP is not connected
-    if (!db) {
-      const existingFbUser = fallbackDb.findByEmail(normalizedEmail);
-      if (existingFbUser) {
+    // 1. Primary Registration: Supabase Auth
+    try {
+      const supaResult = await supabaseAuthAdapter.signUp({
+        name: name.trim(),
+        email: normalizedEmail,
+        password,
+        phone: phone ? phone.trim() : '+977 9800000000',
+        branch: branch || 'Kathmandu Central Campus',
+        pteGoal: pteGoal ? Number(pteGoal) : 79,
+        targetScore: targetScore || `${pteGoal || 79}+ (GSE ${pteGoal || 79})`,
+        role: 'student',
+        status: studentStatus,
+      });
+
+      if (!supaResult.success) {
+        return NextResponse.json({
+          success: false,
+          message: supaResult.error || 'Failed to create candidate account.'
+        }, { status: 409 });
+      }
+
+      if (supaResult.user) {
+        const token = generateToken(supaResult.user);
+
+        // Mirror to MongoDB Atlas in background
+        connectToDatabase().then(async (db) => {
+          if (db) {
+            const exists = await User.findOne({ email: normalizedEmail });
+            if (!exists) {
+              await User.create({
+                name: name.trim(),
+                email: normalizedEmail,
+                phone: phone ? phone.trim() : '',
+                password,
+                branch: branch || 'Kathmandu Central Campus',
+                pteGoal: pteGoal ? Number(pteGoal) : 79,
+                role: 'student',
+                status: studentStatus,
+                approvedAt: studentStatus === 'approved' ? new Date() : null,
+              });
+            }
+          }
+        }).catch(() => {});
+
+        return NextResponse.json({
+          success: true,
+          token,
+          user: sanitizeUser(supaResult.user),
+          message: studentStatus === 'pending'
+            ? 'Account registered. Awaiting campus administration authorization.'
+            : 'Account registered successfully!'
+        }, { status: 201 });
+      }
+    } catch (supaErr: any) {
+      console.warn('Supabase signup error, using secondary stores:', supaErr);
+    }
+
+    // 2. Secondary Registration: MongoDB Atlas
+    const db = await connectToDatabase();
+    if (db) {
+      const existingUser = await User.findOne({ email: normalizedEmail });
+      if (existingUser) {
         return NextResponse.json({ success: false, message: 'Email address is already registered' }, { status: 409 });
       }
 
-      const newFbUser = await fallbackDb.createUser({
+      const user = new User({
         name: name.trim(),
         email: normalizedEmail,
-        phone: phone ? phone.trim() : '+977 9800000000',
+        phone: phone ? phone.trim() : '',
         password,
-        branch: branch || 'Kathmandu Main Campus',
+        branch: branch || 'Kathmandu Central Campus',
         pteGoal: pteGoal ? Number(pteGoal) : 79,
         role: 'student',
-        status: 'approved',
-        approvedAt: new Date().toISOString()
+        status: studentStatus,
+        approvedAt: studentStatus === 'approved' ? new Date() : null,
+        lastLoginAt: new Date()
       });
 
-      const token = fallbackDb.generateToken(newFbUser);
-
+      await user.save();
+      const token = generateToken(user);
+      
       return NextResponse.json({
         success: true,
         token,
-        user: newFbUser,
-        message: 'Account created successfully!'
+        user: sanitizeUser(user),
+        message: 'Account registered successfully!'
       }, { status: 201 });
     }
 
-    // Normal MongoDB Atlas flow
-    const existingUser = await User.findOne({ email: normalizedEmail });
-    if (existingUser) {
+    // 3. Fallback database
+    const existingFb = fallbackDb.findByEmail(normalizedEmail);
+    if (existingFb) {
       return NextResponse.json({ success: false, message: 'Email address is already registered' }, { status: 409 });
     }
 
-    const user = new User({
+    const newFb = await fallbackDb.createUser({
       name: name.trim(),
       email: normalizedEmail,
-      phone: phone ? phone.trim() : '',
+      phone: phone ? phone.trim() : '+977 9800000000',
       password,
-      branch: branch || 'Kathmandu Main Campus',
+      branch: branch || 'Kathmandu Central Campus',
       pteGoal: pteGoal ? Number(pteGoal) : 79,
       role: 'student',
-      status: 'approved',
-      approvedAt: new Date(),
-      lastLoginAt: new Date()
+      status: studentStatus,
+      approvedAt: studentStatus === 'approved' ? new Date().toISOString() : null,
     });
 
-    await user.save();
-
-    const token = generateToken(user);
-    
+    const token = fallbackDb.generateToken(newFb);
     return NextResponse.json({
       success: true,
       token,
-      user: sanitizeUser(user),
-      message: 'Account created successfully!'
+      user: newFb,
+      message: 'Account registered successfully!'
     }, { status: 201 });
+
   } catch (error: any) {
     console.error('Register error:', error);
-    return NextResponse.json({ success: false, message: error.message || 'Internal server error during registration' }, { status: 500 });
+    return NextResponse.json({ success: false, message: error.message || 'Registration error' }, { status: 500 });
   }
 }
