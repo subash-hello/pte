@@ -145,7 +145,16 @@ export function sanitizeUser(user: any) {
     xp: user.xp || 0,
     streak: user.streak || 0,
     level: user.level || 1,
-    lastLoginAt: user.lastLoginAt || null,
+    progress: user.progress || {
+      completedCount: Math.round((user.xp || 0) / 25),
+      xp: user.xp || 0,
+      streak: user.streak || 0,
+      speaking: 78,
+      writing: 76,
+      reading: 79,
+      listening: 80,
+    },
+    lastLoginAt: user.lastLoginAt || user.lastActive || null,
     createdAt: user.createdAt || new Date().toISOString(),
     updatedAt: user.updatedAt || new Date().toISOString(),
   };

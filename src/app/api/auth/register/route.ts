@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAuthAdapter } from '@/server/services/supabaseAuthAdapter';
+import { supabaseStore, INITIAL_BRANCHES } from '@/server/db/supabaseStore';
 import { generateToken, sanitizeUser } from '@/lib/auth';
 import { connectToDatabase } from '@/lib/mongodb';
 import User from '@/models/User';
@@ -8,7 +9,7 @@ import { fallbackDb } from '@/lib/fallbackDb';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, password, branch, pteGoal, targetScore, status } = body;
+    const { name, email, phone, password, branch, branchCode, examDate, pteGoal, targetScore, status } = body;
 
     if (!name || !email || !password) {
       return NextResponse.json({
@@ -18,7 +19,46 @@ export async function POST(request: NextRequest) {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    const studentStatus = status || 'approved'; // Can be 'approved' or 'pending'
+    const studentStatus = status || 'approved';
+
+    // Resolve Branch by branchCode if provided
+    let resolvedBranch = branch || 'Kathmandu Central Campus';
+    let resolvedBranchCode = branchCode ? String(branchCode).trim().toUpperCase().replace(/[^A-Z0-9]/g, '') : '';
+
+    if (resolvedBranchCode) {
+      try {
+        const branches = await supabaseStore.getCollection<any>('branches');
+        const allBranches = branches.length ? branches : INITIAL_BRANCHES;
+        const matchedBranch = allBranches.find(
+          (b: any) =>
+            (b.code || '').toUpperCase() === resolvedBranchCode ||
+            (b.name || '').toLowerCase() === resolvedBranchCode.toLowerCase()
+        );
+
+        if (matchedBranch) {
+          resolvedBranch = matchedBranch.name;
+          resolvedBranchCode = matchedBranch.code || resolvedBranchCode;
+
+          // Check branch quota limit if userLimit > 0
+          const limit = Number(matchedBranch.userLimit) || 0;
+          if (limit > 0) {
+            const existingUsers = await supabaseAuthAdapter.listUsers({ branch: matchedBranch.name });
+            const studentCount = existingUsers.filter(u => u.role === 'student').length;
+            if (studentCount >= limit) {
+              return NextResponse.json({
+                success: false,
+                message: `Branch "${matchedBranch.name}" (${resolvedBranchCode}) has reached its maximum user creation limit (${limit}). Please contact your consultancy admin.`
+              }, { status: 403 });
+            }
+          }
+        } else {
+          // Still store the code and link to consultancy branch
+          resolvedBranch = `Consultancy (${resolvedBranchCode})`;
+        }
+      } catch (e) {
+        console.warn('Branch lookup warning:', e);
+      }
+    }
 
     // 1. Primary Registration: Supabase Auth
     try {
@@ -27,7 +67,9 @@ export async function POST(request: NextRequest) {
         email: normalizedEmail,
         password,
         phone: phone ? phone.trim() : '+977 9800000000',
-        branch: branch || 'Kathmandu Central Campus',
+        branch: resolvedBranch,
+        branchCode: resolvedBranchCode,
+        examDate: examDate || '',
         pteGoal: pteGoal ? Number(pteGoal) : 79,
         targetScore: targetScore || `${pteGoal || 79}+ (GSE ${pteGoal || 79})`,
         role: 'student',
@@ -44,6 +86,9 @@ export async function POST(request: NextRequest) {
       if (supaResult.user) {
         const token = generateToken(supaResult.user);
 
+        // Sync to Supabase Storage users.json collection
+        supabaseStore.insertItem('users', supaResult.user).catch(() => {});
+
         // Mirror to MongoDB Atlas in background
         connectToDatabase().then(async (db) => {
           if (db) {
@@ -54,7 +99,7 @@ export async function POST(request: NextRequest) {
                 email: normalizedEmail,
                 phone: phone ? phone.trim() : '',
                 password,
-                branch: branch || 'Kathmandu Central Campus',
+                branch: resolvedBranch,
                 pteGoal: pteGoal ? Number(pteGoal) : 79,
                 role: 'student',
                 status: studentStatus,

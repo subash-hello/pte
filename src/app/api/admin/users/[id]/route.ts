@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
-import User from '@/models/User';
-import { verifyAdminAuth, verifySuperAdminAuth, sanitizeUser } from '@/lib/auth';
+import { verifyAdminAuth, sanitizeUser } from '@/lib/auth';
+import { supabaseAuthAdapter } from '@/server/services/supabaseAuthAdapter';
+import { supabaseStore } from '@/server/db/supabaseStore';
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminUser = await verifyAdminAuth(request);
@@ -13,74 +13,64 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const body = await request.json();
 
-    const db = await connectToDatabase();
-    if (!db) {
-      const { fallbackDb } = await import('@/lib/fallbackDb');
-      const updated = fallbackDb.updateUser(id, body);
-      if (!updated) {
-        return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+    const targetSupaUser = await supabaseAuthAdapter.getUserById(id);
+    if (targetSupaUser) {
+      if (
+        adminUser.role === 'branch_admin' &&
+        !(targetSupaUser.branch || '').toLowerCase().includes((adminUser.branch || '').toLowerCase().split(' ')[0])
+      ) {
+        return NextResponse.json({ success: false, message: 'Forbidden' }, { status: 403 });
       }
-      return NextResponse.json({ success: true, user: sanitizeUser(updated) });
+
+      const updatePayload = { ...body };
+      if (body.extendDays) {
+        updatePayload.accessDurationDays = (Number(targetSupaUser.accessDurationDays) || 30) + Number(body.extendDays);
+        updatePayload.status = 'approved';
+        delete updatePayload.extendDays;
+      }
+
+      const updatedSupa = await supabaseAuthAdapter.updateUser(id, updatePayload);
+      if (updatedSupa) {
+        await supabaseStore.updateItem('users', id, updatedSupa).catch(() => {});
+        return NextResponse.json({ success: true, user: sanitizeUser(updatedSupa) });
+      }
     }
 
-    const targetUser = await User.findById(id);
-    if (!targetUser) {
+    const { fallbackDb } = await import('@/lib/fallbackDb');
+    const updated = fallbackDb.updateUser(id, body);
+    if (!updated) {
       return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
     }
-
-    if (adminUser.role === 'branch_admin' && targetUser.branch !== adminUser.branch) {
-      return NextResponse.json({ success: false, message: 'Forbidden' }, { status: 403 });
-    }
-
-    const updatableFields = ['name', 'email', 'phone', 'role', 'branch', 'status', 'password', 'pteGoal', 'subscription', 'accessDurationDays', 'targetScore'];
-    for (const field of updatableFields) {
-      if (body[field] !== undefined) {
-        (targetUser as any)[field] = body[field];
-      }
-    }
-
-    await targetUser.save();
-
-    return NextResponse.json({ success: true, user: sanitizeUser(targetUser) });
+    return NextResponse.json({ success: true, user: sanitizeUser(updated) });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const adminUser = await verifySuperAdminAuth(request);
+  const adminUser = await verifyAdminAuth(request);
   if (!adminUser) {
     return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
     const { id } = await params;
-    const db = await connectToDatabase();
-    if (!db) {
-      const { fallbackDb } = await import('@/lib/fallbackDb');
-      fallbackDb.deleteUser(id);
-      return NextResponse.json({ success: true, message: 'User deleted' });
-    }
 
-    const targetUser = await User.findById(id);
-    if (!targetUser) {
-      return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
-    }
-
-    await User.findByIdAndDelete(id);
-    
-    try {
-      const mongoose = (await import('mongoose')).default;
-      if (mongoose.models.PracticeResponse) {
-        await mongoose.models.PracticeResponse.deleteMany({ user: id });
+    if (adminUser.role === 'branch_admin') {
+      const targetUser = await supabaseAuthAdapter.getUserById(id);
+      if (targetUser && !(targetUser.branch || '').toLowerCase().includes((adminUser.branch || '').toLowerCase().split(' ')[0])) {
+        return NextResponse.json({ success: false, message: 'Forbidden: User belongs to another branch' }, { status: 403 });
       }
-      if (mongoose.models.Scorecard) {
-        await mongoose.models.Scorecard.deleteMany({ user: id });
-      }
-    } catch (e) {
-      // Ignore if models don't exist
     }
 
+    const deletedSupa = await supabaseAuthAdapter.deleteUser(id);
+    await supabaseStore.deleteItem('users', id).catch(() => {});
+    if (deletedSupa) {
+      return NextResponse.json({ success: true, message: 'User deleted from Supabase' });
+    }
+
+    const { fallbackDb } = await import('@/lib/fallbackDb');
+    fallbackDb.deleteUser(id);
     return NextResponse.json({ success: true, message: 'User deleted' });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });

@@ -1,250 +1,162 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { Clock, ShieldAlert, MessageCircle, ArrowLeft, CheckCircle2, Sparkles, RefreshCw, Building2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { getUser, authFetch, setSession, getToken } from '@/lib/session';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ShieldAlert, Sparkles, Loader2, LogOut, CheckCircle, 
-  ShieldCheck, MessageCircle, Phone, ArrowRight, RefreshCw, AlertTriangle
-} from 'lucide-react';
-import { getSession, setSession, clearSession } from '@/lib/session';
 
 export default function ApprovalWaitPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [status, setStatus] = useState<'pending' | 'approved' | 'declined'>('pending');
-  const [isChecking, setIsChecking] = useState(false);
+  const [checking, setChecking] = useState(false);
 
-  // Initial user load
   useEffect(() => {
-    const session = getSession();
-    if (session && session.user) {
-      setUser(session.user);
-      setStatus(session.user.status || 'pending');
-      if (session.user.status === 'approved') {
-        router.push('/dashboard');
-      }
-    } else {
-      router.push('/login');
+    const u = getUser();
+    setUser(u);
+    if (u?.status === 'approved') {
+      router.replace('/dashboard');
     }
   }, [router]);
 
-  // Status check polling (every 3 seconds)
-  useEffect(() => {
-    if (status !== 'pending') return;
-
-    const interval = setInterval(async () => {
-      try {
-        setIsChecking(true);
-        const session = getSession();
-        if (!session?.token) return;
-
-        const res = await fetch('/api/auth/me', {
-          headers: { 'Authorization': `Bearer ${session.token}` },
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.user) {
-            const currentStatus = data.user.status;
-
-            if (currentStatus === 'approved') {
-              setStatus('approved');
-              clearInterval(interval);
-              
-              // Update local session
-              setSession(session.token, data.user);
-              
-              // Transition to dashboard
-              setTimeout(() => {
-                window.location.href = '/dashboard';
-              }, 1800);
-            } else if (currentStatus === 'declined') {
-              setStatus('declined');
-              clearInterval(interval);
-              setSession(session.token, data.user);
-            }
+  const checkApprovalStatus = async () => {
+    setChecking(true);
+    try {
+      const res = await authFetch('/api/auth/me');
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.user) {
+          const token = getToken();
+          if (token) setSession(token, data.user);
+          setUser(data.user);
+          if (data.user.status === 'approved') {
+            router.replace('/dashboard');
           }
         }
-      } catch (err) {
-        console.warn('Network issue checking user approval status:', err);
-      } finally {
-        setIsChecking(false);
       }
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [status, router]);
-
-  const handleLogout = () => {
-    clearSession();
-    router.push('/login');
+    } catch {
+      // ignore
+    } finally {
+      setChecking(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] flex flex-col justify-center items-center p-4 font-sans selection:bg-indigo-600 selection:text-white">
-      <div className="w-full max-w-md bg-white rounded-[28px] border border-slate-200 p-8 shadow-xl shadow-slate-200/50 text-center relative overflow-hidden">
-        
-        {/* Brand visual header */}
-        <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-3xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-md">
-            <Sparkles className="w-8 h-8 text-indigo-600 animate-pulse" />
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col justify-center items-center p-6 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[130px] pointer-events-none" />
+
+      {/* Brand Header */}
+      <div className="mb-8 z-10">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="w-10 h-10 rounded-xl bg-[#0b0f19] flex items-center justify-center shadow-sm">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <span className="font-extrabold text-xl tracking-tight text-slate-900 font-satoshi">
+            Master PTE <span className="text-[#e11d48]">AI</span>
+          </span>
+        </Link>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="max-w-md w-full bg-white border-2 border-[#0b0f19] rounded-3xl p-8 text-center relative z-10 shadow-[6px_6px_0px_#0b0f19]"
+      >
+        <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto mb-5 relative">
+          <Clock className="w-8 h-8 animate-pulse" />
+          <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 border-2 border-white" />
+        </div>
+
+        <span className="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-black uppercase tracking-widest">
+          Account Verification Pending
+        </span>
+
+        <h1 className="text-2xl font-black tracking-tight mt-3 mb-2 text-slate-900 font-satoshi">
+          Awaiting Admin Approval
+        </h1>
+        <p className="text-slate-600 text-xs font-medium mb-6 leading-relaxed">
+          Welcome{user?.name ? `, ${user.name}` : ''}! Your account is registered in Supabase and queued for approval by our Main Admin or your Consultancy Branch Admin.
+        </p>
+
+        {user?.branch && (
+          <div className="mb-5 p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200 text-left flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <Building2 className="w-4 h-4 text-indigo-600 shrink-0" />
+              <div>
+                <div className="text-[10px] font-black uppercase text-indigo-500">Assigned Consultancy Branch</div>
+                <div className="text-xs font-extrabold text-slate-900">{user.branch}</div>
+              </div>
+            </div>
+            {user.branchCode && (
+              <span className="px-2.5 py-1 rounded-lg bg-white border border-indigo-200 font-mono text-[11px] font-black text-indigo-700">
+                #{user.branchCode}
+              </span>
+            )}
+          </div>
+        )}
+
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left space-y-3 mb-6">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+            <div>
+              <div className="text-xs font-extrabold text-slate-900">Step 1: Registration Complete</div>
+              <div className="text-[11px] text-slate-500 font-medium">
+                {user?.email || 'Your student profile & target GSE score have been saved.'}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <div className="text-xs font-extrabold text-amber-800">Step 2: Branch / Admin Verification</div>
+              <div className="text-[11px] text-slate-500 font-medium">
+                Your consultancy admin or Master PTE AI support team is verifying your enrollment quota.
+              </div>
+            </div>
+          </div>
+          <div className="flex items-start gap-3 opacity-60">
+            <ShieldAlert className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+            <div>
+              <div className="text-xs font-extrabold text-slate-700">Step 3: Full AI Portal Access</div>
+              <div className="text-[11px] text-slate-500 font-medium">
+                Instant access to AI Speaking, Writing, Reading, Listening & Mock Tests.
+              </div>
+            </div>
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
-          {/* 1. PENDING STATUS SCREEN */}
-          {status === 'pending' && (
-            <motion.div
-              key="pending"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-6"
-            >
-              <div>
-                <span className="text-[10px] font-mono font-extrabold uppercase px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 tracking-wider inline-flex items-center gap-1.5 mb-3">
-                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
-                  Verification Queue
-                </span>
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Access Authorization Pending</h2>
-                <p className="text-xs text-slate-500 font-semibold mt-2 leading-relaxed">
-                  Your candidate registration for <span className="text-indigo-600 font-bold">{user?.branch || 'Kathmandu Central Campus'}</span> has been submitted and is currently being verified by the campus administrator.
-                </p>
-              </div>
+        <div className="space-y-3">
+          <a
+            href={`https://wa.me/9779763876490?text=${encodeURIComponent(
+              `Hello Master PTE AI Admin! Please approve my student account (${user?.email || 'New Student'}${
+                user?.branchCode ? `, Branch Code: ${user.branchCode}` : ''
+              }).`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-3.5 px-6 rounded-xl bg-[#10b981] hover:bg-emerald-500 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all border-2 border-[#0b0f19] shadow-[3px_3px_0px_#0b0f19]"
+          >
+            <MessageCircle className="w-4 h-4" /> Message Admin on WhatsApp (+977 976-3876490)
+          </a>
 
-              {/* Live Polling Visual Radar */}
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-left space-y-3">
-                <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                  <span className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 text-indigo-600 animate-spin" />
-                    Listening for Campus Approval...
-                  </span>
-                  <span className="text-[10px] font-mono text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
-                    Live
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
-                  You don't need to refresh this tab. As soon as your campus director clicks <span className="font-bold text-emerald-600">Accept</span> in their administrative portal, your screen will automatically launch your practice dashboard.
-                </p>
-              </div>
+          <button
+            onClick={checkApprovalStatus}
+            disabled={checking}
+            className="w-full py-3 px-6 rounded-xl bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 font-extrabold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${checking ? 'animate-spin' : ''}`} />
+            {checking ? 'Checking Approval Status...' : 'I Have Been Approved — Refresh Status'}
+          </button>
 
-              {/* Registered Student Summary */}
-              {user && (
-                <div className="p-4 rounded-xl bg-indigo-50/60 border border-indigo-100 text-left text-xs space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-slate-500 font-semibold">Candidate:</span>
-                    <span className="font-extrabold text-slate-900">{user.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500 font-semibold">Target Score:</span>
-                    <span className="font-extrabold text-indigo-700">{user.targetScore || '79+ (GSE 79)'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500 font-semibold">Campus:</span>
-                    <span className="font-extrabold text-slate-700">{user.branch}</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Contact Campus / Logout */}
-              <div className="space-y-3 pt-2">
-                <a
-                  href={`https://wa.me/9779851012345?text=Hello%20PTE%20Administration,%20I%20registered%20for%20access%20under%20${encodeURIComponent(user?.name || '')}%20(${encodeURIComponent(user?.email || '')}).%20Please%20approve%20my%20practice%20account.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>Contact Campus WhatsApp for Fast Approval</span>
-                </a>
-
-                <button
-                  onClick={handleLogout}
-                  className="w-full py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* 2. APPROVED STATUS CELEBRATION */}
-          {status === 'approved' && (
-            <motion.div
-              key="approved"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="space-y-6 py-4"
-            >
-              <div className="w-16 h-16 rounded-3xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto shadow-lg">
-                <CheckCircle className="w-10 h-10 text-emerald-600" />
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Access Approved!</h2>
-                <p className="text-xs text-slate-500 font-semibold mt-1">
-                  Welcome to PTE Master AI. Redirecting to your personalized study dashboard...
-                </p>
-              </div>
-
-              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: '100%' }}
-                  transition={{ duration: 1.5 }}
-                  className="h-full bg-emerald-500"
-                />
-              </div>
-            </motion.div>
-          )}
-
-          {/* 3. DECLINED STATUS SCREEN */}
-          {status === 'declined' && (
-            <motion.div
-              key="declined"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
-            >
-              <div className="w-16 h-16 rounded-3xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mx-auto">
-                <ShieldAlert className="w-8 h-8 text-rose-600" />
-              </div>
-
-              <div>
-                <span className="text-[10px] font-mono font-extrabold uppercase px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700 tracking-wider inline-block mb-3">
-                  Request Declined
-                </span>
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Registration Not Authorized</h2>
-                <p className="text-xs text-slate-500 font-semibold mt-2 leading-relaxed">
-                  Your registration request for <span className="font-bold text-slate-800">{user?.branch}</span> was declined by campus management. This typically occurs if enrollment quotas are exceeded or course fees are pending.
-                </p>
-              </div>
-
-              <div className="space-y-3 pt-4">
-                <a
-                  href="https://wa.me/9779851012345"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>Contact Campus Helpdesk</span>
-                </a>
-
-                <button
-                  onClick={handleLogout}
-                  className="w-full py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>Return to Sign In</span>
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+          <Link
+            href="/login"
+            className="w-full py-2.5 px-6 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center gap-2 transition-all"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to Sign In
+          </Link>
+        </div>
+      </motion.div>
     </div>
   );
 }

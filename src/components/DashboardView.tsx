@@ -312,6 +312,93 @@ export default function DashboardView({ onStartPractice, onStartMock, userSessio
         </div>
       </div>
 
+      {/* 3.5 Performance Trend & AI Recommendations Row matching masterieltsai.com */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Performance Trend Card */}
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider block">
+                Performance Trend (GSE 10–90)
+              </span>
+              <p className="text-xs text-slate-400 font-semibold mt-0.5">
+                Weekly average score progression across all 4 PTE modules
+              </p>
+            </div>
+            <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase">
+              +7 GSE this month
+            </span>
+          </div>
+
+          <div className="grid grid-cols-7 gap-2 items-end h-36 pt-4 px-2">
+            {[
+              { day: "Mon", val: 68 },
+              { day: "Tue", val: 71 },
+              { day: "Wed", val: 73 },
+              { day: "Thu", val: 74 },
+              { day: "Fri", val: 76 },
+              { day: "Sat", val: 78 },
+              { day: "Sun", val: 79 },
+            ].map((bar) => (
+              <div key={bar.day} className="flex flex-col items-center gap-1.5 h-full justify-end">
+                <span className="text-[10px] font-mono font-extrabold text-indigo-600">{bar.val}</span>
+                <div
+                  className="w-full max-w-[36px] rounded-t-xl bg-gradient-to-t from-indigo-600 to-purple-500 transition-all"
+                  style={{ height: `${bar.val}%` }}
+                />
+                <span className="text-[10px] font-bold text-slate-400">{bar.day}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* AI Recommendations Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-2xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-4 h-4 text-indigo-600" />
+              <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+                AI Recommendations
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-100">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-indigo-950">🎧 Write From Dictation</span>
+                  <span className="text-[10px] font-black text-indigo-600 uppercase">High Impact</span>
+                </div>
+                <p className="text-[11px] text-slate-600 font-medium mt-1">
+                  Boosting WFD accuracy by 10% adds +5 GSE to both Listening and Writing.
+                </p>
+                <button
+                  onClick={() => onStartPractice("listening")}
+                  className="mt-2 text-[11px] font-extrabold text-indigo-600 hover:underline cursor-pointer"
+                >
+                  Practice Dictation →
+                </button>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-purple-50/70 border border-purple-100">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-purple-950">🎙️ Repeat Sentence</span>
+                  <span className="text-[10px] font-black text-purple-600 uppercase">+4 GSE Boost</span>
+                </div>
+                <p className="text-[11px] text-slate-600 font-medium mt-1">
+                  Maintain smooth oral cadence without hesitations to reach 85+ Oral Fluency.
+                </p>
+                <button
+                  onClick={() => onStartPractice("speaking")}
+                  className="mt-2 text-[11px] font-extrabold text-purple-600 hover:underline cursor-pointer"
+                >
+                  Practice Speaking →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 4. Badges, Leaderboard & Daily Limits Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Achievement Badges Card */}

@@ -2,15 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, GitBranch, Users, FileText, Folder, BookMarked, Eye,
   Settings, HelpCircle, LogOut, Menu, X, Search, Bell, Sparkles, ChevronLeft,
-  Rocket, Shield, Database, Building2, CheckCircle2, ChevronDown
+  Shield, Database, Building2, ChevronDown, Flame
 } from 'lucide-react';
 import clsx from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 import { getUser, clearSession, authFetch } from '@/lib/session';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -30,14 +29,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       try {
         const user = getUser();
         if (!user) {
-          router.replace('/login');
+          router.replace('/admin-login');
           return;
         }
 
         const res = await authFetch('/api/auth/me');
         if (res.status === 401) {
           clearSession();
-          router.replace('/login');
+          router.replace('/admin-login');
           return;
         }
 
@@ -50,7 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           setUserSession(data.user);
           setIsAuthorized(true);
         } else {
-          router.replace('/login');
+          router.replace('/admin-login');
         }
       } catch (e) {
         const user = getUser();
@@ -58,7 +57,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           setUserSession(user);
           setIsAuthorized(true);
         } else {
-          router.replace('/login');
+          router.replace('/admin-login');
         }
       }
     };
@@ -71,17 +70,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.replace('/login');
   };
 
-  const isSuperAdmin = userSession?.role === 'super_admin';
-
-  // Navigation structure based on Role
+  // Navigation structure matching masterieltsai.com/admin
   const mainNav = [
-    { name: 'Command Center', href: '/admin', icon: LayoutDashboard },
-    ...(isSuperAdmin ? [{ name: 'Campus Branches', href: '/admin/branches', icon: GitBranch }] : []),
-    { name: 'Candidates Directory', href: '/admin/users', icon: Users },
-    { name: 'Content Pool', href: '/admin/content', icon: FileText },
-    { name: 'Files', href: '/admin/files', icon: Folder },
+    { name: 'Command Center', href: '/admin?tab=Dashboard', icon: LayoutDashboard },
+    { name: 'Branches & Quotas', href: '/admin?tab=Branches+%26+Quotas', icon: GitBranch },
+    { name: 'System Directory', href: '/admin?tab=Users', icon: Users },
+    { name: 'Content Pool', href: '/admin?tab=Content', icon: FileText },
+    { name: 'Files', href: '/admin?tab=Files', icon: Folder },
     { name: 'Notebook', href: '/admin/notebook', icon: BookMarked },
-    { name: 'Candidate View', href: '/dashboard', icon: Eye },
+    { name: 'Student View', href: '/dashboard', icon: Eye },
   ];
 
   if (!mounted || !isAuthorized) {
@@ -104,24 +101,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           )}
         </AnimatePresence>
 
-        {/* Left Sidebar */}
+        {/* Left Sidebar matching masterieltsai.com */}
         <div 
           className={clsx(
             "fixed inset-y-0 left-0 z-50 bg-white border-r border-[#e8ecf4] transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:block flex flex-col h-screen shadow-xs relative",
-            collapsed ? "w-20" : "w-[275px]",
+            collapsed ? "w-20" : "w-[265px]",
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}
         >
           {/* Header Logo */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-slate-100 shrink-0">
+          <div className="flex items-center justify-between h-16 px-5 border-b border-slate-100 shrink-0">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center shadow-md shrink-0">
-                <Sparkles className="w-5 h-5 text-indigo-400" />
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-md shrink-0">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
               {!collapsed && (
-                <span className="text-xl font-extrabold tracking-tight">
-                  <span className="text-slate-900 font-black font-satoshi">PTE</span>
-                  <span className="text-indigo-600 font-black font-satoshi ml-1">AI</span>
+                <span className="text-lg font-black tracking-tight text-slate-900 font-satoshi">
+                  Master PTE <span className="text-rose-600">AI</span>
                 </span>
               )}
             </Link>
@@ -142,7 +138,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
                 {!collapsed && (
                   <div className="min-w-0">
-                    <h4 className="text-xs font-extrabold text-slate-900 leading-tight truncate">{userSession?.name || 'Master Admin'}</h4>
+                    <h4 className="text-xs font-extrabold text-slate-900 leading-tight truncate">{userSession?.name || 'Super Admin'}</h4>
                     <p className="text-[10px] font-bold text-indigo-600 flex items-center gap-1 mt-0.5">
                       <span>{userSession?.role === 'super_admin' ? '👑 Super Admin' : '🏢 Branch Admin'}</span>
                     </p>
@@ -164,23 +160,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Navigation Items */}
           <div className="flex-1 overflow-y-auto py-3 px-3 custom-scrollbar space-y-1">
             {mainNav.map((item) => {
-              const isActive = pathname === item.href || (pathname !== '/admin' && pathname.startsWith(item.href) && item.href !== '/dashboard' && item.href !== '/admin');
-              const isExactActive = pathname === item.href;
-              const active = item.href === '/admin' ? isExactActive : isActive;
+              const isActive = pathname === item.href.split('?')[0] && item.name === 'Command Center';
 
               return (
                 <Link 
                   key={item.name}
                   href={item.href}
+                  onClick={() => setSidebarOpen(false)}
                   className={clsx(
                     "flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-150",
-                    active 
+                    isActive 
                       ? "bg-[#eceffe] text-indigo-600 shadow-2xs font-extrabold" 
                       : "text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-semibold"
                   )}
                   title={collapsed ? item.name : undefined}
                 >
-                  <item.icon className={clsx("h-4 w-4 shrink-0", collapsed ? "mx-auto" : "mr-3", active ? "text-indigo-600" : "text-slate-400")} />
+                  <item.icon className={clsx("h-4 w-4 shrink-0", collapsed ? "mx-auto" : "mr-3", isActive ? "text-indigo-600" : "text-slate-400")} />
                   {!collapsed && <span>{item.name}</span>}
                 </Link>
               );
@@ -215,8 +210,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-          {/* Topbar matching MasterIELTS AI production layout */}
-          <header className="h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-[#f4f5fa] shrink-0 z-30 pt-3">
+          {/* Topbar matching masterieltsai.com */}
+          <header className="h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-[#f4f5fa] shrink-0 z-30 pt-2">
             <div className="flex items-center flex-1">
               <button
                 onClick={() => setSidebarOpen(true)}
@@ -232,23 +227,35 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <input
                   type="text"
                   className="block w-full pl-10 pr-4 py-2 bg-white border border-[#e8ecf4] rounded-full text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-500 shadow-2xs transition-all font-medium"
-                  placeholder="Search administration modules, candidates, branches..."
+                  placeholder="Search modules..."
                 />
               </div>
             </div>
 
-            {/* Right Topbar Stats & Actions */}
-            <div className="flex items-center gap-3">
+            {/* Right Topbar Stats & Actions matching masterieltsai.com */}
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              {/* Streak Pill */}
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-2xs text-xs font-extrabold text-slate-800">
+                <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
+                <span>{userSession?.streak || 14}</span>
+              </div>
+
+              {/* XP Pill */}
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-2xs text-xs font-extrabold text-indigo-700">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                <span>{(userSession?.xp || 1665).toLocaleString()} XP</span>
+              </div>
+
               {/* Campus Branch Badge */}
               <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-2xs text-xs font-bold text-slate-700">
                 <Building2 className="w-3.5 h-3.5 text-indigo-600" />
-                <span className="truncate max-w-[180px]">{userSession?.branch || 'Central Headquarters'}</span>
+                <span className="truncate max-w-[160px]">{userSession?.branch || 'Central Headquarters'}</span>
               </div>
 
               {/* Supabase Live DB Badge */}
               <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-2xs text-xs font-bold text-slate-700">
                 <Database className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Supabase Live</span>
+                <span>Supabase</span>
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               </div>
 
@@ -301,7 +308,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             onClick={() => setProfileDropdownOpen(false)}
                             className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition-colors"
                           >
-                            <Eye className="w-3.5 h-3.5 text-emerald-600" /> Candidate Practice View
+                            <Eye className="w-3.5 h-3.5 text-emerald-600" /> Student View
                           </Link>
                           <Link
                             href="/admin/settings"
@@ -309,13 +316,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors"
                           >
                             <Settings className="w-3.5 h-3.5 text-slate-400" /> System Settings
-                          </Link>
-                          <Link
-                            href="/admin/help"
-                            onClick={() => setProfileDropdownOpen(false)}
-                            className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors"
-                          >
-                            <HelpCircle className="w-3.5 h-3.5 text-slate-400" /> Documentation & Help
                           </Link>
                         </div>
 
@@ -345,22 +345,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </main>
         </div>
-
-        <style dangerouslySetInnerHTML={{__html: `
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-          }
-        `}} />
       </div>
     </div>
   );

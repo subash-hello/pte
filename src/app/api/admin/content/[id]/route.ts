@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
-import QuestionItem from '@/models/QuestionItem';
 import { verifyAdminAuth } from '@/lib/auth';
+import { supabaseStore } from '@/server/db/supabaseStore';
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminUser = await verifyAdminAuth(request);
@@ -11,13 +10,8 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
   try {
     const { id } = await params;
-    const db = await connectToDatabase();
-    if (!db) {
-      return NextResponse.json({ success: true, message: 'Question deleted (fallback)' });
-    }
-
-    await QuestionItem.findByIdAndDelete(id);
-    return NextResponse.json({ success: true, message: 'Question item deleted' });
+    await supabaseStore.deleteItem('question_items', id);
+    return NextResponse.json({ success: true, message: 'Question item deleted from Supabase' });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
-import Branch from '@/models/Branch';
 import { verifySuperAdminAuth } from '@/lib/auth';
+import { supabaseStore } from '@/server/db/supabaseStore';
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminUser = await verifySuperAdminAuth(request);
@@ -12,26 +11,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const { id } = await params;
     const body = await request.json();
-    const db = await connectToDatabase();
 
-    if (!db) {
-      return NextResponse.json({ success: true, message: 'Branch updated (fallback)' });
-    }
-
-    const branch = await Branch.findById(id);
-    if (!branch) {
+    const updated = await supabaseStore.updateItem('branches', id, body);
+    if (!updated) {
       return NextResponse.json({ success: false, message: 'Branch not found' }, { status: 404 });
     }
 
-    const updatable = ['name', 'location', 'adminName', 'adminEmail', 'adminPhone', 'status', 'studentCapacity'];
-    for (const key of updatable) {
-      if (body[key] !== undefined) {
-        (branch as any)[key] = body[key];
-      }
-    }
-
-    await branch.save();
-    return NextResponse.json({ success: true, branch });
+    return NextResponse.json({ success: true, branch: updated });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
@@ -45,14 +31,8 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
   try {
     const { id } = await params;
-    const db = await connectToDatabase();
-
-    if (!db) {
-      return NextResponse.json({ success: true, message: 'Branch deleted (fallback)' });
-    }
-
-    await Branch.findByIdAndDelete(id);
-    return NextResponse.json({ success: true, message: 'Branch deleted' });
+    await supabaseStore.deleteItem('branches', id);
+    return NextResponse.json({ success: true, message: 'Branch deleted from Supabase' });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }

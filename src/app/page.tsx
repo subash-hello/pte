@@ -1,551 +1,480 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { 
-  Brain, Target, Zap, BarChart3, MessageSquare, 
-  Mic, BookOpen, Headphones, Edit3, 
-  ArrowRight, Play, Plus, Minus, Star, ShieldCheck, Check, Sparkles, User, Building2, Shield
+  Brain, Target, Zap, Mic, BookOpen, Headphones, Edit3, 
+  ArrowRight, Plus, Minus, Star, ShieldCheck, Check, Sparkles, 
+  MessageCircle, Code2, Cpu, Award
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import Link from 'next/link';
 
-// Type definitions
 type ModuleTab = 'speaking' | 'writing' | 'reading' | 'listening';
 
-// Counter component for animated stats
-const AnimatedCounter = ({ end, duration = 2000, suffix = '', prefix = '', decimals = 0 }: { end: number, duration?: number, suffix?: string, prefix?: string, decimals?: number }) => {
-  const [count, setCount] = useState(0);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    let startTimestamp: number | null = null;
-    const step = (timestamp: number) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-      setCount(easeProgress * end);
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    };
-    window.requestAnimationFrame(step);
-  }, [end, duration]);
-
-  return <span suppressHydrationWarning>{prefix}{(mounted ? count : end).toFixed(decimals)}{suffix}</span>;
-};
+const PRICING_PLANS = [
+  { id: '7d', duration: '7 days', label: 'Weekly Starter', price: 'Rs. 299', perDay: 'Rs. 43/day', popular: false, features: ['Full access for 7 days', 'All 20 PTE question types', 'Unlimited AI Speech & Writing scoring', '5 Full-Length Timed Mock Tests', 'Instant GSE 10–90 Scorecards'] },
+  { id: '15d', duration: '15 days', label: '15-Day Sprint', price: 'Rs. 599', perDay: 'Rs. 40/day', popular: false, features: ['Full access for 15 days', 'All 20 PTE question types', 'Unlimited AI Speech & Writing scoring', '12 Full-Length Timed Mock Tests', '90-Band Essay & Speaking Templates'] },
+  { id: '30d', duration: '1 month', label: 'Monthly Pro', price: 'Rs. 999', perDay: 'Rs. 33/day', popular: true, features: ['Full access for 30 days', 'All 20 PTE question types (1,050+ items)', 'Unlimited AI Speech & Writing scoring', '30 Full-Length Timed Mock Tests', '90-Band Templates + Study Plan', 'Priority WhatsApp Support'] },
+  { id: '45d', duration: '45 days', label: '45-Day Intensive', price: 'Rs. 1,299', perDay: 'Rs. 29/day', popular: false, features: ['Full access for 45 days', 'Everything in Monthly Pro', 'Deep Phoneme & Fluency Diagnostics', 'Downloadable PDF Scorecards', '1-on-1 WhatsApp Score Review'] },
+  { id: '60d', duration: '2 months', label: '2-Month Mastery', price: 'Rs. 1,799', perDay: 'Rs. 30/day', popular: false, features: ['Full access for 60 days', 'Everything in 45-Day Intensive', 'Complete Exam Prediction Bank', 'Unlimited Diagnostic Retakes', 'Dedicated Consultancy Tracking'] },
+  { id: '90d', duration: '3 months', label: '3-Month Complete', price: 'Rs. 2,500', perDay: 'Rs. 28/day', popular: false, features: ['Full access for 90 days', 'Complete 90-Day Guarantee Pack', 'All Mock Exams + Prediction Updates', 'Full Mentor WhatsApp Guidance', 'Best Value for First-Time Test Takers'] },
+];
 
 export default function Home() {
-  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<ModuleTab>('speaking');
+  const [selectedPlanIdx, setSelectedPlanIdx] = useState<number>(2); // Default 1 month Rs. 999
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const modulesData: Record<ModuleTab, Array<{ title: string; icon: any; href: string; count: string }>> = {
     speaking: [
-      { title: 'Read Aloud', icon: Mic, href: '/dashboard/practice/speaking/read-aloud', count: '50 Items' },
-      { title: 'Repeat Sentence', icon: Mic, href: '/dashboard/practice/speaking/repeat-sentence', count: '50 Items' },
-      { title: 'Describe Image', icon: Mic, href: '/dashboard/practice/speaking/describe-image', count: '50 Items' },
-      { title: 'Retell Lecture', icon: Mic, href: '/dashboard/practice/speaking/retell-lecture', count: '50 Items' },
-      { title: 'Answer Short Question', icon: Mic, href: '/dashboard/practice/speaking/answer-short-question', count: '50 Items' },
-      { title: 'Summarize Group Discussion', icon: Mic, href: '/dashboard/practice/speaking/summarize-group-discussion', count: '25 Items' },
-      { title: 'Respond to Situation', icon: Mic, href: '/dashboard/practice/speaking/respond-to-situation', count: '25 Items' },
+      { title: 'Read Aloud (RA)', icon: Mic, href: '/dashboard?tab=speaking', count: '50 Items' },
+      { title: 'Repeat Sentence (RS)', icon: Mic, href: '/dashboard?tab=speaking', count: '50 Items' },
+      { title: 'Describe Image (DI)', icon: Mic, href: '/dashboard?tab=speaking', count: '50 Items' },
+      { title: 'Re-tell Lecture (RL)', icon: Mic, href: '/dashboard?tab=speaking', count: '50 Items' },
+      { title: 'Answer Short Question (ASQ)', icon: Mic, href: '/dashboard?tab=speaking', count: '50 Items' },
     ],
     writing: [
-      { title: 'Summarize Written Text', icon: Edit3, href: '/dashboard/practice/writing/summarize-written-text', count: '50 Items' },
-      { title: 'Write Essay', icon: Edit3, href: '/dashboard/practice/writing/write-essay', count: '50 Items' },
+      { title: 'Summarize Written Text (SWT)', icon: Edit3, href: '/dashboard?tab=writing', count: '50 Items' },
+      { title: 'Write Essay (WE)', icon: Edit3, href: '/dashboard?tab=writing', count: '50 Items' },
     ],
     reading: [
-      { title: 'R & W: Fill in the Blanks', icon: BookOpen, href: '/dashboard/practice/reading/rw-fill-blanks', count: '50 Items' },
-      { title: 'Multiple Choice, Multiple Answers', icon: BookOpen, href: '/dashboard/practice/reading/mcq-multiple', count: '50 Items' },
-      { title: 'Re-order Paragraphs', icon: BookOpen, href: '/dashboard/practice/reading/reorder-paragraphs', count: '50 Items' },
-      { title: 'Reading: Fill in the Blanks', icon: BookOpen, href: '/dashboard/practice/reading/reading-fill-blanks', count: '50 Items' },
-      { title: 'Multiple Choice, Single Answer', icon: BookOpen, href: '/dashboard/practice/reading/mcq-single', count: '50 Items' },
+      { title: 'Reading & Writing: Fill in the Blanks', icon: BookOpen, href: '/dashboard?tab=reading', count: '50 Items' },
+      { title: 'Multiple Choice, Multiple Answers', icon: BookOpen, href: '/dashboard?tab=reading', count: '50 Items' },
+      { title: 'Re-order Paragraphs (ROP)', icon: BookOpen, href: '/dashboard?tab=reading', count: '50 Items' },
+      { title: 'Reading: Fill in the Blanks', icon: BookOpen, href: '/dashboard?tab=reading', count: '50 Items' },
+      { title: 'Multiple Choice, Single Answer', icon: BookOpen, href: '/dashboard?tab=reading', count: '50 Items' },
     ],
     listening: [
-      { title: 'Summarize Spoken Text', icon: Headphones, href: '/dashboard/practice/listening/summarize-spoken-text', count: '50 Items' },
-      { title: 'Multiple Choice, Multiple Answers', icon: Headphones, href: '/dashboard/practice/listening/mcq-multiple', count: '50 Items' },
-      { title: 'Fill in the Blanks (Listening)', icon: Headphones, href: '/dashboard/practice/listening/fill-blanks', count: '50 Items' },
-      { title: 'Highlight Correct Summary', icon: Headphones, href: '/dashboard/practice/listening/highlight-correct-summary', count: '50 Items' },
-      { title: 'Multiple Choice, Single Answer', icon: Headphones, href: '/dashboard/practice/listening/mcq-single', count: '50 Items' },
-      { title: 'Select Missing Word', icon: Headphones, href: '/dashboard/practice/listening/select-missing-word', count: '50 Items' },
-      { title: 'Highlight Incorrect Words', icon: Headphones, href: '/dashboard/practice/listening/highlight-incorrect-words', count: '50 Items' },
-      { title: 'Write from Dictation', icon: Headphones, href: '/dashboard/practice/listening/write-from-dictation', count: '50 Items' },
-    ]
+      { title: 'Summarize Spoken Text (SST)', icon: Headphones, href: '/dashboard?tab=listening', count: '50 Items' },
+      { title: 'Multiple Choice, Multiple Answers', icon: Headphones, href: '/dashboard?tab=listening', count: '50 Items' },
+      { title: 'Fill in the Blanks (Listening)', icon: Headphones, href: '/dashboard?tab=listening', count: '50 Items' },
+      { title: 'Highlight Correct Summary', icon: Headphones, href: '/dashboard?tab=listening', count: '50 Items' },
+      { title: 'Select Missing Word', icon: Headphones, href: '/dashboard?tab=listening', count: '50 Items' },
+      { title: 'Highlight Incorrect Words', icon: Headphones, href: '/dashboard?tab=listening', count: '50 Items' },
+      { title: 'Write from Dictation (WFD)', icon: Headphones, href: '/dashboard?tab=listening', count: '50 Items' },
+    ],
   };
 
-  const testimonials = [
-    { name: 'Sarah Jenkins', role: 'Nursing Graduate (Sydney)', rating: 5, content: 'The precise feedback on oral fluency and pronunciation made all the difference. Scored 84 overall on my first attempt!' },
-    { name: 'Raj Patel', role: 'Software Engineer (Kathmandu)', rating: 5, content: 'Flawless Pearson exam replica and instant AI speech grading. The templates helped me achieve a Band 9 equivalent in Writing and Speaking.' },
-    { name: 'Elena Rodriguez', role: 'Master Candidate (Melbourne)', rating: 5, content: 'I walked into the official exam center completely relaxed. The 2-hour timed mock test format prepared me for every single task.' }
+  const verifiedResults = [
+    { name: 'Pratima Thapa', overall: 89, s: 90, w: 87, r: 88, l: 90, center: 'Kathmandu Central', quote: 'The AI speech fluency & pronunciation feedback helped me jump from 71 to 89 overall in 3 weeks!' },
+    { name: 'Sanjiv Maharjan', overall: 90, s: 90, w: 88, r: 89, l: 90, center: 'Lalitpur Tech Branch', quote: 'Write From Dictation and Read Aloud predictions were spot on. Scored 90 superior on my first attempt!' },
+    { name: 'Bikash Shrestha', overall: 84, s: 86, w: 81, r: 83, l: 86, center: 'Pokhara Regional', quote: 'Practiced with the 1-month Rs. 999 plan. The instant essay rubric grading saved me thousands in tuition.' },
   ];
 
   const faqs = [
-    { q: 'How does the scoring system compare to the real PTE Academic exam?', a: 'Our evaluation algorithms are meticulously calibrated against Pearson GSE scoring guidelines. We analyze speech pitch, oral fluency, vocabulary diversity, and grammatical structure with official correlation.' },
-    { q: 'Which PTE question types are included in the practice databank?', a: 'We cover all 20 official Pearson question types across Speaking, Writing, Reading, and Listening with over 1,000 authentic practice items.' },
-    { q: 'Can I take full-length 2-hour mock tests?', a: 'Yes. We provide 30 full-length timed mock tests with official sectional timers, automatic break sequences, and comprehensive 10-90 GSE scorecards.' },
-    { q: 'Are there multi-branch institute and teacher management tools?', a: 'Yes! Our Campus Portal and Super Admin suite allow institutes in Kathmandu, Pokhara, Chitwan, Sydney, and Melbourne to manage batches, monitor student performance, and assign study plans.' },
+    { q: 'How does Master PTE AI score Speaking and Writing?', a: 'Our AI engine is calibrated to Pearson GSE (10–90) standards, evaluating Content, Oral Fluency, Pronunciation, Grammar, Vocabulary, and Spelling in real time.' },
+    { q: 'How do I activate my plan or link my consultancy branch code?', a: 'During signup, toggle "Are you from a consultancy?" to Yes and enter your Branch Code (e.g. KTM01 or KIEC13), or message us directly on WhatsApp (+977 976-3876490) for instant eSewa/Khalti/Fonepay activation.' },
+    { q: 'Are all 20 PTE Academic question types included?', a: 'Yes! You get over 1,050+ authentic practice questions across Speaking, Writing, Reading, and Listening plus 30 full-length timed mock exams.' },
+    { q: 'Can consultancies and institutes get their own Branch Admin portal?', a: 'Yes! Consultancies receive a dedicated Branch Admin Command Center with a unique Branch Code, custom student quotas, real-time student progress tracking, and approval controls.' },
   ];
 
+  const activePlan = PRICING_PLANS[selectedPlanIdx];
+
   return (
-    <div className="min-h-screen bg-[#faf9f6] text-[#1e293b] font-sans selection:bg-indigo-600 selection:text-white">
+    <div className="min-h-screen bg-[#f8fafc] text-[#0f172a] font-sans selection:bg-indigo-600 selection:text-white">
       <Navbar />
-      
+
       <main>
-        {/* HERO SECTION */}
-        <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-          {/* Subtle grain overlay */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-multiply" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
-          
-          <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              
-              {/* Left Text */}
-              <div className="max-w-2xl">
-                <div className="inline-flex items-center gap-2 mb-8 border border-indigo-200/80 rounded-full px-4 py-1.5 bg-white/70 backdrop-blur-sm">
-                  <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
-                  <span className="text-xs font-bold tracking-wide uppercase text-indigo-900">Next-Gen Pearson PTE Exam Platform</span>
-                </div>
-                
-                <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-8 text-[#0f172a]">
-                  Your PTE score, <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">mastered.</span>
-                </h1>
-                
-                <p className="text-lg text-slate-600 leading-relaxed mb-10 max-w-lg font-normal">
-                  Experience authentic exam preparation. Real-time Gemini AI speech evaluation, 1,000+ databank questions, 30 timed mock exams, and Band 9 templates.
-                </p>
-                
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/signup" className="px-8 py-4 rounded-2xl bg-indigo-600 text-white font-extrabold text-xs text-center hover:bg-indigo-700 hover:-translate-y-0.5 transition-all duration-300 shadow-xl shadow-indigo-600/25 flex items-center justify-center gap-2">
-                    <span>Start Free Trial</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                  <Link href="/portal" className="px-8 py-4 rounded-2xl bg-white border border-slate-200 text-slate-800 font-extrabold text-xs text-center hover:border-indigo-300 hover:bg-slate-50 transition-all duration-300 flex items-center justify-center gap-2 shadow-2xs">
-                    <Sparkles className="w-4 h-4 text-indigo-600" />
-                    <span>Enter Portals Hub</span>
-                  </Link>
-                  <Link href="/dashboard/mock-test" className="px-6 py-4 rounded-2xl bg-slate-100 text-slate-700 font-bold text-xs text-center hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
-                    <Play className="w-3.5 h-3.5" /> Full Mock Test
-                  </Link>
-                </div>
-                
-                <div className="mt-14 flex items-center gap-8 border-t border-[#1e293b]/10 pt-8">
-                  <div>
-                    <p className="text-3xl font-black text-[#0f172a]"><AnimatedCounter end={98} suffix="%" /></p>
-                    <p className="text-xs text-slate-500 mt-1 font-bold">Pearson GSE Accuracy</p>
-                  </div>
-                  <div className="w-px h-10 bg-[#1e293b]/10"></div>
-                  <div>
-                    <p className="text-3xl font-black text-[#0f172a]">
-                      <AnimatedCounter end={50} suffix="k+" />
-                    </p>
-                    <p className="text-xs text-slate-500 mt-1 font-bold">Students Registered</p>
-                  </div>
-                  <div className="w-px h-10 bg-[#1e293b]/10"></div>
-                  <div>
-                    <p className="text-3xl font-black text-[#0f172a]">
-                      <AnimatedCounter end={1000} suffix="+" />
-                    </p>
-                    <p className="text-xs text-slate-500 mt-1 font-bold">Real Practice Items</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Right Visual - Interactive Score Card */}
-              <div className="relative lg:h-[580px] flex items-center justify-center lg:justify-end">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md aspect-square rounded-full bg-gradient-to-tr from-indigo-500/10 to-purple-500/10 blur-3xl -z-10"></div>
-                
-                <div className="relative w-full max-w-md bg-white rounded-3xl p-8 shadow-xl border border-slate-200 backdrop-blur-xl rotate-1 hover:rotate-0 transition-transform duration-700 ease-out">
-                  <div className="flex justify-between items-center mb-6">
-                    <div>
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">
-                        AI Speech Evaluation
-                      </span>
-                      <h3 className="font-extrabold text-slate-900 text-lg mt-2">Pronunciation & Fluency</h3>
-                      <p className="text-xs text-slate-500">Read Aloud Task #14</p>
-                    </div>
-                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center">
-                      <Mic className="w-6 h-6 text-indigo-600" />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between text-xs mb-1.5 font-bold">
-                        <span className="text-slate-700">Oral Fluency</span>
-                        <span className="text-indigo-600 font-mono">88 / 90 GSE</span>
-                      </div>
-                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-indigo-600 w-[95%] rounded-full"></div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <div className="flex justify-between text-xs mb-1.5 font-bold">
-                        <span className="text-slate-700">Pronunciation & Pitch</span>
-                        <span className="text-emerald-600 font-mono">85 / 90 GSE</span>
-                      </div>
-                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-emerald-500 w-[92%] rounded-full"></div>
-                      </div>
-                    </div>
+        {/* DARK NAVY HERO SECTION MATCHING MASTERIELTSAI.COM */}
+        <section className="relative bg-[#0b0f19] text-white pt-20 pb-24 lg:pt-28 lg:pb-32 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
 
-                    <div>
-                      <div className="flex justify-between text-xs mb-1.5 font-bold">
-                        <span className="text-slate-700">Content Accuracy</span>
-                        <span className="text-purple-600 font-mono">90 / 90 GSE</span>
-                      </div>
-                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-purple-600 w-[100%] rounded-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6 p-4 bg-slate-50 rounded-2xl border border-slate-200 relative overflow-hidden">
-                    <p className="text-xs text-slate-800 leading-relaxed font-medium italic">
-                      "Market trends indicate a sustained shift towards renewable technologies worldwide..."
-                    </p>
-                    <div className="mt-3 flex gap-2">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-lg border border-emerald-200">Natural Pacing</span>
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-lg border border-indigo-200">Clear Intonation</span>
-                    </div>
-                  </div>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-bold text-indigo-300 mb-8 backdrop-blur-md">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <span>AI-Powered PTE Preparation · Instant GSE 10–90 Scoring</span>
+            </div>
 
-                  <Link href="/dashboard/practice/speaking/read-aloud" className="mt-5 w-full py-3 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center gap-2 transition-all">
-                    <span>Try Speech Analyzer Live</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] mb-6 font-satoshi">
+              Master PTE with <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">
+                Artificial Intelligence
+              </span>
+            </h1>
+
+            <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed font-medium mb-10">
+              Practice all 4 PTE Academic modules with real-time AI evaluation, personalized study plans, 1,050+ prediction questions, and full-length mock tests — starting from just <strong className="text-white">NPR 299</strong>.
+            </p>
+
+            {/* 3 Hero CTA Buttons matching masterieltsai.com */}
+            <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
+              <Link
+                href="/signup"
+                className="px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-xs sm:text-sm shadow-xl shadow-indigo-600/30 flex items-center gap-2 transition-all hover:-translate-y-0.5"
+              >
+                <span>Start Practicing</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/dashboard/mock-test"
+                className="px-7 py-4 rounded-2xl bg-white/10 hover:bg-white/15 text-white border border-white/20 font-extrabold text-xs sm:text-sm backdrop-blur-md transition-all"
+              >
+                Take Mock Test
+              </Link>
+              <a
+                href="https://wa.me/9779763876490"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-7 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-500/25 flex items-center gap-2 transition-all hover:-translate-y-0.5"
+              >
+                <MessageCircle className="w-4 h-4 fill-white" />
+                <span>Chat with Admin</span>
+              </a>
+            </div>
+
+            {/* 4 Glassmorphic Hero Stat Cards matching masterieltsai.com */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              {[
+                { value: '7+', label: 'Verified student scorecards' },
+                { value: '90', label: 'Top verified GSE score' },
+                { value: '4', label: 'Modules: S, W, R, L' },
+                { value: 'NPR 299', label: 'Plans start from' },
+              ].map((stat, i) => (
+                <div
+                  key={i}
+                  className="p-5 rounded-2xl bg-white/[0.06] border border-white/10 backdrop-blur-md text-center"
+                >
+                  <div className="text-2xl sm:text-3xl font-black text-white font-satoshi">{stat.value}</div>
+                  <div className="text-[11px] sm:text-xs text-slate-300 font-semibold mt-1">{stat.label}</div>
                 </div>
-                
-                {/* Floating Badge */}
-                <div className="absolute -bottom-4 -left-4 bg-white p-4 rounded-2xl shadow-xl border border-slate-200 flex items-center gap-3.5 -rotate-2">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center">
-                    <Target className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Target Score</p>
-                    <p className="text-base font-black text-slate-900">79+ Target Achieved</p>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* ENTERPRISE PORTAL SELECTOR STRIP */}
-        <section className="py-12 bg-white border-y border-slate-200">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-600">Enterprise Access</span>
-                <h3 className="text-xl font-extrabold text-slate-900 mt-1">Looking for your dedicated portal?</h3>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3">
-                <Link href="/dashboard" className="px-5 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-600 hover:text-white text-indigo-700 text-xs font-extrabold transition-all border border-indigo-200 flex items-center gap-2">
-                  <User className="w-4 h-4" /> Student Portal
-                </Link>
-                <Link href="/admin" className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-800 text-xs font-extrabold transition-all border border-slate-200 flex items-center gap-2">
-                  <Building2 className="w-4 h-4" /> Branch Director
-                </Link>
-                <Link href="/portal" className="px-5 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-indigo-700 text-xs font-extrabold transition-all shadow-sm flex items-center gap-2">
-                  <Shield className="w-4 h-4" /> All Portals Hub →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* BENTO FEATURES SECTION */}
-        <section id="features" className="py-24 lg:py-32 bg-[#faf9f6]">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12">
-            <div className="mb-16 max-w-2xl">
-              <h2 className="text-4xl font-extrabold tracking-tight text-[#0f172a] mb-4">
-                Thoughtfully designed. <br /> Brilliantly executed.
+        {/* FEATURES SECTION */}
+        <section id="features" className="py-20 lg:py-24 bg-[#f8fafc]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-14">
+              <span className="text-xs font-black uppercase tracking-widest text-indigo-600">WHY MASTER PTE AI</span>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-2 tracking-tight font-satoshi">
+                Everything You Need for a 79+ &amp; 90 Score
               </h2>
-              <p className="text-base text-slate-600 font-medium">
-                Everything you need to master your target score with zero guesswork.
+              <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-2">
+                Calibrated against official Pearson GSE scoring rubrics with instant phoneme &amp; grammar feedback.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Large Card */}
-              <Link href="/dashboard/analytics" className="md:col-span-2 bg-white rounded-3xl p-8 lg:p-10 border border-slate-200 group hover:border-indigo-300 hover:shadow-xl transition-all relative overflow-hidden flex flex-col justify-between">
-                <div>
-                  <div className="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center justify-center mb-6">
-                    <Brain className="w-6 h-6 text-indigo-600" />
+              {[
+                {
+                  icon: Brain,
+                  title: 'Instant AI Speech & Writing Grading',
+                  desc: 'Get immediate GSE 10–90 scores for Read Aloud, Describe Image, Summarize Written Text, and Write Essay with detailed mistake highlights.',
+                  color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+                },
+                {
+                  icon: ShieldCheck,
+                  title: '30 Full-Length Timed Mock Tests',
+                  desc: 'Simulate the exact 2-hour Pearson test center interface with sectional timers, audio recording bars, and full diagnostic scorecards.',
+                  color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+                },
+                {
+                  icon: Target,
+                  title: 'Consultancy & Branch Portal System',
+                  desc: 'Dedicated Branch Admin Command Center with unique branch codes, student quota management, and real-time performance tracking.',
+                  color: 'bg-purple-50 text-purple-600 border-purple-100',
+                },
+              ].map((feat, idx) => (
+                <div key={idx} className="bg-white rounded-3xl p-7 border border-slate-200/90 shadow-xs hover:shadow-md transition-all">
+                  <div className={clsx('w-12 h-12 rounded-2xl border flex items-center justify-center mb-5', feat.color)}>
+                    <feat.icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-2xl font-extrabold text-[#0f172a] mb-3">Pearson Calibrated AI Scoring</h3>
-                  <p className="text-slate-600 leading-relaxed text-xs sm:text-sm font-medium">
-                    Our AI evaluation engine doesn't just give you a generic number. It analyzes pronunciation pitch, stress patterns, grammar structures, and vocabulary sophistication with Pearson GSE standards.
-                  </p>
+                  <h3 className="text-lg font-extrabold text-slate-900 mb-2">{feat.title}</h3>
+                  <p className="text-xs text-slate-600 font-medium leading-relaxed">{feat.desc}</p>
                 </div>
-                <div className="mt-8 flex items-center gap-2 text-xs font-extrabold text-indigo-600 group-hover:underline">
-                  <span>Explore Performance Analytics</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </Link>
-
-              {/* Tall Card */}
-              <Link href="/dashboard/study-plan" className="bg-[#0f172a] rounded-3xl p-8 lg:p-10 text-white group relative overflow-hidden flex flex-col justify-between hover:shadow-xl transition-all">
-                <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
-                <div>
-                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-md">
-                    <Target className="w-6 h-6 text-indigo-400" />
-                  </div>
-                  <h3 className="text-xl font-extrabold mb-3">Curated Daily Study Plans</h3>
-                  <p className="text-slate-400 leading-relaxed text-xs font-medium mb-6">
-                    Personalized study plans mapped to your exam date and target score (65, 79, or 90). Daily task queues ensure steady improvement.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-bold text-indigo-400 group-hover:text-white transition-colors">
-                  <span>Launch Study Planner</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </Link>
-
-              {/* Small Card 1 */}
-              <Link href="/dashboard/ai-tutor" className="bg-white border border-slate-200 rounded-3xl p-8 group hover:shadow-xl hover:border-indigo-300 transition-all flex flex-col justify-between">
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center mb-4">
-                    <Zap className="w-5 h-5 text-amber-600" />
-                  </div>
-                  <h3 className="text-base font-extrabold text-[#0f172a] mb-2">24/7 AI Tutor Guidance</h3>
-                  <p className="text-slate-500 text-xs font-medium">Instant answers, template recommendations, and feedback on any task.</p>
-                </div>
-                <span className="mt-4 text-xs font-bold text-indigo-600 flex items-center gap-1 group-hover:underline">
-                  Chat with AI Tutor →
-                </span>
-              </Link>
-
-              {/* Small Card 2 */}
-              <Link href="/dashboard/mock-test" className="bg-white border border-slate-200 rounded-3xl p-8 group hover:shadow-xl hover:border-indigo-300 transition-all flex flex-col justify-between">
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-4">
-                    <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <h3 className="text-base font-extrabold text-[#0f172a] mb-2">30 Full Mock Exams</h3>
-                  <p className="text-slate-500 text-xs font-medium">Official timed test simulator with 10-90 GSE scorecards and diagnostics.</p>
-                </div>
-                <span className="mt-4 text-xs font-bold text-indigo-600 flex items-center gap-1 group-hover:underline">
-                  Start Practice Exam →
-                </span>
-              </Link>
-
-              {/* Medium Card */}
-              <Link href="/dashboard" className="md:col-span-2 bg-white rounded-3xl p-8 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-6 group hover:border-indigo-300 hover:shadow-xl transition-all">
-                <div className="flex-1">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">
-                    Authentic Simulator
-                  </span>
-                  <h3 className="text-xl font-extrabold text-[#0f172a] mt-2 mb-2">Exact Pearson Test Center Interface</h3>
-                  <p className="text-slate-600 font-medium text-xs leading-relaxed max-w-md">
-                    Our practice interface mirrors the Pearson test screen with countdown timers, audio beeps, recording bars, and exact keyboard shortcuts.
-                  </p>
-                </div>
-                <div className="px-6 py-3 rounded-2xl bg-indigo-600 text-white font-extrabold text-xs group-hover:bg-indigo-700 transition-colors shrink-0 flex items-center gap-2">
-                  <span>Enter Practice Hub</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </Link>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* MODULES SECTION WITH DIRECT WORKING LINKS */}
-        <section id="modules" className="py-24 lg:py-32 bg-white border-t border-slate-200">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-              <div className="max-w-lg">
-                <h2 className="text-4xl font-extrabold tracking-tight text-[#0f172a] mb-4">
-                  Master every question type.
-                </h2>
-                <p className="text-base text-slate-600 font-medium">
-                  Click any question type below to jump directly into interactive practice.
-                </p>
-              </div>
-              
-              <div className="flex flex-wrap bg-slate-100 p-1.5 rounded-2xl border border-slate-200 self-start gap-1">
-                {[
-                  { id: 'speaking', label: 'Speaking' },
-                  { id: 'writing', label: 'Writing' },
-                  { id: 'reading', label: 'Reading' },
-                  { id: 'listening', label: 'Listening' },
-                ].map(tab => (
+        {/* VERIFIED RESULTS SECTION */}
+        <section id="results" className="py-20 bg-white border-y border-slate-200/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-14">
+              <span className="text-xs font-black uppercase tracking-widest text-emerald-600">VERIFIED SCORECARDS</span>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-2 tracking-tight font-satoshi">
+                Real Students. Real 79+ &amp; 90 GSE Results.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {verifiedResults.map((r, i) => (
+                <div key={i} className="bg-[#f8fafc] rounded-3xl p-6 border-2 border-slate-900 shadow-[4px_4px_0px_#0f172a] flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-4">
+                      <div>
+                        <h4 className="text-sm font-black text-slate-900">{r.name}</h4>
+                        <span className="text-[11px] font-bold text-slate-500">{r.center}</span>
+                      </div>
+                      <div className="px-3 py-1.5 rounded-xl bg-emerald-500 text-white font-black text-sm shadow-xs">
+                        Overall {r.overall}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-2 text-center mb-4">
+                      <div className="bg-white p-2 rounded-xl border border-slate-200">
+                        <span className="text-[10px] font-bold text-slate-400 block">Speaking</span>
+                        <span className="text-xs font-black text-indigo-600 font-mono">{r.s}</span>
+                      </div>
+                      <div className="bg-white p-2 rounded-xl border border-slate-200">
+                        <span className="text-[10px] font-bold text-slate-400 block">Writing</span>
+                        <span className="text-xs font-black text-purple-600 font-mono">{r.w}</span>
+                      </div>
+                      <div className="bg-white p-2 rounded-xl border border-slate-200">
+                        <span className="text-[10px] font-bold text-slate-400 block">Reading</span>
+                        <span className="text-xs font-black text-emerald-600 font-mono">{r.r}</span>
+                      </div>
+                      <div className="bg-white p-2 rounded-xl border border-slate-200">
+                        <span className="text-[10px] font-bold text-slate-400 block">Listening</span>
+                        <span className="text-xs font-black text-amber-600 font-mono">{r.l}</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-slate-600 font-medium italic leading-relaxed">&ldquo;{r.quote}&rdquo;</p>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-200/80 flex items-center justify-between text-[11px] font-extrabold text-emerald-700">
+                    <span>✓ Verified Pearson Scorecard</span>
+                    <div className="flex text-amber-400">
+                      {[...Array(5)].map((_, idx) => <Star key={idx} className="w-3.5 h-3.5 fill-amber-400" />)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 6-PLAN NPR PRICING SECTION MATCHING MASTERIELTSAI.COM */}
+        <section id="pricing" className="py-20 lg:py-28 bg-[#f8fafc]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <span className="text-xs font-black uppercase tracking-widest text-rose-600">FLEXIBLE NEPAL PRICING</span>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-2 tracking-tight font-satoshi">
+                Pick Your Preparation Duration
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-2">
+                Select any duration below — instant activation via eSewa, Khalti, Fonepay, or WhatsApp.
+              </p>
+            </div>
+
+            {/* 6 Duration Pills Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+              {PRICING_PLANS.map((plan, idx) => {
+                const isSelected = selectedPlanIdx === idx;
+                return (
                   <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as ModuleTab)}
+                    key={plan.id}
+                    type="button"
+                    onClick={() => setSelectedPlanIdx(idx)}
                     className={clsx(
-                      "px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer",
-                      activeTab === tab.id
-                        ? "bg-white text-indigo-600 shadow-2xs font-extrabold"
-                        : "text-slate-600 hover:text-slate-900"
+                      'relative p-4 rounded-2xl text-left transition-all cursor-pointer border-2',
+                      isSelected
+                        ? 'bg-slate-900 text-white border-slate-900 shadow-[4px_4px_0px_#e11d48] -translate-y-0.5'
+                        : 'bg-white text-slate-900 border-slate-900 hover:bg-slate-50 shadow-[2px_2px_0px_#0f172a]'
                     )}
                   >
-                    {tab.label}
+                    {plan.popular && (
+                      <span className="absolute -top-2.5 right-2 px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9px] font-black uppercase tracking-wider">
+                        POPULAR
+                      </span>
+                    )}
+                    <div className={clsx('text-xs font-extrabold', isSelected ? 'text-slate-300' : 'text-slate-500')}>
+                      {plan.duration}
+                    </div>
+                    <div className="text-lg font-black mt-1 font-satoshi">{plan.price}</div>
+                    <div className={clsx('text-[10px] font-bold mt-0.5', isSelected ? 'text-emerald-400' : 'text-slate-400')}>
+                      {plan.perDay}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active Plan Detail Box with Neo-Brutalist 2px Dark Border */}
+            <div className="bg-white rounded-3xl p-6 sm:p-10 border-2 border-slate-900 shadow-[6px_6px_0px_#0f172a]">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-200">
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-3 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200 text-xs font-black uppercase">
+                      {activePlan.duration} Access
+                    </span>
+                    {activePlan.popular && (
+                      <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-black uppercase">
+                        ★ Most Popular Choice
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mt-3 font-satoshi">
+                    {activePlan.label} — {activePlan.price}
+                  </h3>
+                  <p className="text-xs text-slate-500 font-semibold mt-1">
+                    Full unrestricted access to all PTE AI modules, mock tests, and templates for {activePlan.duration}.
+                  </p>
+                </div>
+
+                <div className="text-left md:text-right shrink-0">
+                  <div className="text-3xl sm:text-4xl font-black text-slate-900 font-satoshi">{activePlan.price}</div>
+                  <div className="text-xs text-emerald-600 font-extrabold">{activePlan.perDay} · No hidden fees</div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-6">
+                {activePlan.features.map((feat, i) => (
+                  <div key={i} className="flex items-center gap-2.5 text-xs font-bold text-slate-700">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                      <Check className="w-3.5 h-3.5" />
+                    </div>
+                    <span>{feat}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+                <Link
+                  href={`/signup?plan=${activePlan.id}`}
+                  className="w-full sm:flex-1 py-4 px-6 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs sm:text-sm text-center border-2 border-slate-900 shadow-[3px_3px_0px_#0f172a] transition-all flex items-center justify-center gap-2"
+                >
+                  <span>Start with {activePlan.duration} ({activePlan.price})</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <a
+                  href={`https://wa.me/9779763876490?text=${encodeURIComponent(`Hi Admin, I want to activate the ${activePlan.duration} (${activePlan.price}) plan on Master PTE AI.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto py-4 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm text-center border-2 border-slate-900 shadow-[3px_3px_0px_#0f172a] transition-all flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4 fill-white" />
+                  <span>Pay or ask on WhatsApp</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* INTERACTIVE 4-MODULE QUESTION TYPES SECTION */}
+        <section id="modules" className="py-20 bg-white border-t border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+              <div>
+                <span className="text-xs font-black uppercase tracking-widest text-indigo-600">COMPLETE PTE SYLLABUS</span>
+                <h2 className="text-3xl font-black text-slate-900 mt-1 font-satoshi">
+                  Practice Every Official Question Type
+                </h2>
+              </div>
+
+              <div className="flex flex-wrap bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1">
+                {(['speaking', 'writing', 'reading', 'listening'] as ModuleTab[]).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={clsx(
+                      'px-4 py-2 rounded-xl text-xs font-extrabold capitalize transition-all cursor-pointer',
+                      activeTab === tab ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                    )}
+                  >
+                    {tab}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Grid of Clickable Practice Modules */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {modulesData[activeTab].map((mod, i) => (
-                <Link 
-                  key={i} 
+                <Link
+                  key={i}
                   href={mod.href}
-                  className="bg-slate-50 rounded-2xl p-5 border border-slate-200 hover:border-indigo-400 hover:bg-white hover:shadow-md transition-all group flex items-center justify-between gap-4"
+                  className="bg-[#f8fafc] rounded-2xl p-5 border border-slate-200 hover:border-indigo-500 hover:bg-white hover:shadow-md transition-all group flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3.5">
-                    <div className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors text-slate-700 shadow-2xs">
+                    <div className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors text-indigo-600 shadow-2xs">
                       <mod.icon className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-slate-900 text-xs sm:text-sm group-hover:text-indigo-600 transition-colors">
+                      <h4 className="font-extrabold text-slate-900 text-xs sm:text-sm group-hover:text-indigo-600 transition-colors">
                         {mod.title}
                       </h4>
                       <span className="text-[10px] font-bold text-slate-400 font-mono">{mod.count}</span>
                     </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center group-hover:bg-indigo-50 group-hover:border-indigo-200 transition-colors">
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-colors" />
-                  </div>
+                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors" />
                 </Link>
               ))}
             </div>
           </div>
         </section>
 
-        {/* TESTIMONIALS */}
-        <section className="py-24 lg:py-32 bg-[#faf9f6]">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12">
-            <h2 className="text-3xl font-extrabold text-[#0f172a] mb-16 text-center">Words from our successful test-takers.</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, i) => (
-                <div key={i} className="p-8 rounded-3xl bg-white border border-slate-200 relative shadow-2xs">
-                  <div className="flex items-center gap-1 mb-4 text-amber-500">
-                    {[...Array(5)].map((_, sIdx) => (
-                      <Star key={sIdx} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-slate-700 leading-relaxed mb-6 font-medium text-xs sm:text-sm">
-                    "{testimonial.content}"
+        {/* BUILT BY ENGINEERS SECTION MATCHING MASTERIELTSAI.COM */}
+        <section id="score-guide" className="py-20 bg-[#f8fafc] border-t border-slate-200">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <span className="text-xs font-black uppercase tracking-widest text-indigo-600">VIPER INTELLIGENCE ENGINEERING</span>
+              <h2 className="text-3xl font-black text-slate-900 mt-2 font-satoshi">Built by Engineers</h2>
+              <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
+                Architected in Nepal for ultra-fast speech recognition, accurate GSE rubric calibration, and multi-branch reliability.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white rounded-3xl p-7 border border-slate-200 shadow-xs flex items-start gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white font-black text-xl flex items-center justify-center shrink-0 shadow-md">
+                  SB
+                </div>
+                <div>
+                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase border border-indigo-100">
+                    Lead AI &amp; Full-Stack
+                  </span>
+                  <h3 className="text-lg font-black text-slate-900 mt-1.5">Subash Bhandari</h3>
+                  <p className="text-xs font-bold text-indigo-600">Full Stack Engineer &amp; AI Specialist</p>
+                  <p className="text-xs text-slate-500 font-medium mt-2 leading-relaxed">
+                    Engineered the real-time Gemini AI speech &amp; essay evaluation pipeline, multi-tenant Supabase architecture, and automated GSE scoring engine.
                   </p>
-                  <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                    <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
-                      {testimonial.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="font-extrabold text-slate-900 text-xs">{testimonial.name}</h4>
-                      <p className="text-[11px] text-slate-500 font-medium">{testimonial.role}</p>
-                    </div>
-                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* PRICING PLANS */}
-        <section id="pricing" className="py-24 lg:py-32 bg-white border-t border-slate-200">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-extrabold tracking-tight text-[#0f172a] mb-4">Simple, transparent pricing.</h2>
-              <p className="text-base text-slate-600 font-medium">Invest in your score with flexible student plans.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-center">
-              {/* Basic */}
-              <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200 shadow-2xs">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-2">Weekly Lite</h3>
-                <div className="mb-6">
-                  <span className="text-3xl font-black text-[#0f172a]">Rs. 299</span>
-                  <span className="text-xs text-slate-500 font-medium ml-1">/ 7 days</span>
-                </div>
-                <ul className="space-y-3 mb-8 text-xs font-semibold text-slate-700">
-                  {['7 Days Full Access', '2 Full Mock Tests', 'AI Speech Evaluation', 'Basic Analytics'].map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2.5">
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0" /> {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/signup?plan=week" className="block w-full py-3.5 rounded-xl border border-slate-300 text-slate-800 font-extrabold text-xs text-center hover:bg-white hover:border-indigo-300 transition-colors">
-                  Choose Weekly Plan
-                </Link>
               </div>
 
-              {/* Popular */}
-              <div className="bg-[#0f172a] rounded-3xl p-10 shadow-2xl relative md:scale-105 z-10 border border-slate-800">
-                <div className="absolute -top-3.5 right-8 bg-indigo-600 text-white text-[10px] font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md">
-                  Most Popular
+              <div className="bg-white rounded-3xl p-7 border border-slate-200 shadow-xs flex items-start gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-black text-xl flex items-center justify-center shrink-0 shadow-md">
+                  RA
                 </div>
-                <h3 className="text-sm font-bold uppercase tracking-wider text-indigo-400 mb-2">Monthly Pro</h3>
-                <div className="mb-6">
-                  <span className="text-3xl font-black text-white">Rs. 999</span>
-                  <span className="text-xs text-slate-400 font-medium ml-1">/ 30 days</span>
+                <div>
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase border border-emerald-100">
+                    Architecture &amp; Product
+                  </span>
+                  <h3 className="text-lg font-black text-slate-900 mt-1.5">Rohan Aacharya</h3>
+                  <p className="text-xs font-bold text-emerald-600">Software Architect &amp; Product Designer</p>
+                  <p className="text-xs text-slate-500 font-medium mt-2 leading-relaxed">
+                    Designed the high-contrast test simulator interface, branch consultancy quota workflows, and adaptive student study planners.
+                  </p>
                 </div>
-                <ul className="space-y-3 mb-8 text-xs font-semibold text-slate-300">
-                  {['30 Days Full Access', '30 Full-Length Mock Exams', 'All 20 Question Types', 'Instant AI Scoring', 'Personalized Daily Plan'].map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2.5">
-                      <Check className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/signup?plan=month" className="block w-full py-4 rounded-xl bg-indigo-600 text-white font-extrabold text-xs text-center hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/30">
-                  Choose Monthly Pro →
-                </Link>
-              </div>
-
-              {/* Ultimate */}
-              <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200 shadow-2xs">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-2">45 Days Prep</h3>
-                <div className="mb-6">
-                  <span className="text-3xl font-black text-[#0f172a]">Rs. 1,499</span>
-                  <span className="text-xs text-slate-500 font-medium ml-1">/ 45 days</span>
-                </div>
-                <ul className="space-y-3 mb-8 text-xs font-semibold text-slate-700">
-                  {['45 Days Full Access', 'Everything in Pro', 'PDF Scorecards', 'Band 9 Essay Templates', 'Priority WhatsApp Support'].map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2.5">
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0" /> {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/signup?plan=extended" className="block w-full py-3.5 rounded-xl border border-slate-300 text-slate-800 font-extrabold text-xs text-center hover:bg-white hover:border-indigo-300 transition-colors">
-                  Choose 45 Days Plan
-                </Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* FAQ */}
-        <section id="faq" className="py-24 lg:py-32 bg-[#faf9f6]">
-          <div className="max-w-3xl mx-auto px-6 lg:px-12">
-            <h2 className="text-3xl font-extrabold text-[#0f172a] mb-12 text-center">Frequently asked questions.</h2>
-            <div className="space-y-4">
+        {/* FAQ SECTION */}
+        <section id="faq" className="py-20 bg-white border-t border-slate-200">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-black text-slate-900 mb-10 text-center font-satoshi">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-3.5">
               {faqs.map((faq, i) => (
-                <div key={i} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-2xs">
-                  <button 
-                    className="w-full flex items-center justify-between text-left group cursor-pointer"
+                <div key={i} className="bg-[#f8fafc] border border-slate-200 rounded-2xl p-5">
+                  <button
+                    className="w-full flex items-center justify-between text-left cursor-pointer"
                     onClick={() => setActiveFaq(activeFaq === i ? null : i)}
                   >
-                    <span className="font-extrabold text-slate-900 text-xs sm:text-sm group-hover:text-indigo-600 transition-colors">{faq.q}</span>
-                    <div className={clsx(
-                      "w-6 h-6 rounded-full border flex items-center justify-center transition-colors shrink-0 ml-4",
-                      activeFaq === i ? "border-indigo-600 bg-indigo-50 text-indigo-600" : "border-slate-300 text-slate-500"
-                    )}>
-                      {activeFaq === i ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                    <span className="font-extrabold text-slate-900 text-xs sm:text-sm">{faq.q}</span>
+                    <div className="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center shrink-0 ml-4">
+                      {activeFaq === i ? <Minus className="w-3.5 h-3.5 text-indigo-600" /> : <Plus className="w-3.5 h-3.5 text-slate-500" />}
                     </div>
                   </button>
                   {activeFaq === i && (
-                    <div className="pt-3 border-t border-slate-100 mt-3 text-xs text-slate-600 font-medium leading-relaxed">
+                    <div className="pt-3 border-t border-slate-200/80 mt-3 text-xs text-slate-600 font-medium leading-relaxed">
                       {faq.a}
                     </div>
                   )}
@@ -555,25 +484,33 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA BOTTOM SECTION */}
-        <section className="py-24 bg-white border-t border-slate-200">
-          <div className="max-w-5xl mx-auto px-6 lg:px-12">
-            <div className="bg-gradient-to-br from-[#0f172a] to-[#1e293b] rounded-[3rem] p-12 lg:p-20 text-center relative overflow-hidden shadow-2xl text-white">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
-              
+        {/* PURPLE GRADIENT CTA BANNER MATCHING MASTERIELTSAI.COM */}
+        <section className="py-16 bg-[#f8fafc] border-t border-slate-200">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 rounded-[2.5rem] p-10 sm:p-16 text-center text-white shadow-xl relative overflow-hidden">
               <div className="relative z-10 max-w-2xl mx-auto">
-                <h2 className="text-3xl sm:text-5xl font-black mb-4 tracking-tight">Begin your PTE journey today.</h2>
-                <p className="text-xs sm:text-sm text-slate-400 font-medium leading-relaxed mb-8">
-                  Get the premium, official Pearson-calibrated practice you need to secure your dream score.
+                <h2 className="text-3xl sm:text-4xl font-black mb-3 font-satoshi">
+                  Ready to Ace Your PTE Academic?
+                </h2>
+                <p className="text-xs sm:text-sm text-indigo-100 font-semibold mb-8">
+                  Join thousands of students across Nepal achieving 79+ and 90 GSE scores with Master PTE AI.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-4">
-                  <Link href="/signup" className="px-8 py-4 rounded-2xl bg-indigo-600 text-white font-extrabold text-xs hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30">
-                    Start Learning Today →
+                  <Link
+                    href="/signup"
+                    className="px-7 py-3.5 rounded-2xl bg-white text-indigo-700 hover:bg-indigo-50 font-black text-xs sm:text-sm shadow-lg transition-all"
+                  >
+                    Create Free Account →
                   </Link>
-                  <Link href="/portal" className="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 transition-all">
-                    Access Portal
-                  </Link>
+                  <a
+                    href="https://wa.me/9779763876490"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-7 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm shadow-lg flex items-center gap-2 transition-all"
+                  >
+                    <MessageCircle className="w-4 h-4 fill-white" />
+                    <span>Message on WhatsApp</span>
+                  </a>
                 </div>
               </div>
             </div>

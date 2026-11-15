@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
-import PracticeResponse from '@/models/PracticeResponse';
 import { extractUserFromRequest } from '@/lib/auth';
+import { supabaseStore } from '@/server/db/supabaseStore';
 
 export async function GET(request: NextRequest) {
   const authUser = await extractUserFromRequest(request);
@@ -14,27 +13,19 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(50, Number(searchParams.get('limit') || 20));
 
   try {
-    const db = await connectToDatabase();
-    if (!db) {
-      return NextResponse.json({ success: true, history: [] });
-    }
+    const allResponses = await supabaseStore.getCollection<any>('practice_responses');
+    const uid = authUser.userId || authUser.id;
+    const email = (authUser.email || '').toLowerCase();
 
-    const query: any = {
-      $or: [
-        { userId: authUser.userId || authUser.id },
-        { userEmail: authUser.email },
-      ],
-    };
+    let history = allResponses.filter(
+      r => r.userId === uid || (r.userEmail && r.userEmail.toLowerCase() === email)
+    );
 
     if (section && section !== 'all') {
-      query.section = section.toLowerCase();
+      history = history.filter(r => (r.section || '').toLowerCase() === section.toLowerCase());
     }
 
-    const history = await PracticeResponse.find(query)
-      .sort({ createdAt: -1 })
-      .limit(limit);
-
-    return NextResponse.json({ success: true, history });
+    return NextResponse.json({ success: true, history: history.slice(0, limit) });
   } catch (error: any) {
     return NextResponse.json({ success: true, history: [] });
   }

@@ -44,7 +44,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Diagnostic Test', href: '/dashboard?tab=diagnostic', icon: Sparkles, badge: 'Step 1' },
+  { name: 'Diagnostic Test', href: '/dashboard?tab=diagnostic', icon: Sparkles, badge: 'STEP 1' },
   { name: 'Speaking', href: '/dashboard?tab=speaking', icon: Mic },
   { name: 'Writing', href: '/dashboard?tab=writing', icon: PenTool },
   { name: 'Reading', href: '/dashboard?tab=reading', icon: BookOpen },
@@ -54,6 +54,7 @@ const navItems: NavItem[] = [
   { name: 'Vocabulary', href: '/dashboard?tab=vocabulary', icon: BookMarked },
   { name: 'Templates', href: '/dashboard?tab=templates', icon: Folder },
   { name: 'Progress', href: '/dashboard?tab=progress', icon: BarChart3 },
+  { name: 'Files', href: '/dashboard?tab=templates', icon: Folder },
   { name: 'Notebook', href: '/dashboard?tab=notebook', icon: BookOpen },
   { name: 'User Guide', href: '/dashboard?tab=user_guide', icon: HelpCircle },
 ];
@@ -120,11 +121,11 @@ function SidebarNav({
       {(user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'branch_admin') && (
         <Link
           href="/admin"
-          className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-black text-cyan-700 dark:text-cyan-300 hover:text-cyan-900 dark:hover:text-white hover:bg-cyan-50 dark:hover:bg-cyan-500/10 border-2 border-cyan-400/50 my-2 transition-all shadow-2xs"
+          className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-black text-indigo-700 dark:text-cyan-300 hover:text-indigo-900 dark:hover:text-white hover:bg-indigo-50 dark:hover:bg-cyan-500/10 border-2 border-indigo-400/50 my-2 transition-all shadow-2xs"
         >
           <div className="flex items-center gap-3">
-            <Shield className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
-            {(!collapsed || isMobile) && <span className="whitespace-nowrap">Admin Panel</span>}
+            <Shield className="w-5 h-5 text-indigo-600 dark:text-cyan-400" />
+            {(!collapsed || isMobile) && <span className="whitespace-nowrap">Admin Command Desk</span>}
           </div>
         </Link>
       )}
@@ -299,8 +300,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Sparkles className="w-4 h-4 text-cyan-200" />
               </div>
               {(!collapsed || isMobile) && (
-                <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
-                  PTE <span className="text-indigo-600 dark:text-accent">AI</span>
+                <span className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                  Master PTE <span className="text-rose-600">AI</span>
                 </span>
               )}
             </Link>

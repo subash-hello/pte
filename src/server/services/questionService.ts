@@ -1,5 +1,4 @@
-import { connectDB } from '../db/mongodb';
-import PracticeResponse from '../models/PracticeResponse';
+import { supabaseStore } from '../db/supabaseStore';
 import { PTEPracticeQuestions } from '@/data/practice-questions';
 
 export const questionService = {
@@ -7,7 +6,9 @@ export const questionService = {
     return PTEPracticeQuestions.filter(q => {
       const matchSection = !section || section === 'all' || q.section.toLowerCase() === section.toLowerCase();
       const matchType = !type || type === 'all' || q.type === type;
-      const matchSearch = !search || !search.trim() || 
+      const matchSearch =
+        !search ||
+        !search.trim() ||
         q.title.toLowerCase().includes(search.toLowerCase()) ||
         q.itemCategory.toLowerCase().includes(search.toLowerCase());
       return matchSection && matchType && matchSearch;
@@ -28,21 +29,16 @@ export const questionService = {
     explanation?: string;
     aiEvaluated?: boolean;
   }) {
-    const db = await connectDB();
-    if (db) {
-      const resp = new PracticeResponse(data);
-      return await resp.save();
-    }
-    return data;
+    return supabaseStore.insertItem('practice_responses', {
+      _id: `pr_${Date.now()}`,
+      ...data,
+    });
   },
 
   async getHistoryForUser(userId: string) {
-    const db = await connectDB();
-    if (db) {
-      return PracticeResponse.find({ userId }).sort({ createdAt: -1 }).limit(50);
-    }
-    return [];
-  }
+    const all = await supabaseStore.getCollection<any>('practice_responses');
+    return all.filter(r => r.userId === userId).slice(0, 50);
+  },
 };
 
 export default questionService;

@@ -207,12 +207,12 @@ export default function FloatingSiriCoach() {
 
               <div className="space-y-3">
                 {transcript && (
-                  <p className="text-sm font-medium text-white/90 leading-relaxed text-right">
+                  <p className="text-sm font-bold text-slate-900 dark:text-white/90 leading-relaxed text-right">
                     "{transcript}"
                   </p>
                 )}
                 {aiResponse && (
-                  <p className="text-sm text-text-muted leading-relaxed">
+                  <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                     {aiResponse}
                   </p>
                 )}

@@ -1,226 +1,284 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { Check, Sparkles, ShieldCheck, Zap, ArrowRight, MessageCircle } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { Check, ArrowRight, ShieldCheck, Sparkles, MessageSquare, HelpCircle } from 'lucide-react';
-import Link from 'next/link';
 
-export default function Pricing() {
-  const [billingCycle, setBillingCycle] = useState<'standard' | 'extended'>('standard');
+const PRICING_PLANS = [
+  {
+    id: '7d',
+    duration: '7 days',
+    name: 'Quick Exam Booster',
+    price: '299',
+    perDay: 'Rs. 43/day',
+    popular: false,
+    badge: 'SHORT TERM',
+    features: [
+      'Full AI Speaking & Writing Scoring',
+      'Official Pearson GSE (10–90) Breakdown',
+      '2 Full Timed Mock Tests',
+      'All 20 PTE Task Types Unlocked',
+      'Instant Pronunciation & Fluency Analysis',
+    ],
+  },
+  {
+    id: '15d',
+    duration: '15 days',
+    name: 'Crash Course Pack',
+    price: '599',
+    perDay: 'Rs. 40/day',
+    popular: false,
+    badge: 'FAST PREP',
+    features: [
+      'Unlimited AI Speaking & Writing Evaluations',
+      '5 Full Timed Mock Tests',
+      '2026 Prediction File Access',
+      'Real-Time Oral Fluency & Grammar Feedback',
+      'WhatsApp Priority Support',
+    ],
+  },
+  {
+    id: '1m',
+    duration: '1 month',
+    name: 'Standard Pro Plan',
+    price: '999',
+    perDay: 'Rs. 33/day',
+    popular: true,
+    badge: 'MOST POPULAR',
+    features: [
+      'Unlimited AI Speaking & Writing Evaluations',
+      '12 Full-Length Timed Mock Exams',
+      'All 3,000+ Real Exam Prediction Questions',
+      'Detailed Phoneme & Pitch Contour Feedback',
+      'AI Study Plan & Daily Task Generator',
+      'Direct Admin & Tutor Support on WhatsApp',
+    ],
+  },
+  {
+    id: '45d',
+    duration: '45 days',
+    name: 'Extended Mastery',
+    price: '1,299',
+    perDay: 'Rs. 29/day',
+    popular: false,
+    badge: 'GREAT VALUE',
+    features: [
+      'Everything in 1-Month Standard Pro',
+      '18 Full-Length Timed Mock Exams',
+      'High-Yield WFD & Essay Template Vault',
+      'Weakness Radar & Personalized Drills',
+      'Priority Account Activation',
+    ],
+  },
+  {
+    id: '2m',
+    duration: '2 months',
+    name: 'Complete 79+ Guarantee Prep',
+    price: '1,799',
+    perDay: 'Rs. 30/day',
+    popular: false,
+    badge: '79+ TARGET',
+    features: [
+      'Everything in Extended Mastery',
+      '25 Full-Length Timed Mock Exams',
+      '1-on-1 Score Report Review via WhatsApp',
+      'Full Access to Updated Monthly Predictions',
+      'Unlimited AI Voice Coach Sessions',
+    ],
+  },
+  {
+    id: '3m',
+    duration: '3 months',
+    name: 'Ultimate 90-Band Package',
+    price: '2,500',
+    perDay: 'Rs. 28/day',
+    popular: false,
+    badge: 'BEST LONG-TERM',
+    features: [
+      '90 Days Unlimited Pro Access',
+      'Unlimited Full-Length Timed Mock Exams',
+      'Complete Study Materials & Template PDF Vault',
+      'Dedicated Score Strategy Consultation',
+      'Lowest Daily Cost (Rs. 28/day)',
+    ],
+  },
+];
 
-  const plans = [
-    {
-      name: "Weekly Lite",
-      price: "Rs. 299",
-      period: "/ 7 days",
-      badge: "Quick Sprint",
-      description: "Ideal for quick revision and last-minute score verification before test day.",
-      features: [
-        "7 Days Full Access",
-        "2 Full-Length PTE Mock Tests",
-        "Official AI Scoring Engine",
-        "Speaking Pronunciation Analysis",
-        "Standard Progress Analytics",
-        "Email Support"
-      ],
-      buttonText: "Start Weekly Lite",
-      href: "/signup",
-      isPopular: false,
-      accentColor: "border-[#1e293b]/10 bg-white"
-    },
-    {
-      name: "Monthly Pro",
-      price: "Rs. 999",
-      period: "/ 30 days",
-      badge: "Most Popular",
-      description: "Comprehensive preparation plan designed to guarantee a 79+ GSE target score.",
-      features: [
-        "30 Days Unlimited Access",
-        "Unlimited Full Mock Tests",
-        "All 22 Question Type Modules",
-        "Advanced AI Tutor Chat",
-        "Personalized Daily Study Plan",
-        "Detailed Performance Scorecards",
-        "Priority WhatsApp Support"
-      ],
-      buttonText: "Get Monthly Pro",
-      href: "/signup",
-      isPopular: true,
-      accentColor: "border-[#0f172a] bg-[#0f172a] text-white"
-    },
-    {
-      name: "Ultimate Prep",
-      price: "Rs. 1,499",
-      period: "/ 45 days",
-      badge: "Best Value",
-      description: "Extended access with premium study materials, templates, and priority tutor help.",
-      features: [
-        "45 Days Full Access",
-        "Everything in Monthly Pro",
-        "1-on-1 AI Tutoring Assistance",
-        "PTE Master Essay Templates Vault",
-        "PDF Scorecard Export",
-        "Direct Tutor Support on WhatsApp"
-      ],
-      buttonText: "Get Ultimate Prep",
-      href: "/signup",
-      isPopular: false,
-      accentColor: "border-[#1e293b]/10 bg-white"
-    }
-  ];
-
-  const comparisonFeatures = [
-    { name: "Full-Length Mock Tests", lite: "2 Tests", pro: "Unlimited", ultimate: "Unlimited" },
-    { name: "All 22 Question Modules", lite: "Partial", pro: "Full Access", ultimate: "Full Access" },
-    { name: "Real-Time AI Pronunciation", lite: "Basic", pro: "Advanced", ultimate: "Advanced + Feedback" },
-    { name: "Writing Essay Templates", lite: "—", pro: "Included", ultimate: "Master Vault" },
-    { name: "Personalized Daily Plan", lite: "—", pro: "Included", ultimate: "Included" },
-    { name: "WhatsApp Tutor Support", lite: "—", pro: "Priority", ultimate: "Dedicated 1-on-1" },
-  ];
+export default function PricingPage() {
+  const [selectedPlan, setSelectedPlan] = useState('1m');
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] text-[#1e293b] flex flex-col font-sans selection:bg-[#ff6b4a]/20 selection:text-[#1e293b]">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col">
       <Navbar />
 
-      <main className="flex-1 pt-32 pb-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          
+      <main className="flex-1 pt-28 pb-24 px-4 sm:px-6 relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[420px] bg-gradient-to-tr from-indigo-500/10 via-violet-500/10 to-rose-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
           {/* Header */}
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 mb-6 border border-[#1e293b]/10 rounded-full px-4 py-1.5 bg-white/60 backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-[#0d9488]" />
-              <span className="text-xs font-semibold tracking-wide uppercase text-[#64748b]">Transparent Investment</span>
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-black uppercase tracking-widest mb-5">
+              <Sparkles className="w-3.5 h-3.5 text-rose-500" /> Transparent Nepal Pricing (NPR)
             </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0f172a] leading-tight mb-6">
-              Classic plans for every <br />
-              <span className="italic font-normal text-[#ff6b4a]">PTE target.</span>
+            <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 font-satoshi leading-tight">
+              Invest in Your <span className="text-indigo-600">79+ PTE Score</span>
             </h1>
-            <p className="text-lg text-[#64748b] font-light leading-relaxed">
-              No hidden fees. Full access to Pearson-aligned AI scoring algorithms, mock tests, and personalized study paths.
+            <p className="text-slate-600 text-base sm:text-lg font-medium mt-4 leading-relaxed">
+              Choose the exact duration you need before your exam date. Instant activation via eSewa, Khalti, Fonepay, or Consultancy Branch Code.
             </p>
-          </div>
 
-          {/* Pricing Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch mb-24">
-            {plans.map((plan, i) => (
-              <div 
-                key={i} 
-                className={`rounded-3xl p-8 sm:p-10 border transition-all duration-300 flex flex-col justify-between relative ${
-                  plan.isPopular 
-                    ? 'bg-[#0f172a] text-white border-[#0f172a] shadow-[0_20px_40px_-15px_rgba(15,23,42,0.3)] md:-translate-y-2' 
-                    : 'bg-white text-[#1e293b] border-[#1e293b]/10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.03)] hover:border-[#1e293b]/30'
-                }`}
-              >
-                {plan.isPopular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#ff6b4a] text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider shadow-md">
-                    {plan.badge}
-                  </div>
-                )}
-
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className={`text-xl font-bold ${plan.isPopular ? 'text-white' : 'text-[#0f172a]'}`}>
-                      {plan.name}
-                    </h3>
-                    {!plan.isPopular && (
-                      <span className="text-[11px] font-semibold text-[#64748b] bg-[#faf9f6] px-3 py-1 rounded-full border border-[#1e293b]/5">
-                        {plan.badge}
-                      </span>
-                    )}
-                  </div>
-                  
-                  <p className={`text-xs leading-relaxed font-light mb-8 h-10 ${plan.isPopular ? 'text-[#94a3b8]' : 'text-[#64748b]'}`}>
-                    {plan.description}
-                  </p>
-                  
-                  <div className="flex items-baseline gap-2 mb-8 pb-8 border-b border-[#1e293b]/10">
-                    <span className={`text-4xl lg:text-5xl font-bold tracking-tight ${plan.isPopular ? 'text-white' : 'text-[#0f172a]'}`}>
-                      {plan.price}
-                    </span>
-                    <span className={`text-xs font-medium ${plan.isPopular ? 'text-[#94a3b8]' : 'text-[#64748b]'}`}>
-                      {plan.period}
-                    </span>
-                  </div>
-                  
-                  <ul className="space-y-4 mb-10">
-                    {plan.features.map((feature, j) => (
-                      <li key={j} className="flex items-start gap-3 text-xs font-light">
-                        <Check className={`w-4 h-4 shrink-0 mt-0.5 ${plan.isPopular ? 'text-[#ff6b4a]' : 'text-[#0d9488]'}`} />
-                        <span className={plan.isPopular ? 'text-[#e2e8f0]' : 'text-[#334155]'}>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <Link
-                  href={plan.href}
-                  className={`w-full py-4 rounded-2xl font-medium text-sm transition-all text-center flex items-center justify-center gap-2 ${
-                    plan.isPopular
-                      ? 'bg-[#ff6b4a] hover:bg-[#e85a3a] text-white shadow-lg shadow-[#ff6b4a]/20'
-                      : 'bg-[#0f172a] hover:bg-[#1e293b] text-white'
+            {/* Quick Duration Pills */}
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
+              {PRICING_PLANS.map(plan => (
+                <button
+                  key={plan.id}
+                  onClick={() => setSelectedPlan(plan.id)}
+                  className={`px-4 py-2 rounded-xl text-xs font-black transition-all border-2 ${
+                    selectedPlan === plan.id
+                      ? 'bg-[#0b0f19] text-white border-[#0b0f19] shadow-[3px_3px_0px_#4f46e5]'
+                      : 'bg-white text-slate-700 border-slate-200 hover:border-slate-900'
                   }`}
                 >
-                  {plan.buttonText} <ArrowRight className="w-4 h-4" />
-                </Link>
+                  {plan.duration} — Rs. {plan.price}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 6-Plan Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch">
+            {PRICING_PLANS.map(plan => {
+              const isSelected = selectedPlan === plan.id || plan.popular;
+              return (
+                <div
+                  key={plan.id}
+                  onClick={() => setSelectedPlan(plan.id)}
+                  className={`cursor-pointer rounded-3xl p-7 transition-all flex flex-col justify-between relative border-2 ${
+                    plan.popular
+                      ? 'bg-[#0b0f19] text-white border-[#0b0f19] shadow-[6px_6px_0px_#e11d48]'
+                      : selectedPlan === plan.id
+                        ? 'bg-white text-slate-900 border-[#0b0f19] shadow-[6px_6px_0px_#0b0f19]'
+                        : 'bg-white text-slate-900 border-slate-200 hover:border-slate-900 shadow-xs'
+                  }`}
+                >
+                  {plan.badge && (
+                    <div
+                      className={`absolute -top-3.5 right-6 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                        plan.popular
+                          ? 'bg-rose-600 text-white border-rose-400 shadow-md'
+                          : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                      }`}
+                    >
+                      {plan.badge}
+                    </div>
+                  )}
+
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span
+                        className={`text-xs font-black uppercase tracking-widest ${
+                          plan.popular ? 'text-indigo-400' : 'text-indigo-600'
+                        }`}
+                      >
+                        {plan.duration} Access
+                      </span>
+                      <span
+                        className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
+                          plan.popular ? 'bg-white/10 text-slate-300' : 'bg-slate-100 text-slate-600'
+                        }`}
+                      >
+                        {plan.perDay}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl font-black font-satoshi mb-4">{plan.name}</h3>
+
+                    <div className="flex items-baseline gap-1.5 mb-6 pb-6 border-b border-current/10">
+                      <span className="text-sm font-extrabold opacity-75">Rs.</span>
+                      <span className="text-4xl font-black tracking-tight font-satoshi">{plan.price}</span>
+                      <span className="text-xs font-semibold opacity-60">/ {plan.duration}</span>
+                    </div>
+
+                    <ul className="space-y-3 mb-8">
+                      {plan.features.map(f => (
+                        <li key={f} className="flex items-start gap-2.5 text-xs font-semibold leading-relaxed">
+                          <div
+                            className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
+                              plan.popular ? 'bg-emerald-500/20 text-emerald-400' : 'bg-emerald-50 text-emerald-600'
+                            }`}
+                          >
+                            <Check className="w-3 h-3" />
+                          </div>
+                          <span className={plan.popular ? 'text-slate-200' : 'text-slate-700'}>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2.5 pt-2">
+                    <Link
+                      href="/signup"
+                      className={`w-full py-3.5 px-5 rounded-xl font-black text-xs flex items-center justify-center gap-2 transition-all border-2 ${
+                        plan.popular
+                          ? 'bg-rose-600 hover:bg-rose-500 text-white border-white/20 shadow-[3px_3px_0px_#ffffff30]'
+                          : 'bg-[#0b0f19] hover:bg-slate-800 text-white border-[#0b0f19]'
+                      }`}
+                    >
+                      Start {plan.duration} Plan <ArrowRight className="w-4 h-4" />
+                    </Link>
+
+                    <a
+                      href={`https://wa.me/9779763876490?text=${encodeURIComponent(
+                        `Hello Master PTE AI Admin! I want to activate the ${plan.duration} Plan (Rs. ${plan.price}).`
+                      )}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`w-full py-2.5 px-4 rounded-xl font-extrabold text-[11px] flex items-center justify-center gap-1.5 transition-all border ${
+                        plan.popular
+                          ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/25'
+                          : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                      }`}
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" /> Buy via WhatsApp (eSewa / Khalti)
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Consultancy Partner Banner */}
+          <div className="mt-16 bg-white border-2 border-[#0b0f19] rounded-3xl p-8 lg:p-10 shadow-[6px_6px_0px_#0b0f19] flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div className="space-y-2 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-black uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5" /> For Consultancies & Coaching Institutes
               </div>
-            ))}
-          </div>
-
-          {/* Feature Comparison Table */}
-          <div className="max-w-5xl mx-auto mb-24 bg-white rounded-3xl p-8 sm:p-12 border border-[#1e293b]/10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.03)]">
-            <div className="mb-8">
-              <h3 className="text-2xl font-bold text-[#0f172a]">Plan Comparison</h3>
-              <p className="text-xs text-[#64748b] font-light mt-1">Detailed feature breakdown across all preparation tiers.</p>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm border-collapse min-w-[600px]">
-                <thead>
-                  <tr className="border-b border-[#1e293b]/10 text-xs font-semibold uppercase tracking-wider text-[#64748b]">
-                    <th className="pb-4">Feature</th>
-                    <th className="pb-4 text-center">Weekly Lite</th>
-                    <th className="pb-4 text-center text-[#ff6b4a]">Monthly Pro</th>
-                    <th className="pb-4 text-center">Ultimate Prep</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#1e293b]/5 text-xs">
-                  {comparisonFeatures.map((row, idx) => (
-                    <tr key={idx} className="hover:bg-[#faf9f6]">
-                      <td className="py-4 font-semibold text-[#0f172a]">{row.name}</td>
-                      <td className="py-4 text-center text-[#64748b]">{row.lite}</td>
-                      <td className="py-4 text-center font-semibold text-[#0f172a]">{row.pro}</td>
-                      <td className="py-4 text-center text-[#0d9488] font-semibold">{row.ultimate}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Institutional / WhatsApp Help Banner */}
-          <div className="max-w-5xl mx-auto bg-gradient-to-br from-[#0f172a] to-[#1e293b] text-white rounded-3xl p-8 sm:p-12 flex flex-col sm:flex-row items-center justify-between gap-8 shadow-xl">
-            <div className="space-y-2 max-w-lg">
-              <span className="text-[10px] uppercase font-bold tracking-widest text-[#0d9488] bg-[#0d9488]/20 px-3 py-1 rounded-full">
-                Custom Institution Access
-              </span>
-              <h3 className="text-2xl font-bold">Need custom branch or bulk access?</h3>
-              <p className="text-xs text-[#94a3b8] font-light leading-relaxed">
-                Contact our support team on WhatsApp (`+977 9763876490`) for custom student batch licensing or institution accounts.
+              <h2 className="text-2xl font-black text-slate-900 font-satoshi">
+                Are You a PTE Consultancy in Nepal?
+              </h2>
+              <p className="text-slate-600 text-sm font-medium max-w-2xl">
+                Get your own dedicated Branch Admin Portal, custom Branch Code (e.g., <code className="font-mono font-bold text-indigo-600">KTM01</code>, <code className="font-mono font-bold text-indigo-600">KIEC13</code>), bulk student quota allocation, and live student score tracking.
               </p>
             </div>
-            
-            <a
-              href="https://wa.me/9779763876490?text=Hi%20Master%20PTE%20AI%2C%20I%20would%20like%20to%20inquire%20about%20custom%20pricing%20or%20batch%20subscriptions."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-4 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-xs transition-all shadow-lg flex items-center gap-2 shrink-0"
-            >
-              <MessageSquare className="w-4 h-4" /> Inquiry on WhatsApp (+977 9763876490)
-            </a>
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <a
+                href="https://wa.me/9779763876490?text=Hello%20Master%20PTE%20AI!%20We%20want%20to%20register%20our%20consultancy%20for%20a%20Branch%20Admin%20Portal."
+                target="_blank"
+                rel="noreferrer"
+                className="px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs border-2 border-[#0b0f19] shadow-[3px_3px_0px_#0b0f19] flex items-center gap-2 transition-all"
+              >
+                <MessageCircle className="w-4 h-4" /> Partner on WhatsApp
+              </a>
+              <Link
+                href="/admin-login"
+                className="px-5 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-extrabold text-xs border-2 border-slate-300 transition-all"
+              >
+                Branch Admin Login →
+              </Link>
+            </div>
           </div>
-
         </div>
       </main>
 

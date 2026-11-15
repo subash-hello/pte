@@ -155,7 +155,7 @@ function DashboardContent() {
         <div className="flex flex-col gap-4 max-w-4xl mx-auto">
           <button
             onClick={() => setActiveQuestion(null)}
-            className="self-start px-4 py-2 rounded-xl bg-surface border border-border-glass text-xs font-bold text-text-primary hover:bg-surface-hover transition-all flex items-center gap-1.5 shadow-xs"
+            className="self-start px-4 py-2 rounded-xl bg-white dark:bg-surface border border-slate-200 dark:border-border-glass text-xs font-bold text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-surface-hover transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
           >
             ← Back to Databank
           </button>
@@ -187,18 +187,18 @@ function DashboardContent() {
         !activeQuestion &&
         ["speaking", "writing", "reading", "listening", "practice"].includes(activeTab) && (
           <div className="flex flex-col gap-6">
-            <div className="bg-surface p-5 md:p-6 rounded-2xl border border-border-glass shadow-xs flex flex-col gap-4">
+            <div className="bg-white dark:bg-surface p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-border-glass shadow-xs flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-bold text-accent uppercase tracking-wider">
+                  <span className="text-xs font-bold text-indigo-600 dark:text-accent uppercase tracking-wider">
                     {currentActiveSection} Section Practice
                   </span>
-                  <h2 className="text-xl md:text-2xl font-extrabold text-text-primary mt-1 capitalize flex flex-wrap items-center gap-2">
+                  <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mt-1 capitalize flex flex-wrap items-center gap-2">
                     {currentActiveSection === "speaking" && "🗣️ Speaking"}
                     {currentActiveSection === "writing" && "✍️ Writing"}
                     {currentActiveSection === "reading" && "📖 Reading"}
                     {currentActiveSection === "listening" && "🎧 Listening"}
-                    <span className="text-xs text-text-muted font-mono font-normal">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-mono font-normal">
                       ({filteredQuestions.length} Practice Items Available)
                     </span>
                   </h2>
@@ -206,7 +206,7 @@ function DashboardContent() {
               </div>
 
               {/* Sub-Item Filter Tabs */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin pt-2 border-t border-border-glass -mx-1 px-1">
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin pt-2 border-t border-slate-200 dark:border-border-glass -mx-1 px-1">
                 {activeItemTypes.map((item) => {
                   const isActive = selectedItemType === item.type;
                   return (
@@ -218,8 +218,8 @@ function DashboardContent() {
                       }}
                       className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 whitespace-nowrap transition-all cursor-pointer ${
                         isActive
-                          ? "bg-accent text-white shadow-md shadow-indigo-500/20"
-                          : "bg-surface hover:bg-surface-hover text-text-muted hover:text-text-primary border border-border-glass"
+                          ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
+                          : "bg-slate-50 dark:bg-surface hover:bg-slate-100 dark:hover:bg-surface-hover text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-border-glass"
                       }`}
                     >
                       <span>{item.icon}</span>
@@ -229,7 +229,7 @@ function DashboardContent() {
                           className={`text-[10px] font-extrabold font-mono px-2 py-0.5 rounded-full ${
                             isActive
                               ? "bg-white/20 text-white"
-                              : "bg-accent/15 text-accent border border-accent/20"
+                              : "bg-indigo-50 dark:bg-accent/15 text-indigo-600 dark:text-accent border border-indigo-200 dark:border-accent/20"
                           }`}
                         >
                           {item.countBadge}
@@ -251,18 +251,18 @@ function DashboardContent() {
                   <div
                     key={q.id}
                     onClick={() => setActiveQuestion(q)}
-                    className={`bg-surface rounded-2xl p-5 border transition-all cursor-pointer flex flex-col justify-between group shadow-xs hover:shadow-md ${
+                    className={`bg-white dark:bg-surface rounded-2xl p-5 border transition-all cursor-pointer flex flex-col justify-between group shadow-xs hover:shadow-md ${
                       isCompleted
-                        ? "border-emerald-300/40 bg-emerald-500/5 hover:border-emerald-500"
-                        : "border-border-glass hover:border-accent"
+                        ? "border-emerald-300 bg-emerald-50/40 dark:bg-emerald-500/5 hover:border-emerald-500"
+                        : "border-slate-200 dark:border-border-glass hover:border-indigo-500"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2 mb-3">
                       <span
                         className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border flex items-center gap-1 ${
                           isCompleted
-                            ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30 font-extrabold"
-                            : "bg-accent/15 text-accent border-accent/25"
+                            ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-500/30 font-extrabold"
+                            : "bg-indigo-50 dark:bg-accent/15 text-indigo-600 dark:text-accent border-indigo-200 dark:border-accent/25"
                         }`}
                       >
                         <span>{isCompleted ? "✓" : "✨"}</span>
@@ -271,28 +271,28 @@ function DashboardContent() {
 
                       <div className="flex items-center gap-2">
                         {isCompleted && (
-                          <span className="text-[10px] font-mono font-extrabold text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                          <span className="text-[10px] font-mono font-extrabold text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-500/30">
                             {earnedScore || 78} GSE
                           </span>
                         )}
-                        <span className="text-[10px] font-mono font-bold text-text-muted">
+                        <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
                           {q.timeLimitMinutes || 2} min
                         </span>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-bold text-text-primary group-hover:text-accent transition-colors line-clamp-1">
+                      <h3 className="text-sm font-extrabold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-accent transition-colors line-clamp-1">
                         {q.title}
                       </h3>
-                      <p className="text-xs text-text-muted mt-2 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed font-medium">
                         {(q as any).text || (q as any).passage || (q as any).instruction || (q as any).promptText}
                       </p>
                     </div>
 
                     <div
-                      className={`mt-4 pt-3 border-t border-border-glass flex items-center justify-between text-xs font-bold ${
-                        isCompleted ? "text-emerald-400" : "text-accent"
+                      className={`mt-4 pt-3 border-t border-slate-100 dark:border-border-glass flex items-center justify-between text-xs font-bold ${
+                        isCompleted ? "text-emerald-600 dark:text-emerald-400" : "text-indigo-600 dark:text-accent"
                       }`}
                     >
                       <span>Practice Item #{q.id}</span>
@@ -307,21 +307,21 @@ function DashboardContent() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex flex-col sm:flex-row items-center justify-between bg-surface p-4 rounded-2xl border border-border-glass text-xs gap-3">
+              <div className="flex flex-col sm:flex-row items-center justify-between bg-white dark:bg-surface p-4 rounded-2xl border border-slate-200 dark:border-border-glass text-xs gap-3">
                 <button
                   onClick={() => setPageNumber((p) => Math.max(1, p - 1))}
                   disabled={pageNumber === 1}
-                  className="w-full sm:w-auto px-4 py-2 bg-surface hover:bg-surface-hover border border-border-glass rounded-xl disabled:opacity-40 font-semibold text-text-primary cursor-pointer"
+                  className="w-full sm:w-auto px-4 py-2 bg-slate-50 dark:bg-surface hover:bg-slate-100 dark:hover:bg-surface-hover border border-slate-200 dark:border-border-glass rounded-xl disabled:opacity-40 font-bold text-slate-900 dark:text-white cursor-pointer"
                 >
                   ← Previous Page
                 </button>
-                <span className="text-text-muted font-mono font-bold text-center">
+                <span className="text-slate-600 dark:text-slate-400 font-mono font-bold text-center">
                   Page {pageNumber} of {totalPages} ({filteredQuestions.length} Questions Total)
                 </span>
                 <button
                   onClick={() => setPageNumber((p) => Math.min(totalPages, p + 1))}
                   disabled={pageNumber === totalPages}
-                  className="w-full sm:w-auto px-4 py-2 bg-surface hover:bg-surface-hover border border-border-glass rounded-xl disabled:opacity-40 font-semibold text-text-primary cursor-pointer"
+                  className="w-full sm:w-auto px-4 py-2 bg-slate-50 dark:bg-surface hover:bg-slate-100 dark:hover:bg-surface-hover border border-slate-200 dark:border-border-glass rounded-xl disabled:opacity-40 font-bold text-slate-900 dark:text-white cursor-pointer"
                 >
                   Next Page →
                 </button>
@@ -339,14 +339,14 @@ function DashboardContent() {
       {/* Mock Tests Hub */}
       {!activeMockId && !activeQuestion && activeTab === "mock" && (
         <div className="flex flex-col gap-6">
-          <div className="flex items-center justify-between bg-surface p-6 rounded-2xl border border-border-glass">
+          <div className="flex items-center justify-between bg-white dark:bg-surface p-6 rounded-2xl border border-slate-200 dark:border-border-glass shadow-xs">
             <div>
-              <h2 className="text-2xl font-extrabold text-text-primary">30 Full-Length Timed Mock Tests</h2>
-              <p className="text-xs text-text-muted mt-1">Official Pearson format with instant 10–90 GSE scoring diagnostics.</p>
+              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">30 Full-Length Timed Mock Tests</h2>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Official Pearson format with instant 10–90 GSE scoring diagnostics.</p>
             </div>
             <Link
               href="/dashboard/mock-test"
-              className="px-5 py-2.5 rounded-xl bg-accent text-white font-bold text-xs hover:bg-accent-bright transition-all"
+              className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition-all"
             >
               Enter Mock Test Suite →
             </Link>
@@ -365,17 +365,17 @@ function DashboardContent() {
 
       {/* Diagnostic Test Quick Link */}
       {!activeMockId && !activeQuestion && activeTab === "diagnostic" && (
-        <div className="bg-surface p-8 rounded-3xl border border-border-glass text-center max-w-xl mx-auto space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-accent/15 border border-accent/30 text-accent flex items-center justify-center mx-auto text-xl font-bold">
+        <div className="bg-white dark:bg-surface p-8 rounded-3xl border border-slate-200 dark:border-border-glass text-center max-w-xl mx-auto space-y-4 shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-accent/15 border border-indigo-200 dark:border-accent/30 text-indigo-600 dark:text-accent flex items-center justify-center mx-auto text-xl font-bold">
             ✨
           </div>
-          <h2 className="text-2xl font-extrabold text-text-primary">15-Minute PTE Diagnostic Test</h2>
-          <p className="text-xs text-text-muted leading-relaxed">
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">15-Minute PTE Diagnostic Test</h2>
+          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
             Take this baseline diagnostic test to uncover your strengths and weaknesses across Speaking, Writing, Reading, and Listening.
           </p>
           <Link
             href="/dashboard/diagnostic"
-            className="inline-block px-6 py-3 rounded-xl bg-accent text-white font-bold text-xs shadow-lg shadow-indigo-500/20 hover:bg-accent-bright transition-all cursor-pointer"
+            className="inline-block px-6 py-3 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition-all cursor-pointer"
           >
             Start Diagnostic Test Now →
           </Link>

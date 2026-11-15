@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
-import User from '@/models/User';
 import { verifyAdminAuth, sanitizeUser } from '@/lib/auth';
+import { supabaseAuthAdapter } from '@/server/services/supabaseAuthAdapter';
 
 export async function GET(request: NextRequest) {
   const adminUser = await verifyAdminAuth(request);
@@ -10,69 +9,58 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = new URL(request.url);
-  const role = searchParams.get('role');
-  const status = searchParams.get('status');
-  const search = searchParams.get('search');
+  const role = searchParams.get('role') || undefined;
+  const status = searchParams.get('status') || undefined;
+  const search = searchParams.get('search') || undefined;
+  const branch = adminUser.role === 'branch_admin' ? adminUser.branch : (searchParams.get('branch') || undefined);
 
   try {
-    const db = await connectToDatabase();
-    if (!db) {
-      const { fallbackDb } = await import('@/lib/fallbackDb');
-      let fbUsers = fallbackDb.getUsers();
+    const supaUsers = await supabaseAuthAdapter.listUsers({
+      role,
+      status,
+      branch,
+      search,
+    });
 
-      if (adminUser.role === 'branch_admin') {
-        fbUsers = fbUsers.filter(u => (u.branch || '').toLowerCase().includes((adminUser.branch || '').toLowerCase()));
-      }
-
-      if (role && role !== 'All') {
-        fbUsers = fbUsers.filter(u => u.role === role);
-      }
-      if (status && status !== 'All') {
-        fbUsers = fbUsers.filter(u => u.status === status);
-      }
-      if (search) {
-        const q = search.toLowerCase();
-        fbUsers = fbUsers.filter(u => 
-          (u.name || '').toLowerCase().includes(q) || 
-          (u.email || '').toLowerCase().includes(q) ||
-          (u.phone || '').includes(q)
-        );
-      }
-
+    if (supaUsers.length > 0) {
       return NextResponse.json({
         success: true,
-        users: fbUsers.map(u => sanitizeUser(u))
+        users: supaUsers.map(u => sanitizeUser(u)),
+        source: 'supabase',
       });
     }
 
-    const query: any = {};
+    const { fallbackDb } = await import('@/lib/fallbackDb');
+    let fbUsers = fallbackDb.getUsers();
 
     if (adminUser.role === 'branch_admin') {
-      query.branch = adminUser.branch;
+      fbUsers = fbUsers.filter(u => (u.branch || '').toLowerCase().includes((adminUser.branch || '').toLowerCase()));
     }
-
-    if (role && role !== 'All') query.role = role;
-    if (status && status !== 'All') query.status = status;
-    
+    if (role && role !== 'All') {
+      fbUsers = fbUsers.filter(u => u.role === role);
+    }
+    if (status && status !== 'All') {
+      fbUsers = fbUsers.filter(u => u.status === status);
+    }
     if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { phone: { $regex: search, $options: 'i' } }
-      ];
+      const q = search.toLowerCase();
+      fbUsers = fbUsers.filter(
+        u =>
+          (u.name || '').toLowerCase().includes(q) ||
+          (u.email || '').toLowerCase().includes(q) ||
+          (u.phone || '').includes(q)
+      );
     }
-
-    const users = await User.find(query).sort({ createdAt: -1 });
 
     return NextResponse.json({
       success: true,
-      users: users.map(u => sanitizeUser(u))
+      users: fbUsers.map(u => sanitizeUser(u)),
     });
   } catch (err: any) {
     const { fallbackDb } = await import('@/lib/fallbackDb');
     return NextResponse.json({
       success: true,
-      users: fallbackDb.getUsers().map(u => sanitizeUser(u))
+      users: fallbackDb.getUsers().map(u => sanitizeUser(u)),
     });
   }
 }
@@ -85,110 +73,89 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    let { name, email, phone, password, role, branch, status, targetScore, accessDurationDays } = body;
+    let { name, email, phone, password, role, branch, branchCode, status, targetScore, accessDurationDays, subscription } = body;
 
     if (adminUser.role === 'branch_admin') {
       branch = adminUser.branch;
       role = 'student';
     }
 
+    const { supabaseStore, INITIAL_BRANCHES } = await import('@/server/db/supabaseStore');
+    const branches = await supabaseStore.getCollection<any>('branches');
+    const allBranches = branches.length ? branches : INITIAL_BRANCHES;
+
+    // Check Branch Quota Limit when creating a student
+    if ((role || 'student') === 'student' && branch) {
+      const matchedBranch = allBranches.find(
+        (b: any) => (b.name || '').toLowerCase() === branch.toLowerCase() || (b.name || '').toLowerCase().includes(branch.toLowerCase().split(' ')[0])
+      );
+      if (matchedBranch) {
+        branchCode = matchedBranch.code || branchCode;
+        const limit = Number(matchedBranch.userLimit) || 0;
+        if (limit > 0) {
+          const existingStudents = await supabaseAuthAdapter.listUsers({ branch: matchedBranch.name });
+          const count = existingStudents.filter(u => u.role === 'student').length;
+          if (count >= limit) {
+            return NextResponse.json(
+              {
+                success: false,
+                message: `Quota Limit Reached: Branch "${matchedBranch.name}" has reached its maximum user creation limit (${count}/${limit}). Ask Super Admin to increase the branch quota.`,
+              },
+              { status: 403 }
+            );
+          }
+        }
+      }
+    }
+
     const assignedStatus = status || 'approved';
     const assignedPassword = password || 'student123';
 
-    // 1. Create in Supabase Auth
-    try {
-      const supaUser = await (await import('@/server/services/supabaseAuthAdapter')).supabaseAuthAdapter.signUp({
-        name,
-        email,
-        password: assignedPassword,
-        phone,
-        role: role || 'student',
-        branch: branch || 'Kathmandu Central Campus',
-        status: assignedStatus,
-        targetScore: targetScore || '79+ (GSE 79)'
-      });
-
-      if (supaUser.success && supaUser.user) {
-        // Also persist in MongoDB in background
-        connectToDatabase().then(async (db) => {
-          if (db) {
-            const exists = await User.findOne({ email: email.toLowerCase() });
-            if (!exists) {
-              await User.create({
-                name,
-                email: email.toLowerCase(),
-                phone,
-                password: assignedPassword,
-                role: role || 'student',
-                branch: branch || 'Kathmandu Central Campus',
-                status: assignedStatus,
-                accessDurationDays: accessDurationDays || 365,
-                approvedAt: assignedStatus === 'approved' ? new Date() : null
-              });
-            }
-          }
-        }).catch(() => {});
-
-        const { fallbackDb } = await import('@/lib/fallbackDb');
-        fallbackDb.createUser({
-          name,
-          email,
-          phone,
-          password: assignedPassword,
-          role: role || 'student',
-          branch: branch || 'Kathmandu Central Campus',
-          status: assignedStatus,
-          accessDurationDays: accessDurationDays || 365
-        });
-
-        return NextResponse.json({ success: true, user: sanitizeUser(supaUser.user) }, { status: 201 });
-      }
-    } catch (e) {
-      console.warn('Supabase admin create student notice:', e);
-    }
-
-    const db = await connectToDatabase();
-    if (!db) {
-      const { fallbackDb } = await import('@/lib/fallbackDb');
-      const existingUser = fallbackDb.findByEmail(email);
-      if (existingUser) {
-        return NextResponse.json({ success: false, message: 'Email already exists' }, { status: 409 });
-      }
-
-      const newUser = await fallbackDb.createUser({
-        name,
-        email,
-        phone,
-        password: assignedPassword,
-        role: role || 'student',
-        branch: branch || 'Kathmandu Central Campus',
-        status: assignedStatus,
-        accessDurationDays: accessDurationDays || 30
-      });
-
-      return NextResponse.json({ success: true, user: sanitizeUser(newUser) }, { status: 201 });
-    }
-
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
-    if (existingUser) {
-      return NextResponse.json({ success: false, message: 'Email already exists' }, { status: 409 });
-    }
-
-    const newUser = new User({
+    const supaUser = await supabaseAuthAdapter.signUp({
       name,
-      email: email.toLowerCase(),
-      phone,
+      email,
       password: assignedPassword,
+      phone,
       role: role || 'student',
-      branch: branch || '',
+      branch: branch || 'Kathmandu Central Campus',
+      branchCode: branchCode || '',
       status: assignedStatus,
-      accessDurationDays: accessDurationDays || 30,
-      approvedAt: assignedStatus === 'pending' ? null : new Date()
+      targetScore: targetScore || '79+ (GSE 79)',
+      accessDurationDays: Number(accessDurationDays) || 30,
+      subscription: subscription || (role === 'branch_admin' ? 'premium' : 'free'),
     });
 
-    await newUser.save();
+    if (supaUser.success && supaUser.user) {
+      await supabaseStore.insertItem('users', supaUser.user).catch(() => {});
 
-    return NextResponse.json({ success: true, user: sanitizeUser(newUser) }, { status: 201 });
+      // If creating a Branch Admin, ensure their branch exists in branches.json
+      if (role === 'branch_admin' && branch) {
+        const exists = allBranches.some((b: any) => (b.name || '').toLowerCase() === branch.trim().toLowerCase());
+        if (!exists) {
+          const prefix = branch.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 4) || 'BRCH';
+          const autoCode = branchCode || `${prefix}${Math.floor(10 + Math.random() * 89)}`;
+          await supabaseStore.insertItem('branches', {
+            _id: `b_${Date.now()}`,
+            name: branch.trim(),
+            code: autoCode,
+            location: branch.trim(),
+            adminName: name.trim(),
+            adminEmail: email.toLowerCase().trim(),
+            adminPhone: phone || '+977 9800000000',
+            status: 'active',
+            userLimit: 0,
+            studentCapacity: 100,
+          }).catch(() => {});
+        }
+      }
+
+      return NextResponse.json({ success: true, user: sanitizeUser(supaUser.user) }, { status: 201 });
+    }
+
+    return NextResponse.json(
+      { success: false, message: supaUser.error || 'Failed to create user in Supabase' },
+      { status: 409 }
+    );
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }

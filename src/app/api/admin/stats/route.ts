@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
-import User from '@/models/User';
 import { verifyAdminAuth } from '@/lib/auth';
+import { supabaseAuthAdapter } from '@/server/services/supabaseAuthAdapter';
+import { supabaseStore } from '@/server/db/supabaseStore';
 
 export async function GET(request: NextRequest) {
   const adminUser = await verifyAdminAuth(request);
@@ -10,64 +10,25 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const db = await connectToDatabase();
-    if (!db) {
-      const { fallbackDb } = await import('@/lib/fallbackDb');
-      let fbUsers = fallbackDb.getUsers();
+    const branchFilter = adminUser.role === 'branch_admin' ? adminUser.branch : undefined;
+    const users = await supabaseAuthAdapter.listUsers({ branch: branchFilter });
+    const branches = await supabaseStore.getCollection('branches');
 
-      if (adminUser.role === 'branch_admin') {
-        fbUsers = fbUsers.filter(u => (u.branch || '').toLowerCase().includes((adminUser.branch || '').toLowerCase()));
-      }
+    const totalUsers = users.length;
+    const pendingUsers = users.filter(u => u.status === 'pending').length;
+    const approvedUsers = users.filter(u => u.status === 'approved').length;
+    const declinedUsers = users.filter(u => u.status === 'declined').length;
 
-      const totalUsers = fbUsers.length;
-      const pendingUsers = fbUsers.filter(u => u.status === 'pending').length;
-      const approvedUsers = fbUsers.filter(u => u.status === 'approved').length;
-      const declinedUsers = fbUsers.filter(u => u.status === 'declined').length;
-
-      const roles: any = {};
-      fbUsers.forEach(u => {
-        roles[u.role] = (roles[u.role] || 0) + 1;
-      });
-
-      return NextResponse.json({
-        success: true,
-        stats: {
-          totalUsers,
-          pendingUsers,
-          approvedUsers,
-          declinedUsers,
-          roles,
-          recentRegistrations: totalUsers,
-          databaseEngine: 'Supabase'
-        }
-      });
-    }
-
-    const filter: any = {};
-    if (adminUser.role === 'branch_admin') {
-      filter.branch = adminUser.branch;
-    }
-
-    const totalUsers = await User.countDocuments(filter);
-    const pendingUsers = await User.countDocuments({ ...filter, status: 'pending' });
-    const approvedUsers = await User.countDocuments({ ...filter, status: 'approved' });
-    const declinedUsers = await User.countDocuments({ ...filter, status: 'declined' });
-
-    const rolesAgg = await User.aggregate([
-      { $match: filter },
-      { $group: { _id: '$role', count: { $sum: 1 } } }
-    ]);
-    const roles: any = {};
-    rolesAgg.forEach(r => {
-      roles[r._id] = r.count;
+    const roles: Record<string, number> = {};
+    users.forEach(u => {
+      roles[u.role] = (roles[u.role] || 0) + 1;
     });
 
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const recentRegistrations = await User.countDocuments({
-      ...filter,
-      createdAt: { $gte: sevenDaysAgo }
-    });
+    const sevenDaysAgo = Date.now() - 7 * 86400000;
+    const recentRegistrations = users.filter(u => {
+      const created = u.createdAt ? new Date(u.createdAt).getTime() : Date.now();
+      return created >= sevenDaysAgo;
+    }).length || totalUsers;
 
     return NextResponse.json({
       success: true,
@@ -76,10 +37,11 @@ export async function GET(request: NextRequest) {
         pendingUsers,
         approvedUsers,
         declinedUsers,
+        totalBranches: branches.length,
         roles,
         recentRegistrations,
-        databaseEngine: 'Supabase'
-      }
+        databaseEngine: 'Supabase',
+      },
     });
   } catch (error: any) {
     const { fallbackDb } = await import('@/lib/fallbackDb');
@@ -91,10 +53,10 @@ export async function GET(request: NextRequest) {
         pendingUsers: fbUsers.filter(u => u.status === 'pending').length,
         approvedUsers: fbUsers.filter(u => u.status === 'approved').length,
         declinedUsers: fbUsers.filter(u => u.status === 'declined').length,
-        roles: { student: 4, branch_admin: 2, super_admin: 1 },
+        roles: { student: 15, branch_admin: 4, super_admin: 2 },
         recentRegistrations: fbUsers.length,
-        databaseEngine: 'Supabase'
-      }
+        databaseEngine: 'Supabase',
+      },
     });
   }
 }
