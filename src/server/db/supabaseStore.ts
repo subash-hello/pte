@@ -15,84 +15,8 @@ export type CollectionName =
   | 'mock_tests'
   | 'ai_config';
 
-// Default initial data for collections
-export const INITIAL_BRANCHES = [
-  {
-    _id: 'b_1',
-    id: 'b_1',
-    name: 'Kathmandu Central Campus',
-    code: 'KTM01',
-    location: 'Putalisadak, Kathmandu',
-    adminName: 'Ramesh Sharma',
-    adminEmail: 'ktm.admin@pteai.com',
-    adminPhone: '+977 9851012345',
-    status: 'active' as const,
-    userLimit: 0, // 0 = Unlimited
-    studentCapacity: 150,
-    createdAt: new Date('2026-07-15').toISOString(),
-    updatedAt: new Date('2026-07-15').toISOString(),
-  },
-  {
-    _id: 'b_2',
-    id: 'b_2',
-    name: 'Pokhara Regional Campus',
-    code: 'PKR02',
-    location: 'Chipledhunga, Pokhara',
-    adminName: 'Sita Sharma',
-    adminEmail: 'pokhara.admin@pteai.com',
-    adminPhone: '+977 9856023456',
-    status: 'active' as const,
-    userLimit: 100,
-    studentCapacity: 100,
-    createdAt: new Date('2026-07-20').toISOString(),
-    updatedAt: new Date('2026-07-20').toISOString(),
-  },
-  {
-    _id: 'b_3',
-    id: 'b_3',
-    name: 'Lalitpur Tech Branch',
-    code: 'LAL03',
-    location: 'Kumaripati, Lalitpur',
-    adminName: 'Nabin Silwal',
-    adminEmail: 'lalitpur.admin@pteai.com',
-    adminPhone: '+977 9855022334',
-    status: 'active' as const,
-    userLimit: 100,
-    studentCapacity: 80,
-    createdAt: new Date('2026-08-01').toISOString(),
-    updatedAt: new Date('2026-08-01').toISOString(),
-  },
-  {
-    _id: 'b_4',
-    id: 'b_4',
-    name: 'Chitwan Academic Centre',
-    code: 'CHT04',
-    location: 'Lions Chowk, Bharatpur',
-    adminName: 'Anuraj Phuyal',
-    adminEmail: 'chitwan.admin@pteai.com',
-    adminPhone: '+977 9845012345',
-    status: 'active' as const,
-    userLimit: 50,
-    studentCapacity: 60,
-    createdAt: new Date('2026-08-10').toISOString(),
-    updatedAt: new Date('2026-08-10').toISOString(),
-  },
-  {
-    _id: 'b_5',
-    id: 'b_5',
-    name: 'KIEC Consultancy Putalisadak',
-    code: 'KIEC13',
-    location: 'Putalisadak, Kathmandu',
-    adminName: 'Bishal Adhikari',
-    adminEmail: 'kiec.admin@pteai.com',
-    adminPhone: '+977 9801012345',
-    status: 'active' as const,
-    userLimit: 0,
-    studentCapacity: 250,
-    createdAt: new Date('2026-08-18').toISOString(),
-    updatedAt: new Date('2026-08-18').toISOString(),
-  },
-];
+// Default initial data for collections (clean — no fake branches or fake announcements)
+export const INITIAL_BRANCHES: any[] = [];
 
 export const INITIAL_QUESTION_ITEMS = [
   { _id: 'q_01', id: 'q_01', section: 'speaking', type: 'Read Aloud', code: 'RA-104', title: 'Climate Dynamics in Sub-Saharan Africa', difficulty: 'Medium', promptText: 'Climate variability in sub-Saharan Africa creates severe agricultural vulnerabilities...', testedCount: 342, isActive: true, createdAt: new Date().toISOString() },
@@ -105,41 +29,7 @@ export const INITIAL_QUESTION_ITEMS = [
   { _id: 'q_08', id: 'q_08', section: 'listening', type: 'Write from Dictation', code: 'WFD-619', title: 'Departmental Assignment Guidelines', difficulty: 'Easy', promptText: 'All submitted assignments must follow the departmental formatting guidelines.', testedCount: 680, isActive: true, createdAt: new Date().toISOString() },
 ];
 
-export const INITIAL_ANNOUNCEMENTS = [
-  {
-    _id: 'a_01',
-    id: 'a_01',
-    title: 'Platform Maintenance Notice: Sunday 2:00 AM - 4:00 AM',
-    body: 'Scheduled database indexing and high-speed audio model upgrades will take place this Sunday.',
-    target: 'all',
-    senderName: 'Super Admin',
-    senderRole: 'super_admin',
-    isImportant: true,
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    _id: 'a_02',
-    id: 'a_02',
-    title: 'Kathmandu Campus: Intensive PTE Academic Mock Series',
-    body: 'Registration for Sunday 3-hour full length mock exam is now open. Book with your instructor.',
-    target: 'Kathmandu Central Campus',
-    senderName: 'Ramesh Sharma',
-    senderRole: 'branch_admin',
-    isImportant: false,
-    createdAt: new Date(Date.now() - 172800000).toISOString(),
-  },
-  {
-    _id: 'a_03',
-    id: 'a_03',
-    title: 'PTE 2026 Academic Rubric Engine Active',
-    body: 'All speech scoring engines now evaluate oral fluency & pronunciation with 90-band accuracy.',
-    target: 'all',
-    senderName: 'Super Admin',
-    senderRole: 'super_admin',
-    isImportant: true,
-    createdAt: new Date().toISOString(),
-  },
-];
+export const INITIAL_ANNOUNCEMENTS: any[] = [];
 
 let bucketChecked = false;
 const memoryCache = new Map<CollectionName, any[]>();

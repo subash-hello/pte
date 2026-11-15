@@ -74,18 +74,18 @@ const resetCodeStore = new Map<string, { code: string; expiresAt: number }>();
 // Cache to prevent duplicate seeding
 let isSeeded = false;
 
+// Only the real Super Admin account is seeded
 export const DEFAULT_SEED_ACCOUNTS: {
   email: string;
   password: string;
   metadata: SupabaseUserMetadata;
 }[] = [
-  // Super Admins
   {
-    email: 'admin@ielts.ai',
+    email: 'admin@pte.ai',
     password: 'adminpass123',
     metadata: {
       name: 'Super Admin',
-      phone: '+977 9800000000',
+      phone: '+977 9763876490',
       role: 'super_admin',
       status: 'approved',
       branch: 'Central Headquarters',
@@ -94,458 +94,10 @@ export const DEFAULT_SEED_ACCOUNTS: {
       subscription: 'premium',
       accessDurationDays: 365,
       tokenVersion: 1,
-      xp: 3850,
-      streak: 45,
+      xp: 0,
+      streak: 1,
       level: 10,
-      progress: { completedCount: 150, xp: 3850, streak: 45, speaking: 90, writing: 90, reading: 90, listening: 90 },
-    },
-  },
-  {
-    email: 'admin@ptemaster.com',
-    password: 'admin123',
-    metadata: {
-      name: 'PTE Master Administrator',
-      phone: '+977 9800000001',
-      role: 'super_admin',
-      status: 'approved',
-      branch: 'Central Headquarters',
-      pteGoal: 90,
-      targetScore: '90 (Superior C2)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 3850,
-      streak: 45,
-      level: 10,
-      progress: { completedCount: 150, xp: 3850, streak: 45, speaking: 90, writing: 90, reading: 90, listening: 90 },
-    },
-  },
-  // Branch Admins
-  {
-    email: 'ktm.admin@pteai.com',
-    password: 'admin123',
-    metadata: {
-      name: 'Ramesh Sharma',
-      phone: '+977 9851012345',
-      role: 'branch_admin',
-      status: 'approved',
-      branch: 'Kathmandu Central Campus',
-      pteGoal: 79,
-      targetScore: '79+ (Proficient Plus C1)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 2200,
-      streak: 28,
-      level: 7,
-      progress: { completedCount: 88, xp: 2200, streak: 28, speaking: 82, writing: 80, reading: 85, listening: 84 },
-    },
-  },
-  {
-    email: 'pokhara.admin@pteai.com',
-    password: 'admin123',
-    metadata: {
-      name: 'Sita Sharma',
-      phone: '+977 9856023456',
-      role: 'branch_admin',
-      status: 'approved',
-      branch: 'Pokhara Regional Campus',
-      pteGoal: 79,
-      targetScore: '79+ (Proficient Plus C1)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 2450,
-      streak: 32,
-      level: 8,
-      progress: { completedCount: 95, xp: 2450, streak: 32, speaking: 86, writing: 84, reading: 85, listening: 88 },
-    },
-  },
-  {
-    email: 'lalitpur.admin@pteai.com',
-    password: 'admin123',
-    metadata: {
-      name: 'Nabin Silwal (Branch Admin)',
-      phone: '+977 9855022334',
-      role: 'branch_admin',
-      status: 'approved',
-      branch: 'Lalitpur Tech Branch',
-      pteGoal: 79,
-      targetScore: '79+ (Proficient Plus C1)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 2100,
-      streak: 25,
-      level: 7,
-      progress: { completedCount: 84, xp: 2100, streak: 25, speaking: 83, writing: 81, reading: 82, listening: 85 },
-    },
-  },
-  {
-    email: 'chitwan.admin@pteai.com',
-    password: 'admin123',
-    metadata: {
-      name: 'Anuraj Phuyal (Branch Admin)',
-      phone: '+977 9845012345',
-      role: 'branch_admin',
-      status: 'approved',
-      branch: 'Chitwan Academic Centre',
-      pteGoal: 79,
-      targetScore: '79+ (Proficient Plus C1)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 1950,
-      streak: 22,
-      level: 6,
-      progress: { completedCount: 78, xp: 1950, streak: 22, speaking: 80, writing: 79, reading: 81, listening: 82 },
-    },
-  },
-  // Kathmandu Central Campus Students
-  {
-    email: 'student@pteai.com',
-    password: 'student123',
-    metadata: {
-      name: 'Subash Bhandari',
-      phone: '+977 9841234567',
-      role: 'student',
-      status: 'approved',
-      branch: 'Kathmandu Central Campus',
-      pteGoal: 79,
-      targetScore: '79+ (GSE 79)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 1850,
-      streak: 18,
-      level: 6,
-      progress: { completedCount: 76, xp: 1850, streak: 18, speaking: 85, writing: 80, reading: 82, listening: 86 },
-    },
-  },
-  {
-    email: 'subash.bhandari@pteai.com',
-    password: 'student123',
-    metadata: {
-      name: 'Subash Bhandari',
-      phone: '+977 9841234567',
-      role: 'student',
-      status: 'approved',
-      branch: 'Kathmandu Central Campus',
-      pteGoal: 79,
-      targetScore: '79+ (GSE 79)',
-      subscription: 'pro',
-      accessDurationDays: 90,
-      tokenVersion: 1,
-      xp: 1850,
-      streak: 18,
-      level: 6,
-      progress: { completedCount: 76, xp: 1850, streak: 18, speaking: 85, writing: 80, reading: 82, listening: 86 },
-    },
-  },
-  {
-    email: 'pooja.adhikari@gmail.com',
-    password: 'student123',
-    metadata: {
-      name: 'Pooja Adhikari',
-      phone: '+977 9813456789',
-      role: 'student',
-      status: 'pending',
-      branch: 'Kathmandu Central Campus',
-      pteGoal: 65,
-      targetScore: '65+ (GSE 65)',
-      subscription: 'free',
-      accessDurationDays: 30,
-      approvedAt: null,
-      tokenVersion: 1,
-      xp: 450,
-      streak: 4,
-      level: 2,
-      progress: { completedCount: 22, xp: 450, streak: 4, speaking: 64, writing: 66, reading: 62, listening: 65 },
-    },
-  },
-  {
-    email: 'aayush.koirala@gmail.com',
-    password: 'student123',
-    metadata: {
-      name: 'Aayush Koirala',
-      phone: '+977 9841889900',
-      role: 'student',
-      status: 'approved',
-      branch: 'Kathmandu Central Campus',
-      pteGoal: 79,
-      targetScore: '79+ (GSE 79)',
-      subscription: 'premium',
-      accessDurationDays: 180,
-      tokenVersion: 1,
-      xp: 1620,
-      streak: 15,
-      level: 5,
-      progress: { completedCount: 64, xp: 1620, streak: 15, speaking: 82, writing: 78, reading: 80, listening: 83 },
-    },
-  },
-  {
-    email: 'pratima.thapa@outlook.com',
-    password: 'student123',
-    metadata: {
-      name: 'Pratima Thapa',
-      phone: '+977 9812998877',
-      role: 'student',
-      status: 'approved',
-      branch: 'Kathmandu Central Campus',
-      pteGoal: 90,
-      targetScore: '90 (GSE 90)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 2950,
-      streak: 29,
-      level: 9,
-      progress: { completedCount: 110, xp: 2950, streak: 29, speaking: 89, writing: 87, reading: 88, listening: 90 },
-    },
-  },
-  {
-    email: 'suman.maharjan@yahoo.com',
-    password: 'student123',
-    metadata: {
-      name: 'Suman Maharjan',
-      phone: '+977 9851044332',
-      role: 'student',
-      status: 'pending',
-      branch: 'Kathmandu Central Campus',
-      pteGoal: 65,
-      targetScore: '65+ (GSE 65)',
-      subscription: 'free',
-      accessDurationDays: 30,
-      approvedAt: null,
-      tokenVersion: 1,
-      xp: 320,
-      streak: 2,
-      level: 2,
-      progress: { completedCount: 14, xp: 320, streak: 2, speaking: 60, writing: 62, reading: 58, listening: 61 },
-    },
-  },
-  {
-    email: 'deepak.regmi@gmail.com',
-    password: 'student123',
-    metadata: {
-      name: 'Deepak Regmi',
-      phone: '+977 9860114477',
-      role: 'student',
-      status: 'approved',
-      branch: 'Kathmandu Central Campus',
-      pteGoal: 79,
-      targetScore: '79+ (GSE 79)',
-      subscription: 'pro',
-      accessDurationDays: 90,
-      tokenVersion: 1,
-      xp: 1150,
-      streak: 11,
-      level: 4,
-      progress: { completedCount: 48, xp: 1150, streak: 11, speaking: 78, writing: 76, reading: 77, listening: 80 },
-    },
-  },
-  {
-    email: 'kripa.shrestha@gmail.com',
-    password: 'student123',
-    metadata: {
-      name: 'Kripa Shrestha',
-      phone: '+977 9803112233',
-      role: 'student',
-      status: 'approved',
-      branch: 'Kathmandu Central Campus',
-      pteGoal: 79,
-      targetScore: '79+ (GSE 79)',
-      subscription: 'pro',
-      accessDurationDays: 90,
-      tokenVersion: 1,
-      xp: 1380,
-      streak: 13,
-      level: 5,
-      progress: { completedCount: 56, xp: 1380, streak: 13, speaking: 80, writing: 77, reading: 79, listening: 82 },
-    },
-  },
-  {
-    email: 'roshan.dangol@outlook.com',
-    password: 'student123',
-    metadata: {
-      name: 'Roshan Dangol',
-      phone: '+977 9849223344',
-      role: 'student',
-      status: 'approved',
-      branch: 'Kathmandu Central Campus',
-      pteGoal: 79,
-      targetScore: '79+ (GSE 79)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 1740,
-      streak: 16,
-      level: 6,
-      progress: { completedCount: 72, xp: 1740, streak: 16, speaking: 84, writing: 81, reading: 83, listening: 85 },
-    },
-  },
-  // Pokhara Regional Campus Students
-  {
-    email: 'bikash.shrestha@gmail.com',
-    password: 'student123',
-    metadata: {
-      name: 'Bikash Shrestha',
-      phone: '+977 9801239876',
-      role: 'student',
-      status: 'approved',
-      branch: 'Pokhara Regional Campus',
-      pteGoal: 79,
-      targetScore: '79+ (GSE 79)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 2350,
-      streak: 24,
-      level: 8,
-      progress: { completedCount: 96, xp: 2350, streak: 24, speaking: 84, writing: 81, reading: 83, listening: 86 },
-    },
-  },
-  {
-    email: 'anjali.karki@outlook.com',
-    password: 'student123',
-    metadata: {
-      name: 'Anjali Karki',
-      phone: '+977 9846098765',
-      role: 'student',
-      status: 'pending',
-      branch: 'Pokhara Regional Campus',
-      pteGoal: 84,
-      targetScore: '84+ (GSE 84)',
-      subscription: 'free',
-      accessDurationDays: 60,
-      approvedAt: null,
-      tokenVersion: 1,
-      xp: 780,
-      streak: 6,
-      level: 3,
-      progress: { completedCount: 38, xp: 780, streak: 6, speaking: 76, writing: 74, reading: 78, listening: 75 },
-    },
-  },
-  {
-    email: 'manish.gurung@gmail.com',
-    password: 'student123',
-    metadata: {
-      name: 'Manish Gurung',
-      phone: '+977 9856011223',
-      role: 'student',
-      status: 'approved',
-      branch: 'Pokhara Regional Campus',
-      pteGoal: 79,
-      targetScore: '79+ (GSE 79)',
-      subscription: 'pro',
-      accessDurationDays: 90,
-      tokenVersion: 1,
-      xp: 1490,
-      streak: 14,
-      level: 5,
-      progress: { completedCount: 62, xp: 1490, streak: 14, speaking: 81, writing: 79, reading: 80, listening: 83 },
-    },
-  },
-  {
-    email: 'sweta.bastola@yahoo.com',
-    password: 'student123',
-    metadata: {
-      name: 'Sweta Bastola',
-      phone: '+977 9817223344',
-      role: 'student',
-      status: 'approved',
-      branch: 'Pokhara Regional Campus',
-      pteGoal: 90,
-      targetScore: '90 (GSE 90)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 2800,
-      streak: 28,
-      level: 9,
-      progress: { completedCount: 105, xp: 2800, streak: 28, speaking: 88, writing: 86, reading: 87, listening: 89 },
-    },
-  },
-  {
-    email: 'kiran.baral@gmail.com',
-    password: 'student123',
-    metadata: {
-      name: 'Kiran Baral',
-      phone: '+977 9846055667',
-      role: 'student',
-      status: 'pending',
-      branch: 'Pokhara Regional Campus',
-      pteGoal: 65,
-      targetScore: '65+ (GSE 65)',
-      subscription: 'free',
-      accessDurationDays: 30,
-      approvedAt: null,
-      tokenVersion: 1,
-      xp: 290,
-      streak: 2,
-      level: 1,
-      progress: { completedCount: 12, xp: 290, streak: 2, speaking: 58, writing: 60, reading: 57, listening: 59 },
-    },
-  },
-  // Chitwan & Lalitpur Campus Students
-  {
-    email: 'anuraj.phuyal@gmail.com',
-    password: 'student123',
-    metadata: {
-      name: 'Anuraj Phuyal',
-      phone: '+977 9845012345',
-      role: 'student',
-      status: 'approved',
-      branch: 'Chitwan Academic Centre',
-      pteGoal: 79,
-      targetScore: '79+ (GSE 79)',
-      subscription: 'pro',
-      accessDurationDays: 90,
-      tokenVersion: 1,
-      xp: 1250,
-      streak: 12,
-      level: 4,
-      progress: { completedCount: 52, xp: 1250, streak: 12, speaking: 79, writing: 77, reading: 78, listening: 81 },
-    },
-  },
-  {
-    email: 'nabin.silwal@outlook.com',
-    password: 'student123',
-    metadata: {
-      name: 'Nabin Silwal',
-      phone: '+977 9855022334',
-      role: 'student',
-      status: 'approved',
-      branch: 'Lalitpur Tech Branch',
-      pteGoal: 79,
-      targetScore: '79+ (GSE 79)',
-      subscription: 'premium',
-      accessDurationDays: 180,
-      tokenVersion: 1,
-      xp: 1980,
-      streak: 20,
-      level: 7,
-      progress: { completedCount: 82, xp: 1980, streak: 20, speaking: 83, writing: 81, reading: 82, listening: 85 },
-    },
-  },
-  {
-    email: 'sanjiv.m@gmail.com',
-    password: 'student123',
-    metadata: {
-      name: 'Sanjiv Maharjan',
-      phone: '+977 9801998877',
-      role: 'student',
-      status: 'approved',
-      branch: 'Lalitpur Tech Branch',
-      pteGoal: 90,
-      targetScore: '90 (GSE 90)',
-      subscription: 'premium',
-      accessDurationDays: 365,
-      tokenVersion: 1,
-      xp: 3100,
-      streak: 31,
-      level: 10,
-      progress: { completedCount: 125, xp: 3100, streak: 31, speaking: 90, writing: 88, reading: 89, listening: 90 },
+      progress: { completedCount: 0, xp: 0, streak: 1, speaking: 90, writing: 90, reading: 90, listening: 90 },
     },
   },
 ];
@@ -553,38 +105,38 @@ export const DEFAULT_SEED_ACCOUNTS: {
 // Normalize Supabase Auth user into standard platform user
 export function formatSupabaseUser(user: any): AdaptedUser {
   const meta: SupabaseUserMetadata = user.user_metadata || {};
-  const xp = meta.xp !== undefined ? Number(meta.xp) : 1200;
-  const streak = meta.streak !== undefined ? Number(meta.streak) : 14;
+  const xp = meta.xp !== undefined ? Number(meta.xp) : 0;
+  const streak = meta.streak !== undefined ? Number(meta.streak) : 1;
   return {
     id: user.id,
     _id: user.id,
     email: (user.email || '').toLowerCase().trim(),
     name: meta.name || user.email?.split('@')[0] || 'Candidate',
-    phone: meta.phone || '+977 9800000000',
+    phone: meta.phone || '',
     role: meta.role || 'student',
-    status: meta.status || 'approved',
-    branch: meta.branch || 'Kathmandu Central Campus',
+    status: meta.status || 'pending',
+    branch: meta.branch || 'Direct Enrollment',
     branchCode: meta.branchCode || '',
     examDate: meta.examDate || '',
     pteGoal: Number(meta.pteGoal) || 79,
     targetScore: meta.targetScore || '79+ (GSE 79)',
-    subscription: meta.subscription || 'premium',
-    accessDurationDays: Number(meta.accessDurationDays) || 365,
+    subscription: meta.subscription || 'free',
+    accessDurationDays: Number(meta.accessDurationDays) || 30,
     approvedAt: meta.status === 'pending' ? null : (meta.approvedAt || user.created_at),
     tokenVersion: Number(meta.tokenVersion) || 1,
     xp,
     streak,
-    level: Number(meta.level) || 5,
+    level: Number(meta.level) || 1,
     lastActive: meta.lastActive || new Date().toISOString(),
     lastLoginAt: meta.lastLoginAt || meta.lastActive || user.last_sign_in_at || user.created_at,
     progress: meta.progress || {
       completedCount: Math.round(xp / 25),
       xp,
       streak,
-      speaking: 78,
-      writing: 76,
-      reading: 79,
-      listening: 80,
+      speaking: 0,
+      writing: 0,
+      reading: 0,
+      listening: 0,
     },
     createdAt: user.created_at,
     updatedAt: user.updated_at || user.created_at,
@@ -593,7 +145,7 @@ export function formatSupabaseUser(user: any): AdaptedUser {
 
 export const supabaseAuthAdapter = {
   /**
-   * Seed Default Administrative & Demo Accounts into Supabase Auth
+   * Ensure only the primary Super Admin (admin@pte.ai) exists in Supabase Auth
    */
   async seedInitialUsers() {
     if (isSeeded) return;
@@ -617,12 +169,12 @@ export const supabaseAuthAdapter = {
         }
       }
     } catch (e) {
-      console.warn('⚠️ Supabase initial user check:', e);
+      console.warn('Supabase initial admin check:', e);
     }
   },
 
   /**
-   * Authenticate user with Email & Password via Supabase Auth
+   * Strictly authenticate user with Email & Password via Supabase Auth
    */
   async signIn(email: string, pass: string): Promise<{ success: boolean; user?: AdaptedUser; error?: string }> {
     await this.seedInitialUsers();
@@ -630,7 +182,6 @@ export const supabaseAuthAdapter = {
     const normalizedEmail = email.toLowerCase().trim();
     const candidatePass = pass.trim();
 
-    // 1. Try standard Supabase Auth signInWithPassword
     try {
       const { data: authData, error: authError } = await supabaseAdmin.auth.signInWithPassword({
         email: normalizedEmail,
@@ -641,29 +192,21 @@ export const supabaseAuthAdapter = {
         const adapted = formatSupabaseUser(authData.user);
         return { success: true, user: adapted };
       }
-    } catch {
-      // Continue to fallback check
+
+      return {
+        success: false,
+        error: authError?.message || 'Invalid credentials. Please verify your email and password.',
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.message || 'Invalid credentials. Please verify your email and password.',
+      };
     }
-
-    // 2. Master & Admin credentials fallback
-    const masterAdminPasswords = ['$ubash@Macs@321#@', 'adminpass123', 'admin123', 'subash123', 'password123', 'student123'];
-
-    try {
-      const user = await this.getUserByEmail(normalizedEmail);
-      if (user) {
-        const isMasterMatch = masterAdminPasswords.includes(candidatePass);
-        if (isMasterMatch) {
-          supabaseAdmin.auth.admin.updateUserById(user.id, { password: candidatePass }).catch(() => {});
-          return { success: true, user };
-        }
-      }
-    } catch {}
-
-    return { success: false, error: 'Invalid credentials. Please verify your email and password.' };
   },
 
   /**
-   * Register new student in Supabase Auth
+   * Register new user in Supabase Auth
    */
   async signUp(params: {
     name: string;
@@ -692,10 +235,10 @@ export const supabaseAuthAdapter = {
 
       const metadata: SupabaseUserMetadata = {
         name: params.name.trim(),
-        phone: params.phone?.trim() || '+977 9800000000',
+        phone: params.phone?.trim() || '',
         role: params.role || 'student',
-        status: params.status || 'approved',
-        branch: params.branch || 'Kathmandu Central Campus',
+        status: params.status || 'pending',
+        branch: params.branch || 'Direct Enrollment',
         branchCode: params.branchCode || '',
         examDate: params.examDate || '',
         pteGoal: Number(params.pteGoal) || 79,
@@ -703,11 +246,11 @@ export const supabaseAuthAdapter = {
         subscription: params.subscription || 'free',
         accessDurationDays: params.accessDurationDays || 30,
         tokenVersion: 1,
-        xp: 100,
+        xp: 0,
         streak: 1,
         level: 1,
-        approvedAt: params.status === 'pending' ? null : new Date().toISOString(),
-        progress: { completedCount: 0, xp: 100, streak: 1, speaking: 70, writing: 70, reading: 70, listening: 70 },
+        approvedAt: params.status === 'approved' ? new Date().toISOString() : null,
+        progress: { completedCount: 0, xp: 0, streak: 1, speaking: 0, writing: 0, reading: 0, listening: 0 },
       };
 
       const { data, error } = await supabaseAdmin.auth.admin.createUser({
@@ -746,7 +289,7 @@ export const supabaseAuthAdapter = {
   async getUserByEmail(email: string): Promise<AdaptedUser | null> {
     try {
       const normalizedEmail = email.toLowerCase().trim();
-      const { data } = await supabaseAdmin.auth.admin.listUsers({ perPage: 200 });
+      const { data } = await supabaseAdmin.auth.admin.listUsers({ perPage: 500 });
       const found = (data?.users || []).find(u => (u.email || '').toLowerCase() === normalizedEmail);
       if (!found) return null;
       return formatSupabaseUser(found);

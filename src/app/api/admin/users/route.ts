@@ -22,14 +22,12 @@ export async function GET(request: NextRequest) {
       search,
     });
 
-    if (supaUsers.length > 0) {
-      return NextResponse.json({
-        success: true,
-        users: supaUsers.map(u => sanitizeUser(u)),
-        source: 'supabase',
-      });
-    }
-
+    return NextResponse.json({
+      success: true,
+      users: supaUsers.map(u => sanitizeUser(u)),
+      source: 'supabase',
+    });
+  } catch (err: any) {
     const { fallbackDb } = await import('@/lib/fallbackDb');
     let fbUsers = fallbackDb.getUsers();
 
@@ -55,12 +53,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       users: fbUsers.map(u => sanitizeUser(u)),
-    });
-  } catch (err: any) {
-    const { fallbackDb } = await import('@/lib/fallbackDb');
-    return NextResponse.json({
-      success: true,
-      users: fallbackDb.getUsers().map(u => sanitizeUser(u)),
     });
   }
 }

@@ -305,7 +305,19 @@ export default function LoginPage() {
         {/* Google Sign In Button matching masterieltsai.com */}
         <button
           type="button"
-          onClick={() => handleLogin(undefined, 'student@pteai.com', 'student123')}
+          onClick={async () => {
+            setError('');
+            try {
+              const { supabaseClient } = await import('@/server/db/supabase');
+              const { error: oauthErr } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: `${window.location.origin}/login` },
+              });
+              if (oauthErr) throw oauthErr;
+            } catch (err: any) {
+              setError(err.message || 'Google Sign-In requires Google OAuth to be enabled or please sign in with your registered Email & Password.');
+            }
+          }}
           className="w-full py-3.5 px-4 bg-[#1e293b] hover:bg-slate-800 text-white font-bold text-xs rounded-2xl shadow-md transition-all flex items-center justify-center gap-2.5 cursor-pointer"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">

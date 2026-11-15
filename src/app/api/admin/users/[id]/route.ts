@@ -3,7 +3,7 @@ import { verifyAdminAuth, sanitizeUser } from '@/lib/auth';
 import { supabaseAuthAdapter } from '@/server/services/supabaseAuthAdapter';
 import { supabaseStore } from '@/server/db/supabaseStore';
 
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+async function handleUpdateUser(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminUser = await verifyAdminAuth(request);
   if (!adminUser) {
     return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
@@ -47,6 +47,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   }
 }
 
+export async function PUT(request: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+  return handleUpdateUser(request, ctx);
+}
+
+export async function PATCH(request: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+  return handleUpdateUser(request, ctx);
+}
+
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminUser = await verifyAdminAuth(request);
   if (!adminUser) {
@@ -56,8 +64,15 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   try {
     const { id } = await params;
 
+    const targetUser = await supabaseAuthAdapter.getUserById(id);
+    if (targetUser && targetUser.email.toLowerCase() === 'admin@pte.ai') {
+      return NextResponse.json(
+        { success: false, message: 'Primary Super Admin account (admin@pte.ai) cannot be deleted.' },
+        { status: 403 }
+      );
+    }
+
     if (adminUser.role === 'branch_admin') {
-      const targetUser = await supabaseAuthAdapter.getUserById(id);
       if (targetUser && !(targetUser.branch || '').toLowerCase().includes((adminUser.branch || '').toLowerCase().split(' ')[0])) {
         return NextResponse.json({ success: false, message: 'Forbidden: User belongs to another branch' }, { status: 403 });
       }

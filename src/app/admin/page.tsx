@@ -17,14 +17,15 @@ import {
 import clsx from 'clsx';
 import { authFetch, getUser } from '@/lib/session';
 
-const initialActiveSessions = [
-  { userId: 's_1', name: 'Subash Bhandari', email: 'subash.bhandari@pteai.com', module: 'Speaking — Read Aloud #14', duration: '12m online', ip: '103.1.200.4', location: 'Kathmandu Central Campus' },
-  { userId: 's_2', name: 'Bikash Shrestha', email: 'bikash.shrestha@gmail.com', module: 'Writing — Write Essay #08', duration: '24m online', ip: '202.166.204.1', location: 'Pokhara Regional Campus' },
-  { userId: 's_3', name: 'Anuraj Phuyal', email: 'anuraj.phuyal@gmail.com', module: 'Reading — Fill in Blanks #02', duration: '5m online', ip: '27.34.20.11', location: 'Chitwan Academic Centre' },
-  { userId: 's_4', name: 'Pratima Thapa', email: 'pratima.thapa@outlook.com', module: 'Full Mock Exam 03 (Timed)', duration: '48m online', ip: '103.10.28.45', location: 'Kathmandu Central Campus' },
-  { userId: 's_5', name: 'Nabin Silwal', email: 'nabin.silwal@outlook.com', module: 'Listening — Write From Dictation #22', duration: '18m online', ip: '103.20.30.40', location: 'Lalitpur Tech Branch' },
-  { userId: 's_6', name: 'Sanjiv Maharjan', email: 'sanjiv.m@gmail.com', module: 'Speaking — Describe Image #09', duration: '31m online', ip: '103.55.66.77', location: 'Lalitpur Tech Branch' },
-];
+const initialActiveSessions: Array<{
+  userId: string;
+  name: string;
+  email: string;
+  module: string;
+  duration: string;
+  ip: string;
+  location: string;
+}> = [];
 
 const initialPdfList = [
   { id: 'pdf_1', title: 'PTE Academic 90-Band Master Essay Templates', category: 'Writing', size: '1.2 MB', uploadedAt: 'Yesterday', downloads: 342 },
@@ -154,7 +155,22 @@ function AdminCommandCenterInner() {
 
       if (usersRes.ok) {
         const d = await usersRes.json();
-        if (d.users) setUsers(d.users);
+        if (d.users) {
+          setUsers(d.users);
+          setActiveSessions(
+            d.users
+              .filter((u: any) => u.status === 'approved')
+              .map((u: any, idx: number) => ({
+                userId: u._id || u.id || `s_${idx}`,
+                name: u.name || 'User',
+                email: u.email,
+                module: u.role === 'super_admin' ? 'Admin Command Console' : 'Active Study Portal',
+                duration: 'Online now',
+                ip: 'Live Session',
+                location: u.branch || 'Main HQ',
+              }))
+          );
+        }
       }
       if (branchesRes.ok) {
         const d = await branchesRes.json();
@@ -818,6 +834,15 @@ function AdminCommandCenterInner() {
 
             {/* Branch Cards List matching masterieltsai.com */}
             <div className="space-y-4">
+              {branches.length === 0 && (
+                <div className="bg-white rounded-[24px] p-10 border border-[#e8ecf4] shadow-2xs text-center space-y-3">
+                  <Building2 className="w-10 h-10 text-indigo-500 mx-auto" />
+                  <h4 className="text-base font-extrabold text-slate-900">No Consultancy Branches Created Yet</h4>
+                  <p className="text-xs text-slate-500 font-semibold max-w-md mx-auto">
+                    Create your first consultancy branch &amp; branch admin account above to generate a unique branch signup code and student quota.
+                  </p>
+                </div>
+              )}
               {branches.map((branch) => {
                 const bId = branch._id || branch.id;
                 const code = branch.code || 'KTM01';

@@ -32,7 +32,7 @@ import {
 } from 'lucide-react';
 import FloatingSiriCoach from '@/components/FloatingSiriCoach';
 import { useTheme } from '@/context/ThemeContext';
-import { getUser, authFetch } from '@/lib/session';
+import { getUser, getToken, setSession, clearSession, authFetch } from '@/lib/session';
 
 interface NavItem {
   name: string;
@@ -173,13 +173,36 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Load Session & User Data
+  // Load Session & User Data with strict authentication check
   useEffect(() => {
     const current = getUser();
-    if (current) {
-      setUser(current);
+    if (!current) {
+      router.replace('/login');
+      return;
     }
-  }, []);
+    if (current.role === 'student' && current.status === 'pending') {
+      router.replace('/approval-wait');
+      return;
+    }
+    setUser(current);
+
+    authFetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.success || !data.user) {
+          clearSession();
+          router.replace('/login');
+          return;
+        }
+        const token = getToken();
+        if (token) setSession(token, data.user);
+        setUser(data.user);
+        if (data.user.role === 'student' && data.user.status === 'pending') {
+          router.replace('/approval-wait');
+        }
+      })
+      .catch(() => {});
+  }, [router]);
 
   // Send periodic Heartbeat for real-time tracking
   useEffect(() => {
@@ -361,7 +384,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
             <button
               onClick={() => {
-                localStorage.removeItem('pte_user');
+                clearSession();
                 router.push('/login');
               }}
               className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all text-left cursor-pointer"
@@ -619,7 +642,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         <div className="pt-2 border-t border-slate-200 dark:border-border-glass">
                           <button
                             onClick={() => {
-                              localStorage.removeItem('pte_user');
+                              clearSession();
                               router.push('/login');
                             }}
                             className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all text-left cursor-pointer"
